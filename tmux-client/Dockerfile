@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.22-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 # Install build dependencies
 RUN apk add --no-cache git
@@ -48,17 +48,17 @@ USER agent
 
 # Environment variables with sensible defaults
 ENV TMUX_AGENT_HOST=0.0.0.0 \
-    TMUX_AGENT_PORT=8080 \
+    TMUX_AGENT_PORT=8081 \
     TMUX_AGENT_AUDIT_FILE=/app/data/audit.log \
     TMUX_AGENT_PLAN_DIR=/app/plans \
     TMUX_AGENT_BACKUP_DIR=/app/backups
 
 # Expose port
-EXPOSE 8080
+EXPOSE 8081
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD wget -qO- http://localhost:8080/health || exit 1
+    CMD wget -qO- http://localhost:8081/health || exit 1
 
 # Run the server
 ENTRYPOINT ["/usr/local/bin/tmux-agent"]

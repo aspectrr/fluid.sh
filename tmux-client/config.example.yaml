@@ -6,7 +6,7 @@ server:
   # Host to bind to (use 0.0.0.0 for all interfaces)
   host: "127.0.0.1"
   # Port to listen on
-  port: 8080
+  port: 8081
   # Request read timeout
   read_timeout: 30s
   # Response write timeout
@@ -32,9 +32,9 @@ tmux:
   # Only these specific keys are permitted for safety
   allowed_keys:
     - "Enter"
-    - "C-c"      # Ctrl+C (interrupt)
-    - "C-d"      # Ctrl+D (EOF)
-    - "C-z"      # Ctrl+Z (suspend)
+    - "C-c" # Ctrl+C (interrupt)
+    - "C-d" # Ctrl+D (EOF)
+    - "C-z" # Ctrl+Z (suspend)
     - "Escape"
     - "Up"
     - "Down"
@@ -57,7 +57,7 @@ file:
     - "~/.ssh"
     - "~/.gnupg"
   # Maximum file size for read/write operations (in bytes)
-  max_file_size: 10485760  # 10MB
+  max_file_size: 10485760 # 10MB
   # Maximum number of lines to read from a file
   max_read_lines: 10000
   # Allow file deletion operations
@@ -173,7 +173,7 @@ command:
   # Maximum timeout for command execution
   max_timeout: 5m
   # Maximum output size (stdout + stderr) in bytes
-  max_output_size: 1048576  # 1MB
+  max_output_size: 1048576 # 1MB
   # Allow setting environment variables
   allow_env_vars: false
   # Allowed environment variable names (if allow_env_vars is true)
@@ -225,11 +225,11 @@ audit:
   # Path to audit log file
   log_file: "audit.log"
   # Rotate log when it reaches this size (in bytes)
-  rotate_size: 104857600  # 100MB
+  rotate_size: 104857600 # 100MB
   # Number of rotated logs to keep
   rotate_count: 5
   # How long to keep audit entries
-  retention_period: 720h  # 30 days
+  retention_period: 720h # 30 days
   # Log tool arguments in audit entries
   log_arguments: true
   # Log tool results in audit entries
@@ -256,4 +256,4 @@ security:
   # Rate limit (requests per minute, 0 to disable)
   rate_limit_per_min: 60
   # Maximum request body size (in bytes)
-  max_request_size: 10485760  # 10MB
+  max_request_size: 10485760 # 10MB
