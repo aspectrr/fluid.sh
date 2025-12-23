@@ -17,8 +17,8 @@ services:
   api:
     container_name: virsh-sandbox-api
     build:
-      context: ../..
-      dockerfile: deploy/docker/api.Dockerfile
+      context: ./api
+      dockerfile: api.Dockerfile
     restart: unless-stopped
     depends_on:
       - postgres
@@ -81,24 +81,53 @@ services:
 
   tmux-client:
     container_name: virsh-sandbox-tmux-client
-    image: virsh-sandbox/tmux-client:latest
+    build:
+      context: ./tmux-client
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
     restart: unless-stopped
     volumes:
       - ${BASE_IMAGES_DIR:-/var/lib/libvirt/images/base}:/var/lib/libvirt/images/base:ro
       - ${JOBS_DIR:-/var/lib/libvirt/images/jobs}:/var/lib/libvirt/images/jobs:rw
     ports:
       - "8081:8081"
+    healthcheck:
+      test: ["CMD", "curl", "-fsSL", "http://127.0.0.1:8081/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
 
   postgres:
-    image: postgres:latest
+    image: postgres:16
     container_name: virsh-sandbox-postgres
-    restart: unless-stopped
     environment:
       POSTGRES_USER: virsh_sandbox
       POSTGRES_PASSWORD: virsh_sandbox
       POSTGRES_DB: virsh_sandbox
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - virsh-sandbox-postgres-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U virsh_sandbox"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: virsh-sandbox-frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+      - tmux-client
+    ports:
+      - "4173:4173"
 
   # mcp:
   #   container_name: virsh-sandbox-mcp
@@ -137,8 +166,8 @@ services:
   #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
 
 volumes:
-  sandbox_state:
-    name: virsh-sandbox-state
+  virsh-sandbox-postgres-data:
+
 # Suggested .env variables (create a .env in this directory to customize):
 # LIBVIRT_SOCK=/var/run/libvirt/libvirt-sock
 # BASE_IMAGES_DIR=/var/lib/libvirt/images/base

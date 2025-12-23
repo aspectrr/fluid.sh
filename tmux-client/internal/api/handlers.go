@@ -275,6 +275,26 @@ func (h *Handler) handleListSessions(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, sessions)
 }
 
+func (h *Handler) handleReleaseSession(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
+	sessionName := r.URL.Query().Get("session")
+
+	err := h.tmuxTool.KillSession(r.Context(), sessionName)
+	if err != nil {
+		apiErr := &types.APIError{Code: types.ErrCodeInternal, Message: err.Error()}
+		h.logAndAudit(r, "tmux", "release_session", map[string]string{"session": sessionName}, nil, apiErr, time.Since(start))
+		h.writeError(w, r, http.StatusInternalServerError, types.ErrCodeInternal, "Failed to release session", err.Error())
+		return
+	}
+
+	h.logAndAudit(r, "tmux", "release_session", map[string]string{"session": sessionName}, nil, nil, time.Since(start))
+	resp := types.KillSessionResponse{
+		SessionName: sessionName,
+		Success:     true,
+	}
+	h.writeResponse(w, r, resp)
+}
+
 func (h *Handler) handleListWindows(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	sessionName := r.URL.Query().Get("session")
