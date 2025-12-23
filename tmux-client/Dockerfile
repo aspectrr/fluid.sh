@@ -38,7 +38,7 @@ RUN mkdir -p /app/data /app/config /app/plans /app/backups \
 COPY --from=builder /tmux-agent /usr/local/bin/tmux-agent
 
 # Copy example config
-COPY config.example.yaml /app/config/config.example.yaml
+COPY config.yaml /app/config/config.yaml
 
 # Set working directory
 WORKDIR /app

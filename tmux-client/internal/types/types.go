@@ -85,6 +85,12 @@ type ListPanesResponse struct {
 	Panes []PaneInfo `json:"panes"`
 }
 
+// KillSessionResponse is the response for killing a session.
+type KillSessionResponse struct {
+	SessionName string `json:"session_name"`
+	Success     bool   `json:"success"`
+}
+
 // ReadPaneRequest is the request for reading pane content.
 type ReadPaneRequest struct {
 	PaneID     string `json:"pane_id"`

@@ -226,6 +226,7 @@ func (s *postgresStore) ListCommands(ctx context.Context, sandboxID string, opt 
 func (s *postgresStore) autoMigrate(ctx context.Context) error {
 	return s.db.WithContext(ctx).AutoMigrate(
 		&CommandModel{},
+		&SessionModel{},
 	)
 }
 
