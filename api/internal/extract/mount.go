@@ -130,7 +130,7 @@ func (m *MountManager) MountDisk(ctx context.Context, diskPath string, workDir s
 
 	// Create mount point
 	mountPoint := filepath.Join(workDir, "rootfs")
-	if err := os.MkdirAll(mountPoint, 0755); err != nil {
+	if err := os.MkdirAll(mountPoint, 0o755); err != nil {
 		_ = cleanups.ExecuteAll()
 		m.releaseNBDDevice(nbdDevice)
 		return nil, workflow.NewWorkflowError(

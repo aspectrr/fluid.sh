@@ -12,6 +12,17 @@ import (
 
 // File handlers (continued)
 
+// @Summary List directory contents
+// @Description Lists the contents of a directory
+// @Tags file
+// @Accept json
+// @Produce json
+// @Param request body types.ListDirRequest true "List directory request"
+// @Success 200 {object} types.ListDirResponse
+// @Failure 400 {object} types.APIError
+// @Failure 404 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/file/list [post]
 func (h *Handler) handleListDir(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -44,6 +55,16 @@ func (h *Handler) handleListDir(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Check if file exists
+// @Description Checks if a file or directory exists
+// @Tags file
+// @Accept json
+// @Produce json
+// @Param request body object true "File exists request"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/file/exists [post]
 func (h *Handler) handleFileExists(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -78,6 +99,16 @@ func (h *Handler) handleFileExists(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Get file hash
+// @Description Computes the SHA256 hash of a file
+// @Tags file
+// @Accept json
+// @Produce json
+// @Param request body object true "File hash request"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/file/hash [post]
 func (h *Handler) handleFileHash(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -114,6 +145,17 @@ func (h *Handler) handleFileHash(w http.ResponseWriter, r *http.Request) {
 
 // Command handlers
 
+// @Summary Run command
+// @Description Executes a shell command
+// @Tags command
+// @Accept json
+// @Produce json
+// @Param request body types.RunCommandRequest true "Run command request"
+// @Success 200 {object} types.RunCommandResponse
+// @Failure 400 {object} types.APIError
+// @Failure 403 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/command/run [post]
 func (h *Handler) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -167,6 +209,13 @@ func (h *Handler) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Get allowed commands
+// @Description Retrieves the list of allowed and denied commands
+// @Tags command
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /api/v1/command/allowed [get]
 func (h *Handler) handleGetAllowedCommands(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -181,6 +230,16 @@ func (h *Handler) handleGetAllowedCommands(w http.ResponseWriter, r *http.Reques
 
 // Human approval handlers
 
+// @Summary Request human approval
+// @Description Requests approval from a human for an action
+// @Tags human
+// @Accept json
+// @Produce json
+// @Param request body types.AskHumanRequest true "Ask human request"
+// @Success 200 {object} types.AskHumanResponse
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/human/ask [post]
 func (h *Handler) handleAskHuman(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -212,6 +271,16 @@ func (h *Handler) handleAskHuman(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Request human approval asynchronously
+// @Description Requests approval from a human asynchronously
+// @Tags human
+// @Accept json
+// @Produce json
+// @Param request body types.AskHumanRequest true "Ask human async request"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/human/ask-async [post]
 func (h *Handler) handleAskHumanAsync(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -248,6 +317,13 @@ func (h *Handler) handleAskHumanAsync(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary List pending approvals
+// @Description Lists all pending human approval requests
+// @Tags human
+// @Accept json
+// @Produce json
+// @Success 200 {object} types.ListApprovalsResponse
+// @Router /api/v1/human/pending [get]
 func (h *Handler) handleListPendingApprovals(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -261,6 +337,16 @@ func (h *Handler) handleListPendingApprovals(w http.ResponseWriter, r *http.Requ
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Get pending approval
+// @Description Retrieves a specific pending approval request
+// @Tags human
+// @Accept json
+// @Produce json
+// @Param requestID path string true "Request ID"
+// @Success 200 {object} types.PendingApproval
+// @Failure 400 {object} types.APIError
+// @Failure 404 {object} types.APIError
+// @Router /api/v1/human/pending/{requestID} [get]
 func (h *Handler) handleGetPendingApproval(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	requestID := chi.URLParam(r, "requestID")
@@ -282,6 +368,16 @@ func (h *Handler) handleGetPendingApproval(w http.ResponseWriter, r *http.Reques
 	h.writeResponse(w, r, approval)
 }
 
+// @Summary Respond to approval
+// @Description Responds to a pending approval request
+// @Tags human
+// @Accept json
+// @Produce json
+// @Param request body types.ApproveRequest true "Approve request"
+// @Success 200 {object} types.AskHumanResponse
+// @Failure 400 {object} types.APIError
+// @Failure 404 {object} types.APIError
+// @Router /api/v1/human/respond [post]
 func (h *Handler) handleRespondToApproval(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -313,6 +409,16 @@ func (h *Handler) handleRespondToApproval(w http.ResponseWriter, r *http.Request
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Cancel approval
+// @Description Cancels a pending approval request
+// @Tags human
+// @Accept json
+// @Produce json
+// @Param requestID path string true "Request ID"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} types.APIError
+// @Failure 404 {object} types.APIError
+// @Router /api/v1/human/pending/{requestID} [delete]
 func (h *Handler) handleCancelApproval(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	requestID := chi.URLParam(r, "requestID")
@@ -341,6 +447,16 @@ func (h *Handler) handleCancelApproval(w http.ResponseWriter, r *http.Request) {
 
 // Plan handlers
 
+// @Summary Create plan
+// @Description Creates a new execution plan
+// @Tags plan
+// @Accept json
+// @Produce json
+// @Param request body types.CreatePlanRequest true "Create plan request"
+// @Success 200 {object} types.CreatePlanResponse
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/plan/create [post]
 func (h *Handler) handleCreatePlan(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -367,6 +483,14 @@ func (h *Handler) handleCreatePlan(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary List plans
+// @Description Lists all execution plans
+// @Tags plan
+// @Accept json
+// @Produce json
+// @Success 200 {object} types.ListPlansResponse
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/plan/ [get]
 func (h *Handler) handleListPlans(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -382,6 +506,16 @@ func (h *Handler) handleListPlans(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Get plan
+// @Description Retrieves a specific execution plan
+// @Tags plan
+// @Accept json
+// @Produce json
+// @Param planID path string true "Plan ID"
+// @Success 200 {object} types.GetPlanResponse
+// @Failure 400 {object} types.APIError
+// @Failure 404 {object} types.APIError
+// @Router /api/v1/plan/{planID} [get]
 func (h *Handler) handleGetPlan(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	planID := chi.URLParam(r, "planID")
@@ -403,6 +537,17 @@ func (h *Handler) handleGetPlan(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Update plan
+// @Description Updates an execution plan
+// @Tags plan
+// @Accept json
+// @Produce json
+// @Param request body types.UpdatePlanRequest true "Update plan request"
+// @Success 200 {object} types.UpdatePlanResponse
+// @Failure 400 {object} types.APIError
+// @Failure 404 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/plan/update [post]
 func (h *Handler) handleUpdatePlan(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -435,6 +580,18 @@ func (h *Handler) handleUpdatePlan(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Advance plan step
+// @Description Advances to the next step in a plan
+// @Tags plan
+// @Accept json
+// @Produce json
+// @Param planID path string true "Plan ID"
+// @Param request body object false "Advance step request"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} types.APIError
+// @Failure 404 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/plan/{planID}/advance [post]
 func (h *Handler) handleAdvanceStep(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	planID := chi.URLParam(r, "planID")
@@ -476,6 +633,18 @@ func (h *Handler) handleAdvanceStep(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Abort plan
+// @Description Aborts an execution plan
+// @Tags plan
+// @Accept json
+// @Produce json
+// @Param planID path string true "Plan ID"
+// @Param request body object false "Abort plan request"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} types.APIError
+// @Failure 404 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/plan/{planID}/abort [post]
 func (h *Handler) handleAbortPlan(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	planID := chi.URLParam(r, "planID")
@@ -522,6 +691,16 @@ func (h *Handler) handleAbortPlan(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Delete plan
+// @Description Deletes an execution plan
+// @Tags plan
+// @Accept json
+// @Produce json
+// @Param planID path string true "Plan ID"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} types.APIError
+// @Failure 404 {object} types.APIError
+// @Router /api/v1/plan/{planID} [delete]
 func (h *Handler) handleDeletePlan(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	planID := chi.URLParam(r, "planID")
@@ -550,6 +729,16 @@ func (h *Handler) handleDeletePlan(w http.ResponseWriter, r *http.Request) {
 
 // Audit handlers
 
+// @Summary Query audit log
+// @Description Queries the audit log for entries
+// @Tags audit
+// @Accept json
+// @Produce json
+// @Param request body types.AuditQuery false "Audit query"
+// @Success 200 {object} types.AuditQueryResponse
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/audit/query [post]
 func (h *Handler) handleQueryAudit(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -578,6 +767,13 @@ func (h *Handler) handleQueryAudit(w http.ResponseWriter, r *http.Request) {
 	_ = start // Avoid unused variable warning
 }
 
+// @Summary Get audit stats
+// @Description Retrieves audit log statistics
+// @Tags audit
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /api/v1/audit/stats [get]
 func (h *Handler) handleAuditStats(w http.ResponseWriter, r *http.Request) {
 	stats := h.auditLogger.Stats()
 	h.writeResponse(w, r, stats)

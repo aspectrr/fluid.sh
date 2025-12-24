@@ -57,7 +57,7 @@ type SanitizeResult struct {
 func (s *Sanitizer) SanitizeFilesystem(ctx context.Context, sourcePath string, workDir string) (*SanitizeResult, error) {
 	// Create a working directory for the sanitized copy
 	sanitizedPath := filepath.Join(workDir, "sanitized")
-	if err := os.MkdirAll(sanitizedPath, 0755); err != nil {
+	if err := os.MkdirAll(sanitizedPath, 0o755); err != nil {
 		return nil, workflow.NewWorkflowError(
 			workflow.StageSanitizeFS,
 			workflow.ErrSanitizeFailed,
@@ -221,7 +221,7 @@ func (s *Sanitizer) clearDeviceNodes(ctx context.Context, rootPath string, resul
 
 	// Create minimal /dev entries that containers expect
 	// The container runtime will populate /dev properly
-	if err := os.MkdirAll(devPath, 0755); err != nil {
+	if err := os.MkdirAll(devPath, 0o755); err != nil {
 		return err
 	}
 
@@ -270,7 +270,7 @@ func (s *Sanitizer) sanitizeFstab(ctx context.Context, rootPath string, result *
 		}
 	}
 
-	if err := os.WriteFile(fstabPath, []byte(strings.Join(newLines, "\n")), 0644); err != nil {
+	if err := os.WriteFile(fstabPath, []byte(strings.Join(newLines, "\n")), 0o644); err != nil {
 		return err
 	}
 
@@ -376,7 +376,7 @@ func (s *Sanitizer) disableBlockingServices(ctx context.Context, rootPath string
 // maskSystemdUnit masks a systemd unit by creating a symlink to /dev/null.
 func (s *Sanitizer) maskSystemdUnit(rootPath, unitName string) error {
 	systemdPath := filepath.Join(rootPath, "etc", "systemd", "system")
-	if err := os.MkdirAll(systemdPath, 0755); err != nil {
+	if err := os.MkdirAll(systemdPath, 0o755); err != nil {
 		return err
 	}
 
@@ -393,7 +393,7 @@ func (s *Sanitizer) maskSystemdUnit(rootPath, unitName string) error {
 func (s *Sanitizer) setContainerMarker(ctx context.Context, rootPath string, result *SanitizeResult) error {
 	// Create /run/container marker directory
 	runPath := filepath.Join(rootPath, "run")
-	if err := os.MkdirAll(runPath, 0755); err != nil {
+	if err := os.MkdirAll(runPath, 0o755); err != nil {
 		return err
 	}
 
@@ -411,7 +411,7 @@ func (s *Sanitizer) setContainerMarker(ctx context.Context, rootPath string, res
 	containerenvContent := `engine="podman"
 name="vmclone"
 `
-	if err := os.WriteFile(containerenvPath, []byte(containerenvContent), 0644); err != nil {
+	if err := os.WriteFile(containerenvPath, []byte(containerenvContent), 0o644); err != nil {
 		return err
 	}
 	result.ModifiedPaths = append(result.ModifiedPaths, "/run/.containerenv")

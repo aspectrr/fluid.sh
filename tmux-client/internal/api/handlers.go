@@ -195,6 +195,13 @@ func (h *Handler) logAndAudit(r *http.Request, tool, action string, args, result
 	}
 }
 
+// @Summary Get health status
+// @Description Retrieves the health status of the API server and its components
+// @Tags health
+// @Accept json
+// @Produce json
+// @Success 200 {object} types.HealthResponse
+// @Router /health [get]
 // Health check handler
 
 func (h *Handler) handleHealth(w http.ResponseWriter, r *http.Request) {
@@ -260,6 +267,14 @@ func (h *Handler) handleHealth(w http.ResponseWriter, r *http.Request) {
 
 // Tmux handlers
 
+// @Summary List tmux sessions
+// @Description Get a list of all active tmux sessions
+// @Tags tmux
+// @Accept json
+// @Produce json
+// @Success 200 {array} types.SessionInfo
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/tmux/sessions [get]
 func (h *Handler) handleListSessions(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -275,6 +290,15 @@ func (h *Handler) handleListSessions(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, sessions)
 }
 
+// @Summary Release tmux session
+// @Description Releases (kills) a tmux session by ID
+// @Tags tmux
+// @Accept json
+// @Produce json
+// @Param sessionId path string true "Session ID"
+// @Success 200 {object} types.KillSessionResponse
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/tmux/sessions/{sessionId}/release [post]
 func (h *Handler) handleReleaseSession(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	sessionName := r.URL.Query().Get("session")
@@ -295,6 +319,15 @@ func (h *Handler) handleReleaseSession(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary List tmux windows
+// @Description Get a list of windows in a tmux session
+// @Tags tmux
+// @Accept json
+// @Produce json
+// @Param session query string false "Session name"
+// @Success 200 {array} types.WindowInfo
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/tmux/windows [get]
 func (h *Handler) handleListWindows(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	sessionName := r.URL.Query().Get("session")
@@ -311,6 +344,16 @@ func (h *Handler) handleListWindows(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, windows)
 }
 
+// @Summary List tmux panes
+// @Description Get a list of panes in a tmux session
+// @Tags tmux
+// @Accept json
+// @Produce json
+// @Param session query string false "Session name"
+// @Success 200 {object} types.ListPanesResponse
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/tmux/panes [get]
 func (h *Handler) handleListPanes(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -337,6 +380,16 @@ func (h *Handler) handleListPanes(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Read tmux pane
+// @Description Reads the content of a tmux pane
+// @Tags tmux
+// @Accept json
+// @Produce json
+// @Param request body types.ReadPaneRequest true "Read pane request"
+// @Success 200 {object} types.ReadPaneResponse
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/tmux/panes/read [post]
 func (h *Handler) handleReadPane(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -369,6 +422,16 @@ func (h *Handler) handleReadPane(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Switch tmux pane
+// @Description Switches to a specific tmux pane
+// @Tags tmux
+// @Accept json
+// @Produce json
+// @Param request body types.SwitchPaneRequest true "Switch pane request"
+// @Success 200 {object} types.SwitchPaneResponse
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/tmux/panes/switch [post]
 func (h *Handler) handleSwitchPane(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -400,6 +463,16 @@ func (h *Handler) handleSwitchPane(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Create tmux pane
+// @Description Creates a new tmux pane
+// @Tags tmux
+// @Accept json
+// @Produce json
+// @Param request body types.CreatePaneRequest true "Create pane request"
+// @Success 200 {object} types.CreatePaneResponse
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/tmux/panes/create [post]
 func (h *Handler) handleCreatePane(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -421,6 +494,17 @@ func (h *Handler) handleCreatePane(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Send keys to tmux pane
+// @Description Sends keystrokes to a tmux pane
+// @Tags tmux
+// @Accept json
+// @Produce json
+// @Param request body types.SendKeysRequest true "Send keys request"
+// @Success 200 {object} types.SendKeysResponse
+// @Failure 400 {object} types.APIError
+// @Failure 403 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/tmux/panes/send-keys [post]
 func (h *Handler) handleSendKeys(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -457,6 +541,16 @@ func (h *Handler) handleSendKeys(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Create tmux session
+// @Description Creates a new tmux session
+// @Tags tmux
+// @Accept json
+// @Produce json
+// @Param request body object true "Create session request"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/tmux/sessions/create [post]
 func (h *Handler) handleCreateSession(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -492,6 +586,16 @@ func (h *Handler) handleCreateSession(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Kill tmux pane
+// @Description Kills a tmux pane
+// @Tags tmux
+// @Accept json
+// @Produce json
+// @Param paneID path string true "Pane ID"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/tmux/panes/{paneID} [delete]
 func (h *Handler) handleKillPane(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	paneID := chi.URLParam(r, "paneID")
@@ -518,6 +622,16 @@ func (h *Handler) handleKillPane(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Kill tmux session
+// @Description Kills a tmux session
+// @Tags tmux
+// @Accept json
+// @Produce json
+// @Param sessionName path string true "Session name"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/tmux/sessions/{sessionName} [delete]
 func (h *Handler) handleKillSession(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	sessionName := chi.URLParam(r, "sessionName")
@@ -546,6 +660,18 @@ func (h *Handler) handleKillSession(w http.ResponseWriter, r *http.Request) {
 
 // File handlers
 
+// @Summary Read file
+// @Description Reads the content of a file
+// @Tags file
+// @Accept json
+// @Produce json
+// @Param request body types.ReadFileRequest true "Read file request"
+// @Success 200 {object} types.ReadFileResponse
+// @Failure 400 {object} types.APIError
+// @Failure 403 {object} types.APIError
+// @Failure 404 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/file/read [post]
 func (h *Handler) handleReadFile(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -588,6 +714,17 @@ func (h *Handler) handleReadFile(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Write file
+// @Description Writes content to a file
+// @Tags file
+// @Accept json
+// @Produce json
+// @Param request body types.WriteFileRequest true "Write file request"
+// @Success 200 {object} types.WriteFileResponse
+// @Failure 400 {object} types.APIError
+// @Failure 403 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/file/write [post]
 func (h *Handler) handleWriteFile(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -635,6 +772,17 @@ func (h *Handler) handleWriteFile(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Edit file
+// @Description Edits the content of a file
+// @Tags file
+// @Accept json
+// @Produce json
+// @Param request body types.EditFileRequest true "Edit file request"
+// @Success 200 {object} types.EditFileResponse
+// @Failure 400 {object} types.APIError
+// @Failure 404 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/file/edit [post]
 func (h *Handler) handleEditFile(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -677,6 +825,16 @@ func (h *Handler) handleEditFile(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Copy file
+// @Description Copies a file from source to destination
+// @Tags file
+// @Accept json
+// @Produce json
+// @Param request body types.CopyFileRequest true "Copy file request"
+// @Success 200 {object} types.CopyFileResponse
+// @Failure 400 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/file/copy [post]
 func (h *Handler) handleCopyFile(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
@@ -703,6 +861,17 @@ func (h *Handler) handleCopyFile(w http.ResponseWriter, r *http.Request) {
 	h.writeResponse(w, r, resp)
 }
 
+// @Summary Delete file
+// @Description Deletes a file or directory
+// @Tags file
+// @Accept json
+// @Produce json
+// @Param request body types.DeleteFileRequest true "Delete file request"
+// @Success 200 {object} types.DeleteFileResponse
+// @Failure 400 {object} types.APIError
+// @Failure 403 {object} types.APIError
+// @Failure 500 {object} types.APIError
+// @Router /api/v1/file/delete [post]
 func (h *Handler) handleDeleteFile(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
