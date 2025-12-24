@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/MarceloPetrucio/go-scalar-api-reference"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 
 	serverError "virsh-sandbox/internal/error"
 	serverJSON "virsh-sandbox/internal/json"
@@ -22,8 +24,13 @@ type Server struct {
 
 // NewServer constructs a REST server with routes registered.
 func NewServer(vmSvc *vm.Service) *Server {
+	router := chi.NewRouter()
+
+	router.Use(middleware.RequestID)
+	router.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
 	s := &Server{
-		Router: chi.NewRouter(),
+		Router: router,
 		vmSvc:  vmSvc,
 	}
 	s.routes()
@@ -44,8 +51,38 @@ func (s *Server) routes() {
 	r := s.Router
 
 	// Basic liveness endpoint
+	// @Summary Health check
+	// @Description Returns service health status
+	// @Tags health
+	// @Accept json
+	// @Produce json
+	// @Success 200 {object} map[string]interface{}
+	// @Router /api/v1/healthz [get]
 	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		_ = serverJSON.RespondJSON(w, http.StatusOK, map[string]any{"status": "ok"})
+	})
+
+	// @Summary API reference
+	// @Description Returns HTML API reference documentation
+	// @Tags docs
+	// @Accept json
+	// @Produce html
+	// @Success 200 {string} string
+	// @Router /api/v1/reference [get]
+	r.Get("/reference", func(w http.ResponseWriter, r *http.Request) {
+		htmlContent, err := scalar.ApiReferenceHTML(&scalar.Options{
+			// SpecURL: "https://generator3.swagger.io/openapi.json",// allow external URL or local path file
+			SpecURL: "./docs/swagger.json",
+			CustomOptions: scalar.CustomOptions{
+				PageTitle: "Simple API",
+			},
+			DarkMode: true,
+		})
+		if err != nil {
+			fmt.Printf("%v", err)
+		}
+
+		fmt.Fprintln(w, htmlContent)
 	})
 
 	// Sandbox lifecycle
@@ -140,8 +177,24 @@ type publishResponse struct {
 	Note    string `json:"note,omitempty"`
 }
 
+type ErrorResponse struct {
+	Error   string `json:"error"`
+	Code    int    `json:"code"`
+	Details string `json:"details,omitempty"`
+}
+
 // --- Handlers ---
 
+// @Summary Create a new sandbox
+// @Description Creates a new virtual machine sandbox from a base image
+// @Tags sandbox
+// @Accept json
+// @Produce json
+// @Param request body createSandboxRequest true "Sandbox creation parameters"
+// @Success 201 {object} createSandboxResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /api/v1/sandbox/create [post]
 func (s *Server) handleCreateSandbox(w http.ResponseWriter, r *http.Request) {
 	var req createSandboxRequest
 	if err := serverJSON.DecodeJSON(r.Context(), r, &req); err != nil {
@@ -161,6 +214,17 @@ func (s *Server) handleCreateSandbox(w http.ResponseWriter, r *http.Request) {
 	_ = serverJSON.RespondJSON(w, http.StatusCreated, createSandboxResponse{Sandbox: sb})
 }
 
+// @Summary Inject SSH key into sandbox
+// @Description Injects a public SSH key for a user in the sandbox
+// @Tags sandbox
+// @Accept json
+// @Produce json
+// @Param id path string true "Sandbox ID"
+// @Param request body injectSSHKeyRequest true "SSH key injection parameters"
+// @Success 204
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /api/v1/sandbox/{id}/sshkey [post]
 func (s *Server) handleInjectSSHKey(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var req injectSSHKeyRequest
@@ -180,6 +244,17 @@ func (s *Server) handleInjectSSHKey(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// @Summary Start sandbox
+// @Description Starts the virtual machine sandbox
+// @Tags sandbox
+// @Accept json
+// @Produce json
+// @Param id path string true "Sandbox ID"
+// @Param request body startSandboxRequest false "Start parameters"
+// @Success 200 {object} startSandboxResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /api/v1/sandbox/{id}/start [post]
 func (s *Server) handleStartSandbox(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
@@ -200,6 +275,17 @@ func (s *Server) handleStartSandbox(w http.ResponseWriter, r *http.Request) {
 	_ = serverJSON.RespondJSON(w, http.StatusOK, startSandboxResponse{IPAddress: ip})
 }
 
+// @Summary Run command in sandbox
+// @Description Executes a command inside the sandbox via SSH
+// @Tags sandbox
+// @Accept json
+// @Produce json
+// @Param id path string true "Sandbox ID"
+// @Param request body runCommandRequest true "Command execution parameters"
+// @Success 200 {object} runCommandResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /api/v1/sandbox/{id}/run [post]
 func (s *Server) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var req runCommandRequest
@@ -220,6 +306,17 @@ func (s *Server) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 	_ = serverJSON.RespondJSON(w, http.StatusOK, runCommandResponse{Command: cmd})
 }
 
+// @Summary Create snapshot
+// @Description Creates a snapshot of the sandbox
+// @Tags sandbox
+// @Accept json
+// @Produce json
+// @Param id path string true "Sandbox ID"
+// @Param request body snapshotRequest true "Snapshot parameters"
+// @Success 201 {object} snapshotResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /api/v1/sandbox/{id}/snapshot [post]
 func (s *Server) handleCreateSnapshot(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var req snapshotRequest
@@ -239,6 +336,17 @@ func (s *Server) handleCreateSnapshot(w http.ResponseWriter, r *http.Request) {
 	_ = serverJSON.RespondJSON(w, http.StatusCreated, snapshotResponse{Snapshot: snap})
 }
 
+// @Summary Diff snapshots
+// @Description Computes differences between two snapshots
+// @Tags sandbox
+// @Accept json
+// @Produce json
+// @Param id path string true "Sandbox ID"
+// @Param request body diffRequest true "Diff parameters"
+// @Success 200 {object} diffResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /api/v1/sandbox/{id}/diff [post]
 func (s *Server) handleDiffSnapshots(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var req diffRequest
@@ -258,6 +366,16 @@ func (s *Server) handleDiffSnapshots(w http.ResponseWriter, r *http.Request) {
 	_ = serverJSON.RespondJSON(w, http.StatusOK, diffResponse{Diff: d})
 }
 
+// @Summary Generate configuration
+// @Description Generates Ansible or Puppet configuration from sandbox changes
+// @Tags sandbox
+// @Accept json
+// @Produce json
+// @Param id path string true "Sandbox ID"
+// @Param tool path string true "Tool type (ansible or puppet)"
+// @Success 501 {object} generateResponse
+// @Failure 400 {object} ErrorResponse
+// @Router /api/v1/sandbox/{id}/generate/{tool} [post]
 func (s *Server) handleGenerate(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	tool := chi.URLParam(r, "tool")
@@ -277,6 +395,16 @@ func (s *Server) handleGenerate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// @Summary Publish changes
+// @Description Publishes sandbox changes to GitOps repository
+// @Tags sandbox
+// @Accept json
+// @Produce json
+// @Param id path string true "Sandbox ID"
+// @Param request body publishRequest true "Publish parameters"
+// @Success 501 {object} publishResponse
+// @Failure 400 {object} ErrorResponse
+// @Router /api/v1/sandbox/{id}/publish [post]
 func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request) {
 	var req publishRequest
 	if err := serverJSON.DecodeJSON(r.Context(), r, &req); err != nil {
@@ -294,6 +422,16 @@ func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// @Summary Destroy sandbox
+// @Description Destroys the sandbox and cleans up resources
+// @Tags sandbox
+// @Accept json
+// @Produce json
+// @Param id path string true "Sandbox ID"
+// @Success 204
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /api/v1/sandbox/{id} [delete]
 func (s *Server) handleDestroySandbox(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {

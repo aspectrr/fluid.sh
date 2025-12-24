@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
 	"virsh-sandbox/internal/workflow"
 )
 
@@ -57,7 +58,7 @@ func (b *ImageBuilder) BuildImage(ctx context.Context, archivePath string, vmNam
 
 	// Create a temporary directory for the build context
 	buildDir := filepath.Join(workDir, "build")
-	if err := os.MkdirAll(buildDir, 0755); err != nil {
+	if err := os.MkdirAll(buildDir, 0o755); err != nil {
 		return nil, workflow.NewWorkflowError(
 			workflow.StageBuildImage,
 			workflow.ErrImageBuildFailed,
@@ -85,7 +86,7 @@ func (b *ImageBuilder) BuildImage(ctx context.Context, archivePath string, vmNam
 	// Generate Containerfile
 	containerfile := generateContainerfile(archiveBaseName)
 	containerfilePath := filepath.Join(buildDir, "Containerfile")
-	if err := os.WriteFile(containerfilePath, []byte(containerfile), 0644); err != nil {
+	if err := os.WriteFile(containerfilePath, []byte(containerfile), 0o644); err != nil {
 		return nil, workflow.NewWorkflowError(
 			workflow.StageBuildImage,
 			workflow.ErrImageBuildFailed,
@@ -300,5 +301,5 @@ func copyFile(src, dst string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(dst, data, 0644)
+	return os.WriteFile(dst, data, 0o644)
 }

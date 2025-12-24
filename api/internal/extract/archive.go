@@ -154,7 +154,7 @@ func (a *Archiver) supportsSELinux(ctx context.Context) bool {
 // This is useful for testing or container image import operations.
 func (a *Archiver) ExtractArchive(ctx context.Context, archivePath, destPath string) error {
 	// Ensure destination exists
-	if err := os.MkdirAll(destPath, 0755); err != nil {
+	if err := os.MkdirAll(destPath, 0o755); err != nil {
 		return fmt.Errorf("failed to create destination directory: %w", err)
 	}
 
