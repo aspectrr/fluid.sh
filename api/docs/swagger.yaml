@@ -62,6 +62,13 @@ definitions:
         description: 'required (explicit); typical: "ubuntu" or "centos"'
         type: string
     type: object
+  internal_rest.listVMsResponse:
+    properties:
+      vms:
+        items:
+          $ref: '#/definitions/internal_rest.vmInfo'
+        type: array
+    type: object
   internal_rest.publishRequest:
     properties:
       job_id:
@@ -131,6 +138,19 @@ definitions:
   internal_rest.startSandboxResponse:
     properties:
       ip_address:
+        type: string
+    type: object
+  internal_rest.vmInfo:
+    properties:
+      disk_path:
+        type: string
+      name:
+        type: string
+      persistent:
+        type: boolean
+      state:
+        type: string
+      uuid:
         type: string
     type: object
   time.Duration:
@@ -216,6 +236,13 @@ definitions:
         description: 'required (explicit); typical: "ubuntu" or "centos"'
         type: string
     type: object
+  virsh-sandbox_internal_rest.listVMsResponse:
+    properties:
+      vms:
+        items:
+          $ref: '#/definitions/virsh-sandbox_internal_rest.vmInfo'
+        type: array
+    type: object
   virsh-sandbox_internal_rest.publishRequest:
     properties:
       job_id:
@@ -285,6 +312,19 @@ definitions:
   virsh-sandbox_internal_rest.startSandboxResponse:
     properties:
       ip_address:
+        type: string
+    type: object
+  virsh-sandbox_internal_rest.vmInfo:
+    properties:
+      disk_path:
+        type: string
+      name:
+        type: string
+      persistent:
+        type: boolean
+      state:
+        type: string
+      uuid:
         type: string
     type: object
   virsh-sandbox_internal_store.ChangeDiff:
@@ -778,4 +818,23 @@ paths:
       summary: Create a new sandbox
       tags:
       - sandbox
+  /api/v1/vms:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all virtual machines from the libvirt instance
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_rest.listVMsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_rest.ErrorResponse'
+      summary: List all VMs
+      tags:
+      - vms
 swagger: "2.0"

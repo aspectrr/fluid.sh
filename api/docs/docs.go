@@ -454,6 +454,35 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/vms": {
+            "get": {
+                "description": "Returns a list of all virtual machines from the libvirt instance",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vms"
+                ],
+                "summary": "List all VMs",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_rest.listVMsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -546,6 +575,17 @@ const docTemplate = `{
                 "username": {
                     "description": "required (explicit); typical: \"ubuntu\" or \"centos\"",
                     "type": "string"
+                }
+            }
+        },
+        "internal_rest.listVMsResponse": {
+            "type": "object",
+            "properties": {
+                "vms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_rest.vmInfo"
+                    }
                 }
             }
         },
@@ -650,6 +690,26 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "ip_address": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_rest.vmInfo": {
+            "type": "object",
+            "properties": {
+                "disk_path": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "persistent": {
+                    "type": "boolean"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "uuid": {
                     "type": "string"
                 }
             }
@@ -770,6 +830,17 @@ const docTemplate = `{
                 }
             }
         },
+        "virsh-sandbox_internal_rest.listVMsResponse": {
+            "type": "object",
+            "properties": {
+                "vms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/virsh-sandbox_internal_rest.vmInfo"
+                    }
+                }
+            }
+        },
         "virsh-sandbox_internal_rest.publishRequest": {
             "type": "object",
             "properties": {
@@ -871,6 +942,26 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "ip_address": {
+                    "type": "string"
+                }
+            }
+        },
+        "virsh-sandbox_internal_rest.vmInfo": {
+            "type": "object",
+            "properties": {
+                "disk_path": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "persistent": {
+                    "type": "boolean"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "uuid": {
                     "type": "string"
                 }
             }
