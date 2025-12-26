@@ -1,2331 +1,2569 @@
 {
-  "swagger": "2.0",
-  "info": {
-    "contact": {}
-  },
-  "paths": {
-    "/api/v1/audit/query": {
-      "post": {
-        "description": "Queries the audit log for entries",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["audit"],
-        "summary": "Query audit log",
-        "parameters": [
-          {
-            "description": "Audit query",
-            "name": "request",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.AuditQuery"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.AuditQueryResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
+    "swagger": "2.0",
+    "info": {
+        "description": "API for managing tmux sessions and windows",
+        "title": "tmux-client API",
+        "contact": {},
+        "version": "0.0.1-beta"
     },
-    "/api/v1/audit/stats": {
-      "get": {
-        "description": "Retrieves audit log statistics",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["audit"],
-        "summary": "Get audit stats",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "additionalProperties": true
+    "host": "localhost:8080",
+    "basePath": "/v1",
+    "paths": {
+        "/api/v1/audit/query": {
+            "post": {
+                "description": "Queries the audit log for entries",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "audit"
+                ],
+                "summary": "Query audit log",
+                "parameters": [
+                    {
+                        "description": "Audit query",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.AuditQuery"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.AuditQueryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
             }
-          }
+        },
+        "/api/v1/audit/stats": {
+            "get": {
+                "description": "Retrieves audit log statistics",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "audit"
+                ],
+                "summary": "Get audit stats",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/command/allowed": {
+            "get": {
+                "description": "Retrieves the list of allowed and denied commands",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "command"
+                ],
+                "summary": "Get allowed commands",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/command/run": {
+            "post": {
+                "description": "Executes a shell command",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "command"
+                ],
+                "summary": "Run command",
+                "parameters": [
+                    {
+                        "description": "Run command request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.RunCommandRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.RunCommandResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/file/copy": {
+            "post": {
+                "description": "Copies a file from source to destination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Copy file",
+                "parameters": [
+                    {
+                        "description": "Copy file request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.CopyFileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.CopyFileResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/file/delete": {
+            "post": {
+                "description": "Deletes a file or directory",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Delete file",
+                "parameters": [
+                    {
+                        "description": "Delete file request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.DeleteFileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.DeleteFileResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/file/edit": {
+            "post": {
+                "description": "Edits the content of a file",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Edit file",
+                "parameters": [
+                    {
+                        "description": "Edit file request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.EditFileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.EditFileResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/file/exists": {
+            "post": {
+                "description": "Checks if a file or directory exists",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Check if file exists",
+                "parameters": [
+                    {
+                        "description": "File exists request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/file/hash": {
+            "post": {
+                "description": "Computes the SHA256 hash of a file",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Get file hash",
+                "parameters": [
+                    {
+                        "description": "File hash request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/file/list": {
+            "post": {
+                "description": "Lists the contents of a directory",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "List directory contents",
+                "parameters": [
+                    {
+                        "description": "List directory request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.ListDirRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.ListDirResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/file/read": {
+            "post": {
+                "description": "Reads the content of a file",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Read file",
+                "parameters": [
+                    {
+                        "description": "Read file request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.ReadFileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.ReadFileResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/file/write": {
+            "post": {
+                "description": "Writes content to a file",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Write file",
+                "parameters": [
+                    {
+                        "description": "Write file request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.WriteFileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.WriteFileResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/human/ask": {
+            "post": {
+                "description": "Requests approval from a human for an action",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "human"
+                ],
+                "summary": "Request human approval",
+                "parameters": [
+                    {
+                        "description": "Ask human request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.AskHumanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.AskHumanResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/human/ask-async": {
+            "post": {
+                "description": "Requests approval from a human asynchronously",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "human"
+                ],
+                "summary": "Request human approval asynchronously",
+                "parameters": [
+                    {
+                        "description": "Ask human async request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.AskHumanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/human/pending": {
+            "get": {
+                "description": "Lists all pending human approval requests",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "human"
+                ],
+                "summary": "List pending approvals",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.ListApprovalsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/human/pending/{requestID}": {
+            "get": {
+                "description": "Retrieves a specific pending approval request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "human"
+                ],
+                "summary": "Get pending approval",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Request ID",
+                        "name": "requestID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.PendingApproval"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Cancels a pending approval request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "human"
+                ],
+                "summary": "Cancel approval",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Request ID",
+                        "name": "requestID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/human/respond": {
+            "post": {
+                "description": "Responds to a pending approval request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "human"
+                ],
+                "summary": "Respond to approval",
+                "parameters": [
+                    {
+                        "description": "Approve request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.ApproveRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.AskHumanResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/plan/": {
+            "get": {
+                "description": "Lists all execution plans",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plan"
+                ],
+                "summary": "List plans",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.ListPlansResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/plan/create": {
+            "post": {
+                "description": "Creates a new execution plan",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plan"
+                ],
+                "summary": "Create plan",
+                "parameters": [
+                    {
+                        "description": "Create plan request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.CreatePlanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.CreatePlanResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/plan/update": {
+            "post": {
+                "description": "Updates an execution plan",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plan"
+                ],
+                "summary": "Update plan",
+                "parameters": [
+                    {
+                        "description": "Update plan request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.UpdatePlanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.UpdatePlanResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/plan/{planID}": {
+            "get": {
+                "description": "Retrieves a specific execution plan",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plan"
+                ],
+                "summary": "Get plan",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Plan ID",
+                        "name": "planID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.GetPlanResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes an execution plan",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plan"
+                ],
+                "summary": "Delete plan",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Plan ID",
+                        "name": "planID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/plan/{planID}/abort": {
+            "post": {
+                "description": "Aborts an execution plan",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plan"
+                ],
+                "summary": "Abort plan",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Plan ID",
+                        "name": "planID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Abort plan request",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/plan/{planID}/advance": {
+            "post": {
+                "description": "Advances to the next step in a plan",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plan"
+                ],
+                "summary": "Advance plan step",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Plan ID",
+                        "name": "planID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Advance step request",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tmux/panes": {
+            "get": {
+                "description": "Get a list of panes in a tmux session",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tmux"
+                ],
+                "summary": "List tmux panes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session name",
+                        "name": "session",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.ListPanesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tmux/panes/create": {
+            "post": {
+                "description": "Creates a new tmux pane",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tmux"
+                ],
+                "summary": "Create tmux pane",
+                "parameters": [
+                    {
+                        "description": "Create pane request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.CreatePaneRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.CreatePaneResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tmux/panes/read": {
+            "post": {
+                "description": "Reads the content of a tmux pane",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tmux"
+                ],
+                "summary": "Read tmux pane",
+                "parameters": [
+                    {
+                        "description": "Read pane request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.ReadPaneRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.ReadPaneResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tmux/panes/send-keys": {
+            "post": {
+                "description": "Sends keystrokes to a tmux pane",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tmux"
+                ],
+                "summary": "Send keys to tmux pane",
+                "parameters": [
+                    {
+                        "description": "Send keys request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.SendKeysRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.SendKeysResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tmux/panes/switch": {
+            "post": {
+                "description": "Switches to a specific tmux pane",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tmux"
+                ],
+                "summary": "Switch tmux pane",
+                "parameters": [
+                    {
+                        "description": "Switch pane request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.SwitchPaneRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.SwitchPaneResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tmux/panes/{paneID}": {
+            "delete": {
+                "description": "Kills a tmux pane",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tmux"
+                ],
+                "summary": "Kill tmux pane",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Pane ID",
+                        "name": "paneID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tmux/sessions": {
+            "get": {
+                "description": "Get a list of all active tmux sessions",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tmux"
+                ],
+                "summary": "List tmux sessions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/tmux-client_internal_types.SessionInfo"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tmux/sessions/create": {
+            "post": {
+                "description": "Creates a new tmux session",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tmux"
+                ],
+                "summary": "Create tmux session",
+                "parameters": [
+                    {
+                        "description": "Create session request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tmux/sessions/{sessionId}/release": {
+            "post": {
+                "description": "Releases (kills) a tmux session by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tmux"
+                ],
+                "summary": "Release tmux session",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session ID",
+                        "name": "sessionId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.KillSessionResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tmux/sessions/{sessionName}": {
+            "delete": {
+                "description": "Kills a tmux session",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tmux"
+                ],
+                "summary": "Kill tmux session",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session name",
+                        "name": "sessionName",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tmux/windows": {
+            "get": {
+                "description": "Get a list of windows in a tmux session",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tmux"
+                ],
+                "summary": "List tmux windows",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session name",
+                        "name": "session",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/tmux-client_internal_types.WindowInfo"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                        }
+                    }
+                }
+            }
         }
-      }
     },
-    "/api/v1/command/allowed": {
-      "get": {
-        "description": "Retrieves the list of allowed and denied commands",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["command"],
-        "summary": "Get allowed commands",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "additionalProperties": true
+    "definitions": {
+        "tmux-client_internal_types.APIError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
             }
-          }
-        }
-      }
-    },
-    "/api/v1/command/run": {
-      "post": {
-        "description": "Executes a shell command",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["command"],
-        "summary": "Run command",
-        "parameters": [
-          {
-            "description": "Run command request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.RunCommandRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.RunCommandResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/file/copy": {
-      "post": {
-        "description": "Copies a file from source to destination",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["file"],
-        "summary": "Copy file",
-        "parameters": [
-          {
-            "description": "Copy file request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.CopyFileRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.CopyFileResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/file/delete": {
-      "post": {
-        "description": "Deletes a file or directory",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["file"],
-        "summary": "Delete file",
-        "parameters": [
-          {
-            "description": "Delete file request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.DeleteFileRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.DeleteFileResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/file/edit": {
-      "post": {
-        "description": "Edits the content of a file",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["file"],
-        "summary": "Edit file",
-        "parameters": [
-          {
-            "description": "Edit file request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.EditFileRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.EditFileResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/file/exists": {
-      "post": {
-        "description": "Checks if a file or directory exists",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["file"],
-        "summary": "Check if file exists",
-        "parameters": [
-          {
-            "description": "File exists request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "additionalProperties": true
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/file/hash": {
-      "post": {
-        "description": "Computes the SHA256 hash of a file",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["file"],
-        "summary": "Get file hash",
-        "parameters": [
-          {
-            "description": "File hash request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/file/list": {
-      "post": {
-        "description": "Lists the contents of a directory",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["file"],
-        "summary": "List directory contents",
-        "parameters": [
-          {
-            "description": "List directory request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.ListDirRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.ListDirResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/file/read": {
-      "post": {
-        "description": "Reads the content of a file",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["file"],
-        "summary": "Read file",
-        "parameters": [
-          {
-            "description": "Read file request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.ReadFileRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.ReadFileResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/file/write": {
-      "post": {
-        "description": "Writes content to a file",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["file"],
-        "summary": "Write file",
-        "parameters": [
-          {
-            "description": "Write file request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.WriteFileRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.WriteFileResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/human/ask": {
-      "post": {
-        "description": "Requests approval from a human for an action",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["human"],
-        "summary": "Request human approval",
-        "parameters": [
-          {
-            "description": "Ask human request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.AskHumanRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.AskHumanResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/human/ask-async": {
-      "post": {
-        "description": "Requests approval from a human asynchronously",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["human"],
-        "summary": "Request human approval asynchronously",
-        "parameters": [
-          {
-            "description": "Ask human async request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.AskHumanRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/human/pending": {
-      "get": {
-        "description": "Lists all pending human approval requests",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["human"],
-        "summary": "List pending approvals",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.ListApprovalsResponse"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/human/pending/{requestID}": {
-      "get": {
-        "description": "Retrieves a specific pending approval request",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["human"],
-        "summary": "Get pending approval",
-        "parameters": [
-          {
+        },
+        "tmux-client_internal_types.ApprovalStatus": {
             "type": "string",
-            "description": "Request ID",
-            "name": "requestID",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.PendingApproval"
+            "enum": [
+                "pending",
+                "approved",
+                "rejected",
+                "expired"
+            ],
+            "x-enum-varnames": [
+                "ApprovalPending",
+                "ApprovalApproved",
+                "ApprovalRejected",
+                "ApprovalExpired"
+            ]
+        },
+        "tmux-client_internal_types.ApproveRequest": {
+            "type": "object",
+            "properties": {
+                "approved": {
+                    "type": "boolean"
+                },
+                "approved_by": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "request_id": {
+                    "type": "string"
+                }
             }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
+        },
+        "tmux-client_internal_types.AskHumanRequest": {
+            "type": "object",
+            "properties": {
+                "action_type": {
+                    "description": "Category: \"destructive\", \"sensitive\", \"irreversible\"",
+                    "type": "string"
+                },
+                "alternatives": {
+                    "description": "Suggested alternative actions",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "context": {
+                    "description": "Additional context",
+                    "type": "string"
+                },
+                "prompt": {
+                    "description": "Human-readable description",
+                    "type": "string"
+                },
+                "timeout_secs": {
+                    "description": "Auto-reject after timeout, 0 = no timeout",
+                    "type": "integer"
+                },
+                "urgency": {
+                    "description": "\"low\", \"medium\", \"high\"",
+                    "type": "string"
+                }
             }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
+        },
+        "tmux-client_internal_types.AskHumanResponse": {
+            "type": "object",
+            "properties": {
+                "approved": {
+                    "type": "boolean"
+                },
+                "approved_at": {
+                    "type": "string"
+                },
+                "approved_by": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "request_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/tmux-client_internal_types.ApprovalStatus"
+                }
             }
-          }
-        }
-      },
-      "delete": {
-        "description": "Cancels a pending approval request",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["human"],
-        "summary": "Cancel approval",
-        "parameters": [
-          {
+        },
+        "tmux-client_internal_types.AuditEntry": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "arguments": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "client_ip": {
+                    "type": "string"
+                },
+                "duration_ms": {
+                    "type": "integer"
+                },
+                "error": {
+                    "$ref": "#/definitions/tmux-client_internal_types.APIError"
+                },
+                "request_id": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "tool": {
+                    "type": "string"
+                },
+                "user_agent": {
+                    "type": "string"
+                }
+            }
+        },
+        "tmux-client_internal_types.AuditQuery": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "request_id": {
+                    "type": "string"
+                },
+                "since": {
+                    "type": "string"
+                },
+                "tool": {
+                    "type": "string"
+                },
+                "until": {
+                    "type": "string"
+                }
+            }
+        },
+        "tmux-client_internal_types.AuditQueryResponse": {
+            "type": "object",
+            "properties": {
+                "entries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tmux-client_internal_types.AuditEntry"
+                    }
+                },
+                "has_more": {
+                    "type": "boolean"
+                },
+                "total_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "tmux-client_internal_types.CopyFileRequest": {
+            "type": "object",
+            "properties": {
+                "destination": {
+                    "type": "string"
+                },
+                "overwrite": {
+                    "type": "boolean"
+                },
+                "source": {
+                    "type": "string"
+                }
+            }
+        },
+        "tmux-client_internal_types.CopyFileResponse": {
+            "type": "object",
+            "properties": {
+                "bytes_copied": {
+                    "type": "integer"
+                },
+                "copied": {
+                    "type": "boolean"
+                },
+                "destination": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                }
+            }
+        },
+        "tmux-client_internal_types.CreatePaneRequest": {
+            "type": "object",
+            "properties": {
+                "command": {
+                    "type": "string"
+                },
+                "horizontal": {
+                    "description": "false = vertical split",
+                    "type": "boolean"
+                },
+                "new_window": {
+                    "description": "true = create new window instead of split",
+                    "type": "boolean"
+                },
+                "session_name": {
+                    "type": "string"
+                },
+                "window_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "tmux-client_internal_types.CreatePaneResponse": {
+            "type": "object",
+            "properties": {
+                "pane_id": {
+                    "type": "string"
+                },
+                "pane_index": {
+                    "type": "integer"
+                },
+                "session_name": {
+                    "type": "string"
+                },
+                "window_index": {
+                    "type": "integer"
+                }
+            }
+        },
+        "tmux-client_internal_types.CreatePlanRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "steps": {
+                    "description": "Step descriptions",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "tmux-client_internal_types.CreatePlanResponse": {
+            "type": "object",
+            "properties": {
+                "plan": {
+                    "$ref": "#/definitions/tmux-client_internal_types.Plan"
+                },
+                "plan_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "tmux-client_internal_types.DeleteFileRequest": {
+            "type": "object",
+            "properties": {
+                "path": {
+                    "type": "string"
+                },
+                "recursive": {
+                    "description": "For directories",
+                    "type": "boolean"
+                }
+            }
+        },
+        "tmux-client_internal_types.DeleteFileResponse": {
+            "type": "object",
+            "properties": {
+                "deleted": {
+                    "type": "boolean"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "was_dir": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "tmux-client_internal_types.EditFileRequest": {
+            "type": "object",
+            "properties": {
+                "all": {
+                    "description": "Replace all occurrences (default: first only)",
+                    "type": "boolean"
+                },
+                "new_text": {
+                    "description": "Replacement text",
+                    "type": "string"
+                },
+                "old_text": {
+                    "description": "Text to find and replace",
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                }
+            }
+        },
+        "tmux-client_internal_types.EditFileResponse": {
+            "type": "object",
+            "properties": {
+                "content_after": {
+                    "description": "For audit trail",
+                    "type": "string"
+                },
+                "content_before": {
+                    "description": "For audit trail",
+                    "type": "string"
+                },
+                "diff": {
+                    "description": "Unified diff format",
+                    "type": "string"
+                },
+                "edited": {
+                    "type": "boolean"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "replacements": {
+                    "type": "integer"
+                }
+            }
+        },
+        "tmux-client_internal_types.FileInfo": {
+            "type": "object",
+            "properties": {
+                "is_dir": {
+                    "type": "boolean"
+                },
+                "mod_time": {
+                    "type": "string"
+                },
+                "mode": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "integer"
+                }
+            }
+        },
+        "tmux-client_internal_types.GetPlanResponse": {
+            "type": "object",
+            "properties": {
+                "plan": {
+                    "$ref": "#/definitions/tmux-client_internal_types.Plan"
+                }
+            }
+        },
+        "tmux-client_internal_types.KillSessionResponse": {
+            "type": "object",
+            "properties": {
+                "session_name": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "tmux-client_internal_types.ListApprovalsResponse": {
+            "type": "object",
+            "properties": {
+                "pending": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tmux-client_internal_types.PendingApproval"
+                    }
+                }
+            }
+        },
+        "tmux-client_internal_types.ListDirRequest": {
+            "type": "object",
+            "properties": {
+                "max_depth": {
+                    "type": "integer"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "recursive": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "tmux-client_internal_types.ListDirResponse": {
+            "type": "object",
+            "properties": {
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tmux-client_internal_types.FileInfo"
+                    }
+                },
+                "path": {
+                    "type": "string"
+                }
+            }
+        },
+        "tmux-client_internal_types.ListPanesResponse": {
+            "type": "object",
+            "properties": {
+                "panes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tmux-client_internal_types.PaneInfo"
+                    }
+                }
+            }
+        },
+        "tmux-client_internal_types.ListPlansResponse": {
+            "type": "object",
+            "properties": {
+                "plans": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tmux-client_internal_types.Plan"
+                    }
+                }
+            }
+        },
+        "tmux-client_internal_types.PaneInfo": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "current_path": {
+                    "type": "string"
+                },
+                "pane_height": {
+                    "type": "integer"
+                },
+                "pane_id": {
+                    "type": "string"
+                },
+                "pane_index": {
+                    "type": "integer"
+                },
+                "pane_pid": {
+                    "type": "integer"
+                },
+                "pane_title": {
+                    "type": "string"
+                },
+                "pane_width": {
+                    "type": "integer"
+                },
+                "session_name": {
+                    "type": "string"
+                },
+                "window_index": {
+                    "type": "integer"
+                },
+                "window_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "tmux-client_internal_types.PendingApproval": {
+            "type": "object",
+            "properties": {
+                "action_type": {
+                    "type": "string"
+                },
+                "context": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "expires_at": {
+                    "type": "string"
+                },
+                "prompt": {
+                    "type": "string"
+                },
+                "request_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/tmux-client_internal_types.ApprovalStatus"
+                },
+                "urgency": {
+                    "type": "string"
+                }
+            }
+        },
+        "tmux-client_internal_types.Plan": {
+            "type": "object",
+            "properties": {
+                "completed_at": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "current_step": {
+                    "description": "-1 if not started",
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/tmux-client_internal_types.PlanStatus"
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tmux-client_internal_types.PlanStep"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "tmux-client_internal_types.PlanStatus": {
             "type": "string",
-            "description": "Request ID",
-            "name": "requestID",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "additionalProperties": true
+            "enum": [
+                "pending",
+                "in_progress",
+                "completed",
+                "failed",
+                "aborted"
+            ],
+            "x-enum-varnames": [
+                "PlanStatusPending",
+                "PlanStatusInProgress",
+                "PlanStatusCompleted",
+                "PlanStatusFailed",
+                "PlanStatusAborted"
+            ]
+        },
+        "tmux-client_internal_types.PlanStep": {
+            "type": "object",
+            "properties": {
+                "completed_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "error": {
+                    "type": "string"
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "result": {
+                    "type": "string"
+                },
+                "started_at": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/tmux-client_internal_types.StepStatus"
+                }
             }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
+        },
+        "tmux-client_internal_types.ReadFileRequest": {
+            "type": "object",
+            "properties": {
+                "from_line": {
+                    "description": "1-indexed, 0 = start",
+                    "type": "integer"
+                },
+                "max_lines": {
+                    "description": "0 = no limit",
+                    "type": "integer"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "to_line": {
+                    "description": "1-indexed, 0 = end",
+                    "type": "integer"
+                }
             }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
+        },
+        "tmux-client_internal_types.ReadFileResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "from_line": {
+                    "type": "integer"
+                },
+                "mod_time": {
+                    "type": "string"
+                },
+                "mode": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "to_line": {
+                    "type": "integer"
+                },
+                "total_lines": {
+                    "type": "integer"
+                },
+                "truncated": {
+                    "type": "boolean"
+                }
             }
-          }
-        }
-      }
-    },
-    "/api/v1/human/respond": {
-      "post": {
-        "description": "Responds to a pending approval request",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["human"],
-        "summary": "Respond to approval",
-        "parameters": [
-          {
-            "description": "Approve request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.ApproveRequest"
+        },
+        "tmux-client_internal_types.ReadPaneRequest": {
+            "type": "object",
+            "properties": {
+                "last_n_lines": {
+                    "description": "0 means all visible content",
+                    "type": "integer"
+                },
+                "pane_id": {
+                    "type": "string"
+                }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.AskHumanResponse"
+        },
+        "tmux-client_internal_types.ReadPaneResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "lines": {
+                    "type": "integer"
+                },
+                "pane_id": {
+                    "type": "string"
+                }
             }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
+        },
+        "tmux-client_internal_types.RunCommandRequest": {
+            "type": "object",
+            "properties": {
+                "args": {
+                    "description": "Arguments as separate items",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "command": {
+                    "description": "Executable name only",
+                    "type": "string"
+                },
+                "dry_run": {
+                    "description": "If true, don't actually run",
+                    "type": "boolean"
+                },
+                "env": {
+                    "description": "Additional env vars (KEY=VALUE)",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "timeout": {
+                    "description": "Seconds, 0 = default (30s)",
+                    "type": "integer"
+                },
+                "work_dir": {
+                    "description": "Working directory",
+                    "type": "string"
+                }
             }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
+        },
+        "tmux-client_internal_types.RunCommandResponse": {
+            "type": "object",
+            "properties": {
+                "args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "command": {
+                    "type": "string"
+                },
+                "dry_run": {
+                    "type": "boolean"
+                },
+                "duration_ms": {
+                    "type": "integer"
+                },
+                "exit_code": {
+                    "type": "integer"
+                },
+                "stderr": {
+                    "type": "string"
+                },
+                "stdout": {
+                    "type": "string"
+                },
+                "timed_out": {
+                    "type": "boolean"
+                }
             }
-          }
-        }
-      }
-    },
-    "/api/v1/plan/": {
-      "get": {
-        "description": "Lists all execution plans",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["plan"],
-        "summary": "List plans",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.ListPlansResponse"
+        },
+        "tmux-client_internal_types.SendKeysRequest": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "description": "Must be from approved list: \"Enter\", \"C-c\", \"C-d\", \"Escape\"",
+                    "type": "string"
+                },
+                "pane_id": {
+                    "type": "string"
+                }
             }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
+        },
+        "tmux-client_internal_types.SendKeysResponse": {
+            "type": "object",
+            "properties": {
+                "pane_id": {
+                    "type": "string"
+                },
+                "sent": {
+                    "type": "boolean"
+                }
             }
-          }
-        }
-      }
-    },
-    "/api/v1/plan/create": {
-      "post": {
-        "description": "Creates a new execution plan",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["plan"],
-        "summary": "Create plan",
-        "parameters": [
-          {
-            "description": "Create plan request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.CreatePlanRequest"
+        },
+        "tmux-client_internal_types.SessionInfo": {
+            "type": "object",
+            "properties": {
+                "attached": {
+                    "type": "boolean"
+                },
+                "created": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_pane_x": {
+                    "type": "integer"
+                },
+                "last_pane_y": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "windows": {
+                    "type": "integer"
+                }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.CreatePlanResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/plan/update": {
-      "post": {
-        "description": "Updates an execution plan",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["plan"],
-        "summary": "Update plan",
-        "parameters": [
-          {
-            "description": "Update plan request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.UpdatePlanRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.UpdatePlanResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/plan/{planID}": {
-      "get": {
-        "description": "Retrieves a specific execution plan",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["plan"],
-        "summary": "Get plan",
-        "parameters": [
-          {
+        },
+        "tmux-client_internal_types.StepStatus": {
             "type": "string",
-            "description": "Plan ID",
-            "name": "planID",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.GetPlanResponse"
+            "enum": [
+                "pending",
+                "active",
+                "completed",
+                "failed",
+                "skipped"
+            ],
+            "x-enum-varnames": [
+                "StepStatusPending",
+                "StepStatusActive",
+                "StepStatusCompleted",
+                "StepStatusFailed",
+                "StepStatusSkipped"
+            ]
+        },
+        "tmux-client_internal_types.SwitchPaneRequest": {
+            "type": "object",
+            "properties": {
+                "pane_id": {
+                    "type": "string"
+                }
             }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
+        },
+        "tmux-client_internal_types.SwitchPaneResponse": {
+            "type": "object",
+            "properties": {
+                "pane_id": {
+                    "type": "string"
+                },
+                "switched": {
+                    "type": "boolean"
+                }
             }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
+        },
+        "tmux-client_internal_types.UpdatePlanRequest": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "plan_id": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/tmux-client_internal_types.StepStatus"
+                },
+                "step_index": {
+                    "type": "integer"
+                }
             }
-          }
+        },
+        "tmux-client_internal_types.UpdatePlanResponse": {
+            "type": "object",
+            "properties": {
+                "plan": {
+                    "$ref": "#/definitions/tmux-client_internal_types.Plan"
+                },
+                "plan_id": {
+                    "type": "string"
+                },
+                "updated": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "tmux-client_internal_types.WindowInfo": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "height": {
+                    "type": "integer"
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "panes": {
+                    "type": "integer"
+                },
+                "session_name": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "integer"
+                }
+            }
+        },
+        "tmux-client_internal_types.WriteFileRequest": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "create_dir": {
+                    "description": "Create parent directories if needed",
+                    "type": "boolean"
+                },
+                "mode": {
+                    "description": "e.g., \"0644\"",
+                    "type": "string"
+                },
+                "overwrite": {
+                    "description": "Must be true to overwrite existing",
+                    "type": "boolean"
+                },
+                "path": {
+                    "type": "string"
+                }
+            }
+        },
+        "tmux-client_internal_types.WriteFileResponse": {
+            "type": "object",
+            "properties": {
+                "bytes_written": {
+                    "type": "integer"
+                },
+                "created": {
+                    "description": "true if file was created, false if overwritten",
+                    "type": "boolean"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "written": {
+                    "type": "boolean"
+                }
+            }
         }
-      },
-      "delete": {
-        "description": "Deletes an execution plan",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["plan"],
-        "summary": "Delete plan",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Plan ID",
-            "name": "planID",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "additionalProperties": true
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/plan/{planID}/abort": {
-      "post": {
-        "description": "Aborts an execution plan",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["plan"],
-        "summary": "Abort plan",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Plan ID",
-            "name": "planID",
-            "in": "path",
-            "required": true
-          },
-          {
-            "description": "Abort plan request",
-            "name": "request",
-            "in": "body",
-            "schema": {
-              "type": "object"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "additionalProperties": true
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/plan/{planID}/advance": {
-      "post": {
-        "description": "Advances to the next step in a plan",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["plan"],
-        "summary": "Advance plan step",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Plan ID",
-            "name": "planID",
-            "in": "path",
-            "required": true
-          },
-          {
-            "description": "Advance step request",
-            "name": "request",
-            "in": "body",
-            "schema": {
-              "type": "object"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "additionalProperties": true
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/tmux/panes": {
-      "get": {
-        "description": "Get a list of panes in a tmux session",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tmux"],
-        "summary": "List tmux panes",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Session name",
-            "name": "session",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.ListPanesResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/tmux/panes/create": {
-      "post": {
-        "description": "Creates a new tmux pane",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tmux"],
-        "summary": "Create tmux pane",
-        "parameters": [
-          {
-            "description": "Create pane request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.CreatePaneRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.CreatePaneResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/tmux/panes/read": {
-      "post": {
-        "description": "Reads the content of a tmux pane",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tmux"],
-        "summary": "Read tmux pane",
-        "parameters": [
-          {
-            "description": "Read pane request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.ReadPaneRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.ReadPaneResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/tmux/panes/send-keys": {
-      "post": {
-        "description": "Sends keystrokes to a tmux pane",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tmux"],
-        "summary": "Send keys to tmux pane",
-        "parameters": [
-          {
-            "description": "Send keys request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.SendKeysRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.SendKeysResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/tmux/panes/switch": {
-      "post": {
-        "description": "Switches to a specific tmux pane",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tmux"],
-        "summary": "Switch tmux pane",
-        "parameters": [
-          {
-            "description": "Switch pane request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.SwitchPaneRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.SwitchPaneResponse"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/tmux/panes/{paneID}": {
-      "delete": {
-        "description": "Kills a tmux pane",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tmux"],
-        "summary": "Kill tmux pane",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Pane ID",
-            "name": "paneID",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "additionalProperties": true
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/tmux/sessions": {
-      "get": {
-        "description": "Get a list of all active tmux sessions",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tmux"],
-        "summary": "List tmux sessions",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/tmux-client_internal_types.SessionInfo"
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/tmux/sessions/create": {
-      "post": {
-        "description": "Creates a new tmux session",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tmux"],
-        "summary": "Create tmux session",
-        "parameters": [
-          {
-            "description": "Create session request",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/tmux/sessions/{sessionId}/release": {
-      "post": {
-        "description": "Releases (kills) a tmux session by ID",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tmux"],
-        "summary": "Release tmux session",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Session ID",
-            "name": "sessionId",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.KillSessionResponse"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/tmux/sessions/{sessionName}": {
-      "delete": {
-        "description": "Kills a tmux session",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tmux"],
-        "summary": "Kill tmux session",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Session name",
-            "name": "sessionName",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "additionalProperties": true
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/tmux/windows": {
-      "get": {
-        "description": "Get a list of windows in a tmux session",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["tmux"],
-        "summary": "List tmux windows",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Session name",
-            "name": "session",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/tmux-client_internal_types.WindowInfo"
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/tmux-client_internal_types.APIError"
-            }
-          }
-        }
-      }
     }
-  },
-  "definitions": {
-    "tmux-client_internal_types.APIError": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "string"
-        },
-        "details": {
-          "type": "string"
-        },
-        "message": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.ApprovalStatus": {
-      "type": "string",
-      "enum": ["pending", "approved", "rejected", "expired"],
-      "x-enum-varnames": [
-        "ApprovalPending",
-        "ApprovalApproved",
-        "ApprovalRejected",
-        "ApprovalExpired"
-      ]
-    },
-    "tmux-client_internal_types.ApproveRequest": {
-      "type": "object",
-      "properties": {
-        "approved": {
-          "type": "boolean"
-        },
-        "approved_by": {
-          "type": "string"
-        },
-        "comment": {
-          "type": "string"
-        },
-        "request_id": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.AskHumanRequest": {
-      "type": "object",
-      "properties": {
-        "action_type": {
-          "description": "Category: \"destructive\", \"sensitive\", \"irreversible\"",
-          "type": "string"
-        },
-        "alternatives": {
-          "description": "Suggested alternative actions",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "context": {
-          "description": "Additional context",
-          "type": "string"
-        },
-        "prompt": {
-          "description": "Human-readable description",
-          "type": "string"
-        },
-        "timeout_secs": {
-          "description": "Auto-reject after timeout, 0 = no timeout",
-          "type": "integer"
-        },
-        "urgency": {
-          "description": "\"low\", \"medium\", \"high\"",
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.AskHumanResponse": {
-      "type": "object",
-      "properties": {
-        "approved": {
-          "type": "boolean"
-        },
-        "approved_at": {
-          "type": "string"
-        },
-        "approved_by": {
-          "type": "string"
-        },
-        "comment": {
-          "type": "string"
-        },
-        "expires_at": {
-          "type": "string"
-        },
-        "request_id": {
-          "type": "string"
-        },
-        "status": {
-          "$ref": "#/definitions/tmux-client_internal_types.ApprovalStatus"
-        }
-      }
-    },
-    "tmux-client_internal_types.AuditEntry": {
-      "type": "object",
-      "properties": {
-        "action": {
-          "type": "string"
-        },
-        "arguments": {
-          "type": "array",
-          "items": {
-            "type": "integer"
-          }
-        },
-        "client_ip": {
-          "type": "string"
-        },
-        "duration_ms": {
-          "type": "integer"
-        },
-        "error": {
-          "$ref": "#/definitions/tmux-client_internal_types.APIError"
-        },
-        "request_id": {
-          "type": "string"
-        },
-        "result": {
-          "type": "array",
-          "items": {
-            "type": "integer"
-          }
-        },
-        "timestamp": {
-          "type": "string"
-        },
-        "tool": {
-          "type": "string"
-        },
-        "user_agent": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.AuditQuery": {
-      "type": "object",
-      "properties": {
-        "action": {
-          "type": "string"
-        },
-        "limit": {
-          "type": "integer"
-        },
-        "request_id": {
-          "type": "string"
-        },
-        "since": {
-          "type": "string"
-        },
-        "tool": {
-          "type": "string"
-        },
-        "until": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.AuditQueryResponse": {
-      "type": "object",
-      "properties": {
-        "entries": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/tmux-client_internal_types.AuditEntry"
-          }
-        },
-        "has_more": {
-          "type": "boolean"
-        },
-        "total_count": {
-          "type": "integer"
-        }
-      }
-    },
-    "tmux-client_internal_types.CopyFileRequest": {
-      "type": "object",
-      "properties": {
-        "destination": {
-          "type": "string"
-        },
-        "overwrite": {
-          "type": "boolean"
-        },
-        "source": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.CopyFileResponse": {
-      "type": "object",
-      "properties": {
-        "bytes_copied": {
-          "type": "integer"
-        },
-        "copied": {
-          "type": "boolean"
-        },
-        "destination": {
-          "type": "string"
-        },
-        "source": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.CreatePaneRequest": {
-      "type": "object",
-      "properties": {
-        "command": {
-          "type": "string"
-        },
-        "horizontal": {
-          "description": "false = vertical split",
-          "type": "boolean"
-        },
-        "new_window": {
-          "description": "true = create new window instead of split",
-          "type": "boolean"
-        },
-        "session_name": {
-          "type": "string"
-        },
-        "window_name": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.CreatePaneResponse": {
-      "type": "object",
-      "properties": {
-        "pane_id": {
-          "type": "string"
-        },
-        "pane_index": {
-          "type": "integer"
-        },
-        "session_name": {
-          "type": "string"
-        },
-        "window_index": {
-          "type": "integer"
-        }
-      }
-    },
-    "tmux-client_internal_types.CreatePlanRequest": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "steps": {
-          "description": "Step descriptions",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "tmux-client_internal_types.CreatePlanResponse": {
-      "type": "object",
-      "properties": {
-        "plan": {
-          "$ref": "#/definitions/tmux-client_internal_types.Plan"
-        },
-        "plan_id": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.DeleteFileRequest": {
-      "type": "object",
-      "properties": {
-        "path": {
-          "type": "string"
-        },
-        "recursive": {
-          "description": "For directories",
-          "type": "boolean"
-        }
-      }
-    },
-    "tmux-client_internal_types.DeleteFileResponse": {
-      "type": "object",
-      "properties": {
-        "deleted": {
-          "type": "boolean"
-        },
-        "path": {
-          "type": "string"
-        },
-        "was_dir": {
-          "type": "boolean"
-        }
-      }
-    },
-    "tmux-client_internal_types.EditFileRequest": {
-      "type": "object",
-      "properties": {
-        "all": {
-          "description": "Replace all occurrences (default: first only)",
-          "type": "boolean"
-        },
-        "new_text": {
-          "description": "Replacement text",
-          "type": "string"
-        },
-        "old_text": {
-          "description": "Text to find and replace",
-          "type": "string"
-        },
-        "path": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.EditFileResponse": {
-      "type": "object",
-      "properties": {
-        "content_after": {
-          "description": "For audit trail",
-          "type": "string"
-        },
-        "content_before": {
-          "description": "For audit trail",
-          "type": "string"
-        },
-        "diff": {
-          "description": "Unified diff format",
-          "type": "string"
-        },
-        "edited": {
-          "type": "boolean"
-        },
-        "path": {
-          "type": "string"
-        },
-        "replacements": {
-          "type": "integer"
-        }
-      }
-    },
-    "tmux-client_internal_types.FileInfo": {
-      "type": "object",
-      "properties": {
-        "is_dir": {
-          "type": "boolean"
-        },
-        "mod_time": {
-          "type": "string"
-        },
-        "mode": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "path": {
-          "type": "string"
-        },
-        "size": {
-          "type": "integer"
-        }
-      }
-    },
-    "tmux-client_internal_types.GetPlanResponse": {
-      "type": "object",
-      "properties": {
-        "plan": {
-          "$ref": "#/definitions/tmux-client_internal_types.Plan"
-        }
-      }
-    },
-    "tmux-client_internal_types.KillSessionResponse": {
-      "type": "object",
-      "properties": {
-        "session_name": {
-          "type": "string"
-        },
-        "success": {
-          "type": "boolean"
-        }
-      }
-    },
-    "tmux-client_internal_types.ListApprovalsResponse": {
-      "type": "object",
-      "properties": {
-        "pending": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/tmux-client_internal_types.PendingApproval"
-          }
-        }
-      }
-    },
-    "tmux-client_internal_types.ListDirRequest": {
-      "type": "object",
-      "properties": {
-        "max_depth": {
-          "type": "integer"
-        },
-        "path": {
-          "type": "string"
-        },
-        "recursive": {
-          "type": "boolean"
-        }
-      }
-    },
-    "tmux-client_internal_types.ListDirResponse": {
-      "type": "object",
-      "properties": {
-        "files": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/tmux-client_internal_types.FileInfo"
-          }
-        },
-        "path": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.ListPanesResponse": {
-      "type": "object",
-      "properties": {
-        "panes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/tmux-client_internal_types.PaneInfo"
-          }
-        }
-      }
-    },
-    "tmux-client_internal_types.ListPlansResponse": {
-      "type": "object",
-      "properties": {
-        "plans": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/tmux-client_internal_types.Plan"
-          }
-        }
-      }
-    },
-    "tmux-client_internal_types.PaneInfo": {
-      "type": "object",
-      "properties": {
-        "active": {
-          "type": "boolean"
-        },
-        "current_path": {
-          "type": "string"
-        },
-        "pane_height": {
-          "type": "integer"
-        },
-        "pane_id": {
-          "type": "string"
-        },
-        "pane_index": {
-          "type": "integer"
-        },
-        "pane_pid": {
-          "type": "integer"
-        },
-        "pane_title": {
-          "type": "string"
-        },
-        "pane_width": {
-          "type": "integer"
-        },
-        "session_name": {
-          "type": "string"
-        },
-        "window_index": {
-          "type": "integer"
-        },
-        "window_name": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.PendingApproval": {
-      "type": "object",
-      "properties": {
-        "action_type": {
-          "type": "string"
-        },
-        "context": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "expires_at": {
-          "type": "string"
-        },
-        "prompt": {
-          "type": "string"
-        },
-        "request_id": {
-          "type": "string"
-        },
-        "status": {
-          "$ref": "#/definitions/tmux-client_internal_types.ApprovalStatus"
-        },
-        "urgency": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.Plan": {
-      "type": "object",
-      "properties": {
-        "completed_at": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "current_step": {
-          "description": "-1 if not started",
-          "type": "integer"
-        },
-        "description": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "status": {
-          "$ref": "#/definitions/tmux-client_internal_types.PlanStatus"
-        },
-        "steps": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/tmux-client_internal_types.PlanStep"
-          }
-        },
-        "updated_at": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.PlanStatus": {
-      "type": "string",
-      "enum": ["pending", "in_progress", "completed", "failed", "aborted"],
-      "x-enum-varnames": [
-        "PlanStatusPending",
-        "PlanStatusInProgress",
-        "PlanStatusCompleted",
-        "PlanStatusFailed",
-        "PlanStatusAborted"
-      ]
-    },
-    "tmux-client_internal_types.PlanStep": {
-      "type": "object",
-      "properties": {
-        "completed_at": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "error": {
-          "type": "string"
-        },
-        "index": {
-          "type": "integer"
-        },
-        "result": {
-          "type": "string"
-        },
-        "started_at": {
-          "type": "string"
-        },
-        "status": {
-          "$ref": "#/definitions/tmux-client_internal_types.StepStatus"
-        }
-      }
-    },
-    "tmux-client_internal_types.ReadFileRequest": {
-      "type": "object",
-      "properties": {
-        "from_line": {
-          "description": "1-indexed, 0 = start",
-          "type": "integer"
-        },
-        "max_lines": {
-          "description": "0 = no limit",
-          "type": "integer"
-        },
-        "path": {
-          "type": "string"
-        },
-        "to_line": {
-          "description": "1-indexed, 0 = end",
-          "type": "integer"
-        }
-      }
-    },
-    "tmux-client_internal_types.ReadFileResponse": {
-      "type": "object",
-      "properties": {
-        "content": {
-          "type": "string"
-        },
-        "from_line": {
-          "type": "integer"
-        },
-        "mod_time": {
-          "type": "string"
-        },
-        "mode": {
-          "type": "string"
-        },
-        "path": {
-          "type": "string"
-        },
-        "size": {
-          "type": "integer"
-        },
-        "to_line": {
-          "type": "integer"
-        },
-        "total_lines": {
-          "type": "integer"
-        },
-        "truncated": {
-          "type": "boolean"
-        }
-      }
-    },
-    "tmux-client_internal_types.ReadPaneRequest": {
-      "type": "object",
-      "properties": {
-        "last_n_lines": {
-          "description": "0 means all visible content",
-          "type": "integer"
-        },
-        "pane_id": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.ReadPaneResponse": {
-      "type": "object",
-      "properties": {
-        "content": {
-          "type": "string"
-        },
-        "lines": {
-          "type": "integer"
-        },
-        "pane_id": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.RunCommandRequest": {
-      "type": "object",
-      "properties": {
-        "args": {
-          "description": "Arguments as separate items",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "command": {
-          "description": "Executable name only",
-          "type": "string"
-        },
-        "dry_run": {
-          "description": "If true, don't actually run",
-          "type": "boolean"
-        },
-        "env": {
-          "description": "Additional env vars (KEY=VALUE)",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "timeout": {
-          "description": "Seconds, 0 = default (30s)",
-          "type": "integer"
-        },
-        "work_dir": {
-          "description": "Working directory",
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.RunCommandResponse": {
-      "type": "object",
-      "properties": {
-        "args": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "command": {
-          "type": "string"
-        },
-        "dry_run": {
-          "type": "boolean"
-        },
-        "duration_ms": {
-          "type": "integer"
-        },
-        "exit_code": {
-          "type": "integer"
-        },
-        "stderr": {
-          "type": "string"
-        },
-        "stdout": {
-          "type": "string"
-        },
-        "timed_out": {
-          "type": "boolean"
-        }
-      }
-    },
-    "tmux-client_internal_types.SendKeysRequest": {
-      "type": "object",
-      "properties": {
-        "key": {
-          "description": "Must be from approved list: \"Enter\", \"C-c\", \"C-d\", \"Escape\"",
-          "type": "string"
-        },
-        "pane_id": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.SendKeysResponse": {
-      "type": "object",
-      "properties": {
-        "pane_id": {
-          "type": "string"
-        },
-        "sent": {
-          "type": "boolean"
-        }
-      }
-    },
-    "tmux-client_internal_types.SessionInfo": {
-      "type": "object",
-      "properties": {
-        "attached": {
-          "type": "boolean"
-        },
-        "created": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "last_pane_x": {
-          "type": "integer"
-        },
-        "last_pane_y": {
-          "type": "integer"
-        },
-        "name": {
-          "type": "string"
-        },
-        "windows": {
-          "type": "integer"
-        }
-      }
-    },
-    "tmux-client_internal_types.StepStatus": {
-      "type": "string",
-      "enum": ["pending", "active", "completed", "failed", "skipped"],
-      "x-enum-varnames": [
-        "StepStatusPending",
-        "StepStatusActive",
-        "StepStatusCompleted",
-        "StepStatusFailed",
-        "StepStatusSkipped"
-      ]
-    },
-    "tmux-client_internal_types.SwitchPaneRequest": {
-      "type": "object",
-      "properties": {
-        "pane_id": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.SwitchPaneResponse": {
-      "type": "object",
-      "properties": {
-        "pane_id": {
-          "type": "string"
-        },
-        "switched": {
-          "type": "boolean"
-        }
-      }
-    },
-    "tmux-client_internal_types.UpdatePlanRequest": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string"
-        },
-        "plan_id": {
-          "type": "string"
-        },
-        "result": {
-          "type": "string"
-        },
-        "status": {
-          "$ref": "#/definitions/tmux-client_internal_types.StepStatus"
-        },
-        "step_index": {
-          "type": "integer"
-        }
-      }
-    },
-    "tmux-client_internal_types.UpdatePlanResponse": {
-      "type": "object",
-      "properties": {
-        "plan": {
-          "$ref": "#/definitions/tmux-client_internal_types.Plan"
-        },
-        "plan_id": {
-          "type": "string"
-        },
-        "updated": {
-          "type": "boolean"
-        }
-      }
-    },
-    "tmux-client_internal_types.WindowInfo": {
-      "type": "object",
-      "properties": {
-        "active": {
-          "type": "boolean"
-        },
-        "height": {
-          "type": "integer"
-        },
-        "index": {
-          "type": "integer"
-        },
-        "name": {
-          "type": "string"
-        },
-        "panes": {
-          "type": "integer"
-        },
-        "session_name": {
-          "type": "string"
-        },
-        "width": {
-          "type": "integer"
-        }
-      }
-    },
-    "tmux-client_internal_types.WriteFileRequest": {
-      "type": "object",
-      "properties": {
-        "content": {
-          "type": "string"
-        },
-        "create_dir": {
-          "description": "Create parent directories if needed",
-          "type": "boolean"
-        },
-        "mode": {
-          "description": "e.g., \"0644\"",
-          "type": "string"
-        },
-        "overwrite": {
-          "description": "Must be true to overwrite existing",
-          "type": "boolean"
-        },
-        "path": {
-          "type": "string"
-        }
-      }
-    },
-    "tmux-client_internal_types.WriteFileResponse": {
-      "type": "object",
-      "properties": {
-        "bytes_written": {
-          "type": "integer"
-        },
-        "created": {
-          "description": "true if file was created, false if overwritten",
-          "type": "boolean"
-        },
-        "path": {
-          "type": "string"
-        },
-        "written": {
-          "type": "boolean"
-        }
-      }
-    }
-  }
 }

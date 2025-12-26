@@ -1,3 +1,4 @@
+basePath: /v1
 definitions:
   tmux-client_internal_types.APIError:
     properties:
@@ -10,16 +11,16 @@ definitions:
     type: object
   tmux-client_internal_types.ApprovalStatus:
     enum:
-      - pending
-      - approved
-      - rejected
-      - expired
+    - pending
+    - approved
+    - rejected
+    - expired
     type: string
     x-enum-varnames:
-      - ApprovalPending
-      - ApprovalApproved
-      - ApprovalRejected
-      - ApprovalExpired
+    - ApprovalPending
+    - ApprovalApproved
+    - ApprovalRejected
+    - ApprovalExpired
   tmux-client_internal_types.ApproveRequest:
     properties:
       approved:
@@ -69,7 +70,7 @@ definitions:
       request_id:
         type: string
       status:
-        $ref: "#/definitions/tmux-client_internal_types.ApprovalStatus"
+        $ref: '#/definitions/tmux-client_internal_types.ApprovalStatus'
     type: object
   tmux-client_internal_types.AuditEntry:
     properties:
@@ -84,7 +85,7 @@ definitions:
       duration_ms:
         type: integer
       error:
-        $ref: "#/definitions/tmux-client_internal_types.APIError"
+        $ref: '#/definitions/tmux-client_internal_types.APIError'
       request_id:
         type: string
       result:
@@ -117,7 +118,7 @@ definitions:
     properties:
       entries:
         items:
-          $ref: "#/definitions/tmux-client_internal_types.AuditEntry"
+          $ref: '#/definitions/tmux-client_internal_types.AuditEntry'
         type: array
       has_more:
         type: boolean
@@ -185,7 +186,7 @@ definitions:
   tmux-client_internal_types.CreatePlanResponse:
     properties:
       plan:
-        $ref: "#/definitions/tmux-client_internal_types.Plan"
+        $ref: '#/definitions/tmux-client_internal_types.Plan'
       plan_id:
         type: string
     type: object
@@ -209,7 +210,7 @@ definitions:
   tmux-client_internal_types.EditFileRequest:
     properties:
       all:
-        description: "Replace all occurrences (default: first only)"
+        description: 'Replace all occurrences (default: first only)'
         type: boolean
       new_text:
         description: Replacement text
@@ -256,7 +257,7 @@ definitions:
   tmux-client_internal_types.GetPlanResponse:
     properties:
       plan:
-        $ref: "#/definitions/tmux-client_internal_types.Plan"
+        $ref: '#/definitions/tmux-client_internal_types.Plan'
     type: object
   tmux-client_internal_types.KillSessionResponse:
     properties:
@@ -269,7 +270,7 @@ definitions:
     properties:
       pending:
         items:
-          $ref: "#/definitions/tmux-client_internal_types.PendingApproval"
+          $ref: '#/definitions/tmux-client_internal_types.PendingApproval'
         type: array
     type: object
   tmux-client_internal_types.ListDirRequest:
@@ -285,7 +286,7 @@ definitions:
     properties:
       files:
         items:
-          $ref: "#/definitions/tmux-client_internal_types.FileInfo"
+          $ref: '#/definitions/tmux-client_internal_types.FileInfo'
         type: array
       path:
         type: string
@@ -294,14 +295,14 @@ definitions:
     properties:
       panes:
         items:
-          $ref: "#/definitions/tmux-client_internal_types.PaneInfo"
+          $ref: '#/definitions/tmux-client_internal_types.PaneInfo'
         type: array
     type: object
   tmux-client_internal_types.ListPlansResponse:
     properties:
       plans:
         items:
-          $ref: "#/definitions/tmux-client_internal_types.Plan"
+          $ref: '#/definitions/tmux-client_internal_types.Plan'
         type: array
     type: object
   tmux-client_internal_types.PaneInfo:
@@ -344,7 +345,7 @@ definitions:
       request_id:
         type: string
       status:
-        $ref: "#/definitions/tmux-client_internal_types.ApprovalStatus"
+        $ref: '#/definitions/tmux-client_internal_types.ApprovalStatus'
       urgency:
         type: string
     type: object
@@ -364,28 +365,28 @@ definitions:
       name:
         type: string
       status:
-        $ref: "#/definitions/tmux-client_internal_types.PlanStatus"
+        $ref: '#/definitions/tmux-client_internal_types.PlanStatus'
       steps:
         items:
-          $ref: "#/definitions/tmux-client_internal_types.PlanStep"
+          $ref: '#/definitions/tmux-client_internal_types.PlanStep'
         type: array
       updated_at:
         type: string
     type: object
   tmux-client_internal_types.PlanStatus:
     enum:
-      - pending
-      - in_progress
-      - completed
-      - failed
-      - aborted
+    - pending
+    - in_progress
+    - completed
+    - failed
+    - aborted
     type: string
     x-enum-varnames:
-      - PlanStatusPending
-      - PlanStatusInProgress
-      - PlanStatusCompleted
-      - PlanStatusFailed
-      - PlanStatusAborted
+    - PlanStatusPending
+    - PlanStatusInProgress
+    - PlanStatusCompleted
+    - PlanStatusFailed
+    - PlanStatusAborted
   tmux-client_internal_types.PlanStep:
     properties:
       completed_at:
@@ -401,7 +402,7 @@ definitions:
       started_at:
         type: string
       status:
-        $ref: "#/definitions/tmux-client_internal_types.StepStatus"
+        $ref: '#/definitions/tmux-client_internal_types.StepStatus'
     type: object
   tmux-client_internal_types.ReadFileRequest:
     properties:
@@ -535,18 +536,18 @@ definitions:
     type: object
   tmux-client_internal_types.StepStatus:
     enum:
-      - pending
-      - active
-      - completed
-      - failed
-      - skipped
+    - pending
+    - active
+    - completed
+    - failed
+    - skipped
     type: string
     x-enum-varnames:
-      - StepStatusPending
-      - StepStatusActive
-      - StepStatusCompleted
-      - StepStatusFailed
-      - StepStatusSkipped
+    - StepStatusPending
+    - StepStatusActive
+    - StepStatusCompleted
+    - StepStatusFailed
+    - StepStatusSkipped
   tmux-client_internal_types.SwitchPaneRequest:
     properties:
       pane_id:
@@ -568,14 +569,14 @@ definitions:
       result:
         type: string
       status:
-        $ref: "#/definitions/tmux-client_internal_types.StepStatus"
+        $ref: '#/definitions/tmux-client_internal_types.StepStatus'
       step_index:
         type: integer
     type: object
   tmux-client_internal_types.UpdatePlanResponse:
     properties:
       plan:
-        $ref: "#/definitions/tmux-client_internal_types.Plan"
+        $ref: '#/definitions/tmux-client_internal_types.Plan'
       plan_id:
         type: string
       updated:
@@ -626,48 +627,49 @@ definitions:
       written:
         type: boolean
     type: object
+host: localhost:8080
 info:
-  title: tmux-client API
-  version: "0.1-beta"
-  description: API for interacting with tmux sessions, panes, and windows
   contact: {}
+  description: API for managing tmux sessions and windows
+  title: tmux-client API
+  version: 0.0.1-beta
 paths:
   /api/v1/audit/query:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Queries the audit log for entries
       parameters:
-        - description: Audit query
-          in: body
-          name: request
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.AuditQuery"
+      - description: Audit query
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.AuditQuery'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.AuditQueryResponse"
+            $ref: '#/definitions/tmux-client_internal_types.AuditQueryResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Query audit log
       tags:
-        - audit
+      - audit
   /api/v1/audit/stats:
     get:
       consumes:
-        - application/json
+      - application/json
       description: Retrieves audit log statistics
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -676,14 +678,14 @@ paths:
             type: object
       summary: Get audit stats
       tags:
-        - audit
+      - audit
   /api/v1/command/allowed:
     get:
       consumes:
-        - application/json
+      - application/json
       description: Retrieves the list of allowed and denied commands
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -692,153 +694,153 @@ paths:
             type: object
       summary: Get allowed commands
       tags:
-        - command
+      - command
   /api/v1/command/run:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Executes a shell command
       parameters:
-        - description: Run command request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.RunCommandRequest"
+      - description: Run command request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.RunCommandRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.RunCommandResponse"
+            $ref: '#/definitions/tmux-client_internal_types.RunCommandResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "403":
           description: Forbidden
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Run command
       tags:
-        - command
+      - command
   /api/v1/file/copy:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Copies a file from source to destination
       parameters:
-        - description: Copy file request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.CopyFileRequest"
+      - description: Copy file request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.CopyFileRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.CopyFileResponse"
+            $ref: '#/definitions/tmux-client_internal_types.CopyFileResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Copy file
       tags:
-        - file
+      - file
   /api/v1/file/delete:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Deletes a file or directory
       parameters:
-        - description: Delete file request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.DeleteFileRequest"
+      - description: Delete file request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.DeleteFileRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.DeleteFileResponse"
+            $ref: '#/definitions/tmux-client_internal_types.DeleteFileResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "403":
           description: Forbidden
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Delete file
       tags:
-        - file
+      - file
   /api/v1/file/edit:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Edits the content of a file
       parameters:
-        - description: Edit file request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.EditFileRequest"
+      - description: Edit file request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.EditFileRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.EditFileResponse"
+            $ref: '#/definitions/tmux-client_internal_types.EditFileResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Edit file
       tags:
-        - file
+      - file
   /api/v1/file/exists:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Checks if a file or directory exists
       parameters:
-        - description: File exists request
-          in: body
-          name: request
-          required: true
-          schema:
-            type: object
+      - description: File exists request
+        in: body
+        name: request
+        required: true
+        schema:
+          type: object
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -848,28 +850,28 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Check if file exists
       tags:
-        - file
+      - file
   /api/v1/file/hash:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Computes the SHA256 hash of a file
       parameters:
-        - description: File hash request
-          in: body
-          name: request
-          required: true
-          schema:
-            type: object
+      - description: File hash request
+        in: body
+        name: request
+        required: true
+        schema:
+          type: object
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -880,164 +882,164 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Get file hash
       tags:
-        - file
+      - file
   /api/v1/file/list:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Lists the contents of a directory
       parameters:
-        - description: List directory request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.ListDirRequest"
+      - description: List directory request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.ListDirRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.ListDirResponse"
+            $ref: '#/definitions/tmux-client_internal_types.ListDirResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: List directory contents
       tags:
-        - file
+      - file
   /api/v1/file/read:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Reads the content of a file
       parameters:
-        - description: Read file request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.ReadFileRequest"
+      - description: Read file request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.ReadFileRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.ReadFileResponse"
+            $ref: '#/definitions/tmux-client_internal_types.ReadFileResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "403":
           description: Forbidden
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Read file
       tags:
-        - file
+      - file
   /api/v1/file/write:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Writes content to a file
       parameters:
-        - description: Write file request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.WriteFileRequest"
+      - description: Write file request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.WriteFileRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.WriteFileResponse"
+            $ref: '#/definitions/tmux-client_internal_types.WriteFileResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "403":
           description: Forbidden
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Write file
       tags:
-        - file
+      - file
   /api/v1/human/ask:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Requests approval from a human for an action
       parameters:
-        - description: Ask human request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.AskHumanRequest"
+      - description: Ask human request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.AskHumanRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.AskHumanResponse"
+            $ref: '#/definitions/tmux-client_internal_types.AskHumanResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Request human approval
       tags:
-        - human
+      - human
   /api/v1/human/ask-async:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Requests approval from a human asynchronously
       parameters:
-        - description: Ask human async request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.AskHumanRequest"
+      - description: Ask human async request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.AskHumanRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1048,42 +1050,42 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Request human approval asynchronously
       tags:
-        - human
+      - human
   /api/v1/human/pending:
     get:
       consumes:
-        - application/json
+      - application/json
       description: Lists all pending human approval requests
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.ListApprovalsResponse"
+            $ref: '#/definitions/tmux-client_internal_types.ListApprovalsResponse'
       summary: List pending approvals
       tags:
-        - human
+      - human
   /api/v1/human/pending/{requestID}:
     delete:
       consumes:
-        - application/json
+      - application/json
       description: Cancels a pending approval request
       parameters:
-        - description: Request ID
-          in: path
-          name: requestID
-          required: true
-          type: string
+      - description: Request ID
+        in: path
+        name: requestID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1093,104 +1095,104 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Cancel approval
       tags:
-        - human
+      - human
     get:
       consumes:
-        - application/json
+      - application/json
       description: Retrieves a specific pending approval request
       parameters:
-        - description: Request ID
-          in: path
-          name: requestID
-          required: true
-          type: string
+      - description: Request ID
+        in: path
+        name: requestID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.PendingApproval"
+            $ref: '#/definitions/tmux-client_internal_types.PendingApproval'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Get pending approval
       tags:
-        - human
+      - human
   /api/v1/human/respond:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Responds to a pending approval request
       parameters:
-        - description: Approve request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.ApproveRequest"
+      - description: Approve request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.ApproveRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.AskHumanResponse"
+            $ref: '#/definitions/tmux-client_internal_types.AskHumanResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Respond to approval
       tags:
-        - human
+      - human
   /api/v1/plan/:
     get:
       consumes:
-        - application/json
+      - application/json
       description: Lists all execution plans
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.ListPlansResponse"
+            $ref: '#/definitions/tmux-client_internal_types.ListPlansResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: List plans
       tags:
-        - plan
+      - plan
   /api/v1/plan/{planID}:
     delete:
       consumes:
-        - application/json
+      - application/json
       description: Deletes an execution plan
       parameters:
-        - description: Plan ID
-          in: path
-          name: planID
-          required: true
-          type: string
+      - description: Plan ID
+        in: path
+        name: planID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1200,60 +1202,60 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Delete plan
       tags:
-        - plan
+      - plan
     get:
       consumes:
-        - application/json
+      - application/json
       description: Retrieves a specific execution plan
       parameters:
-        - description: Plan ID
-          in: path
-          name: planID
-          required: true
-          type: string
+      - description: Plan ID
+        in: path
+        name: planID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.GetPlanResponse"
+            $ref: '#/definitions/tmux-client_internal_types.GetPlanResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Get plan
       tags:
-        - plan
+      - plan
   /api/v1/plan/{planID}/abort:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Aborts an execution plan
       parameters:
-        - description: Plan ID
-          in: path
-          name: planID
-          required: true
-          type: string
-        - description: Abort plan request
-          in: body
-          name: request
-          schema:
-            type: object
+      - description: Plan ID
+        in: path
+        name: planID
+        required: true
+        type: string
+      - description: Abort plan request
+        in: body
+        name: request
+        schema:
+          type: object
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1263,36 +1265,36 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Abort plan
       tags:
-        - plan
+      - plan
   /api/v1/plan/{planID}/advance:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Advances to the next step in a plan
       parameters:
-        - description: Plan ID
-          in: path
-          name: planID
-          required: true
-          type: string
-        - description: Advance step request
-          in: body
-          name: request
-          schema:
-            type: object
+      - description: Plan ID
+        in: path
+        name: planID
+        required: true
+        type: string
+      - description: Advance step request
+        in: body
+        name: request
+        schema:
+          type: object
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1302,123 +1304,123 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Advance plan step
       tags:
-        - plan
+      - plan
   /api/v1/plan/create:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Creates a new execution plan
       parameters:
-        - description: Create plan request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.CreatePlanRequest"
+      - description: Create plan request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.CreatePlanRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.CreatePlanResponse"
+            $ref: '#/definitions/tmux-client_internal_types.CreatePlanResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Create plan
       tags:
-        - plan
+      - plan
   /api/v1/plan/update:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Updates an execution plan
       parameters:
-        - description: Update plan request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.UpdatePlanRequest"
+      - description: Update plan request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.UpdatePlanRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.UpdatePlanResponse"
+            $ref: '#/definitions/tmux-client_internal_types.UpdatePlanResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Update plan
       tags:
-        - plan
+      - plan
   /api/v1/tmux/panes:
     get:
       consumes:
-        - application/json
+      - application/json
       description: Get a list of panes in a tmux session
       parameters:
-        - description: Session name
-          in: query
-          name: session
-          type: string
+      - description: Session name
+        in: query
+        name: session
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.ListPanesResponse"
+            $ref: '#/definitions/tmux-client_internal_types.ListPanesResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: List tmux panes
       tags:
-        - tmux
+      - tmux
   /api/v1/tmux/panes/{paneID}:
     delete:
       consumes:
-        - application/json
+      - application/json
       description: Kills a tmux pane
       parameters:
-        - description: Pane ID
-          in: path
-          name: paneID
-          required: true
-          type: string
+      - description: Pane ID
+        in: path
+        name: paneID
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1428,197 +1430,197 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Kill tmux pane
       tags:
-        - tmux
+      - tmux
   /api/v1/tmux/panes/create:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Creates a new tmux pane
       parameters:
-        - description: Create pane request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.CreatePaneRequest"
+      - description: Create pane request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.CreatePaneRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.CreatePaneResponse"
+            $ref: '#/definitions/tmux-client_internal_types.CreatePaneResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Create tmux pane
       tags:
-        - tmux
+      - tmux
   /api/v1/tmux/panes/read:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Reads the content of a tmux pane
       parameters:
-        - description: Read pane request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.ReadPaneRequest"
+      - description: Read pane request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.ReadPaneRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.ReadPaneResponse"
+            $ref: '#/definitions/tmux-client_internal_types.ReadPaneResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Read tmux pane
       tags:
-        - tmux
+      - tmux
   /api/v1/tmux/panes/send-keys:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Sends keystrokes to a tmux pane
       parameters:
-        - description: Send keys request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.SendKeysRequest"
+      - description: Send keys request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.SendKeysRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.SendKeysResponse"
+            $ref: '#/definitions/tmux-client_internal_types.SendKeysResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "403":
           description: Forbidden
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Send keys to tmux pane
       tags:
-        - tmux
+      - tmux
   /api/v1/tmux/panes/switch:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Switches to a specific tmux pane
       parameters:
-        - description: Switch pane request
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: "#/definitions/tmux-client_internal_types.SwitchPaneRequest"
+      - description: Switch pane request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/tmux-client_internal_types.SwitchPaneRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.SwitchPaneResponse"
+            $ref: '#/definitions/tmux-client_internal_types.SwitchPaneResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Switch tmux pane
       tags:
-        - tmux
+      - tmux
   /api/v1/tmux/sessions:
     get:
       consumes:
-        - application/json
+      - application/json
       description: Get a list of all active tmux sessions
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/tmux-client_internal_types.SessionInfo"
+              $ref: '#/definitions/tmux-client_internal_types.SessionInfo'
             type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: List tmux sessions
       tags:
-        - tmux
+      - tmux
   /api/v1/tmux/sessions/{sessionId}/release:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Releases (kills) a tmux session by ID
       parameters:
-        - description: Session ID
-          in: path
-          name: sessionId
-          required: true
-          type: string
+      - description: Session ID
+        in: path
+        name: sessionId
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.KillSessionResponse"
+            $ref: '#/definitions/tmux-client_internal_types.KillSessionResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Release tmux session
       tags:
-        - tmux
+      - tmux
   /api/v1/tmux/sessions/{sessionName}:
     delete:
       consumes:
-        - application/json
+      - application/json
       description: Kills a tmux session
       parameters:
-        - description: Session name
-          in: path
-          name: sessionName
-          required: true
-          type: string
+      - description: Session name
+        in: path
+        name: sessionName
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1628,28 +1630,28 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Kill tmux session
       tags:
-        - tmux
+      - tmux
   /api/v1/tmux/sessions/create:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Creates a new tmux session
       parameters:
-        - description: Create session request
-          in: body
-          name: request
-          required: true
-          schema:
-            type: object
+      - description: Create session request
+        in: body
+        name: request
+        required: true
+        schema:
+          type: object
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -1660,38 +1662,38 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: Create tmux session
       tags:
-        - tmux
+      - tmux
   /api/v1/tmux/windows:
     get:
       consumes:
-        - application/json
+      - application/json
       description: Get a list of windows in a tmux session
       parameters:
-        - description: Session name
-          in: query
-          name: session
-          type: string
+      - description: Session name
+        in: query
+        name: session
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/tmux-client_internal_types.WindowInfo"
+              $ref: '#/definitions/tmux-client_internal_types.WindowInfo'
             type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/tmux-client_internal_types.APIError"
+            $ref: '#/definitions/tmux-client_internal_types.APIError'
       summary: List tmux windows
       tags:
-        - tmux
+      - tmux
 swagger: "2.0"
