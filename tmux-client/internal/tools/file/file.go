@@ -228,10 +228,8 @@ func (t *Tool) ReadFile(req types.ReadFileRequest) (*types.ReadFileResponse, err
 		}
 	}
 
-	truncated := false
-	if toLine > 0 && totalLines > toLine {
-		truncated = true
-	}
+	truncated := toLine > 0 && totalLines > toLine
+
 	if req.MaxLines > 0 && (lineNum-fromLine+1) > req.MaxLines {
 		truncated = true
 	}
