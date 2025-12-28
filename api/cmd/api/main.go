@@ -24,7 +24,19 @@ import (
 // @version 0.0.1-beta
 // @description API for managing virtual machine sandboxes using libvirt
 // @host localhost:8080
-// @BasePath /v1
+// @BasePath /
+
+// @tag.name Sandbox
+// @tag.description Sandbox lifecycle management - create, start, run commands, snapshot, and destroy sandboxes
+
+// @tag.name VMs
+// @tag.description Virtual machine listing and information
+
+// @tag.name Ansible
+// @tag.description Ansible playbook job management
+
+// @tag.name Health
+// @tag.description Health check endpoints
 func main() {
 	// Context with OS signal cancellation
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
@@ -36,7 +48,7 @@ func main() {
 
 	// Read configuration from environment
 	apiAddr := getenv("API_HTTP_ADDR", ":8080")
-	dbURL := getenv("DATABASE_URL", "file:/var/lib/virsh-sandbox.db?_busy_timeout=10000&_fk=1")
+	dbURL := getenv("DATABASE_URL", "postgresql://virsh_sandbox:virsh_sandbox@postgres:5432/virsh_sandbox")
 	network := getenv("LIBVIRT_NETWORK", "default")
 	libvirtURI := getenv("LIBVIRT_URI", "qemu:///system")
 

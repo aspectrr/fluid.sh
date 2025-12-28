@@ -1,5 +1,46 @@
-basePath: /v1
+basePath: /
 definitions:
+  internal_ansible.Job:
+    properties:
+      check:
+        type: boolean
+      id:
+        type: string
+      playbook:
+        type: string
+      status:
+        $ref: '#/definitions/internal_ansible.JobStatus'
+      vm_name:
+        type: string
+    type: object
+  internal_ansible.JobRequest:
+    properties:
+      check:
+        type: boolean
+      playbook:
+        type: string
+      vm_name:
+        type: string
+    type: object
+  internal_ansible.JobResponse:
+    properties:
+      job_id:
+        type: string
+      ws_url:
+        type: string
+    type: object
+  internal_ansible.JobStatus:
+    enum:
+    - pending
+    - running
+    - finished
+    - failed
+    type: string
+    x-enum-varnames:
+    - JobStatusPending
+    - JobStatusRunning
+    - JobStatusFinished
+    - JobStatusFailed
   internal_rest.ErrorResponse:
     properties:
       code:
@@ -174,6 +215,56 @@ definitions:
     - Second
     - Minute
     - Hour
+  virsh-sandbox_internal_ansible.Job:
+    properties:
+      check:
+        type: boolean
+      id:
+        type: string
+      playbook:
+        type: string
+      status:
+        $ref: '#/definitions/virsh-sandbox_internal_ansible.JobStatus'
+      vm_name:
+        type: string
+    type: object
+  virsh-sandbox_internal_ansible.JobRequest:
+    properties:
+      check:
+        type: boolean
+      playbook:
+        type: string
+      vm_name:
+        type: string
+    type: object
+  virsh-sandbox_internal_ansible.JobResponse:
+    properties:
+      job_id:
+        type: string
+      ws_url:
+        type: string
+    type: object
+  virsh-sandbox_internal_ansible.JobStatus:
+    enum:
+    - pending
+    - running
+    - finished
+    - failed
+    type: string
+    x-enum-varnames:
+    - JobStatusPending
+    - JobStatusRunning
+    - JobStatusFinished
+    - JobStatusFailed
+  virsh-sandbox_internal_error.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      details:
+        type: string
+      error:
+        type: string
+    type: object
   virsh-sandbox_internal_rest.ErrorResponse:
     properties:
       code:
@@ -528,7 +619,87 @@ info:
   title: virsh-sandbox API
   version: 0.0.1-beta
 paths:
-  /api/v1/sandbox/{id}:
+  /v1/ansible/jobs:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new Ansible playbook execution job
+      parameters:
+      - description: Job creation parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_ansible.JobRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_ansible.JobResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/virsh-sandbox_internal_error.ErrorResponse'
+      summary: Create Ansible job
+      tags:
+      - Ansible
+  /v1/ansible/jobs/{job_id}:
+    get:
+      consumes:
+      - application/json
+      description: Gets the status of an Ansible job
+      parameters:
+      - description: Job ID
+        in: path
+        name: job_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_ansible.Job'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/virsh-sandbox_internal_error.ErrorResponse'
+      summary: Get Ansible job
+      tags:
+      - Ansible
+  /v1/ansible/jobs/{job_id}/stream:
+    get:
+      description: Connects via WebSocket to run an Ansible job and stream output
+      parameters:
+      - description: Job ID
+        in: path
+        name: job_id
+        required: true
+        type: string
+      responses: {}
+      summary: Run Ansible job via WebSocket
+      tags:
+      - Ansible
+  /v1/health:
+    get:
+      consumes:
+      - application/json
+      description: Returns service health status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Health check
+      tags:
+      - Health
+  /v1/sandbox/{id}:
     delete:
       consumes:
       - application/json
@@ -547,15 +718,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
       summary: Destroy sandbox
       tags:
-      - sandbox
-  /api/v1/sandbox/{id}/diff:
+      - Sandbox
+  /v1/sandbox/{id}/diff:
     post:
       consumes:
       - application/json
@@ -571,26 +742,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_rest.diffRequest'
+          $ref: '#/definitions/virsh-sandbox_internal_rest.diffRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_rest.diffResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.diffResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
       summary: Diff snapshots
       tags:
-      - sandbox
-  /api/v1/sandbox/{id}/generate/{tool}:
+      - Sandbox
+  /v1/sandbox/{id}/generate/{tool}:
     post:
       consumes:
       - application/json
@@ -612,15 +783,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
         "501":
           description: Not Implemented
           schema:
-            $ref: '#/definitions/internal_rest.generateResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.generateResponse'
       summary: Generate configuration
       tags:
-      - sandbox
-  /api/v1/sandbox/{id}/publish:
+      - Sandbox
+  /v1/sandbox/{id}/publish:
     post:
       consumes:
       - application/json
@@ -636,22 +807,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_rest.publishRequest'
+          $ref: '#/definitions/virsh-sandbox_internal_rest.publishRequest'
       produces:
       - application/json
       responses:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
         "501":
           description: Not Implemented
           schema:
-            $ref: '#/definitions/internal_rest.publishResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.publishResponse'
       summary: Publish changes
       tags:
-      - sandbox
-  /api/v1/sandbox/{id}/run:
+      - Sandbox
+  /v1/sandbox/{id}/run:
     post:
       consumes:
       - application/json
@@ -667,26 +838,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_rest.runCommandRequest'
+          $ref: '#/definitions/virsh-sandbox_internal_rest.runCommandRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_rest.runCommandResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.runCommandResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
       summary: Run command in sandbox
       tags:
-      - sandbox
-  /api/v1/sandbox/{id}/snapshot:
+      - Sandbox
+  /v1/sandbox/{id}/snapshot:
     post:
       consumes:
       - application/json
@@ -702,26 +873,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_rest.snapshotRequest'
+          $ref: '#/definitions/virsh-sandbox_internal_rest.snapshotRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/internal_rest.snapshotResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.snapshotResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
       summary: Create snapshot
       tags:
-      - sandbox
-  /api/v1/sandbox/{id}/sshkey:
+      - Sandbox
+  /v1/sandbox/{id}/sshkey:
     post:
       consumes:
       - application/json
@@ -737,7 +908,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_rest.injectSSHKeyRequest'
+          $ref: '#/definitions/virsh-sandbox_internal_rest.injectSSHKeyRequest'
       produces:
       - application/json
       responses:
@@ -746,15 +917,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
       summary: Inject SSH key into sandbox
       tags:
-      - sandbox
-  /api/v1/sandbox/{id}/start:
+      - Sandbox
+  /v1/sandbox/{id}/start:
     post:
       consumes:
       - application/json
@@ -769,26 +940,26 @@ paths:
         in: body
         name: request
         schema:
-          $ref: '#/definitions/internal_rest.startSandboxRequest'
+          $ref: '#/definitions/virsh-sandbox_internal_rest.startSandboxRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_rest.startSandboxResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.startSandboxResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
       summary: Start sandbox
       tags:
-      - sandbox
-  /api/v1/sandbox/create:
+      - Sandbox
+  /v1/sandbox/create:
     post:
       consumes:
       - application/json
@@ -800,26 +971,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_rest.createSandboxRequest'
+          $ref: '#/definitions/virsh-sandbox_internal_rest.createSandboxRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/internal_rest.createSandboxResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.createSandboxResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
       summary: Create a new sandbox
       tags:
-      - sandbox
-  /api/v1/vms:
+      - Sandbox
+  /v1/vms:
     get:
       consumes:
       - application/json
@@ -830,12 +1001,22 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_rest.listVMsResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.listVMsResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/internal_rest.ErrorResponse'
+            $ref: '#/definitions/virsh-sandbox_internal_rest.ErrorResponse'
       summary: List all VMs
       tags:
-      - vms
+      - VMs
 swagger: "2.0"
+tags:
+- description: Sandbox lifecycle management - create, start, run commands, snapshot,
+    and destroy sandboxes
+  name: Sandbox
+- description: Virtual machine listing and information
+  name: VMs
+- description: Ansible playbook job management
+  name: Ansible
+- description: Health check endpoints
+  name: Health

@@ -62,41 +62,13 @@ func (s *Server) StartHTTP(addr string) error {
 func (s *Server) routes() {
 	r := s.Router
 
-	// Register WebSocket routes at top level (not under /api/v1)
-	if s.ansibleHandler != nil {
-		s.ansibleHandler.RegisterWebSocketRoutes(r)
-	}
-
-	// Basic liveness endpoint
-	// @Summary Health check
-	// @Description Returns service health status
-	// @Tags health
-	// @Accept json
-	// @Produce json
-	// @Success 200 {object} map[string]interface{}
-	// @Router /api/v1/healthz [get]
-	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
-		_ = serverJSON.RespondJSON(w, http.StatusOK, map[string]any{"status": "ok"})
-	})
-
-	// @Summary List all VMs
-	// @Description Returns a list of all virtual machines from the libvirt instance
-	// @Tags vms
-	// @Accept json
-	// @Produce json
-	// @Success 200 {object} listVMsResponse
-	// @Failure 500 {object} ErrorResponse
-	// @Router /api/v1/vms [get]
-	r.Get("/vms", s.handleListVMs)
-
 	// @Summary API reference
 	// @Description Returns HTML API reference documentation
-	// @Tags docs
 	// @Accept json
 	// @Produce html
 	// @Success 200 {string} string
-	// @Router /api/v1/reference [get]
-	r.Get("/reference", func(w http.ResponseWriter, r *http.Request) {
+	// @Router /docs [get]
+	r.Get("/docs", func(w http.ResponseWriter, r *http.Request) {
 		htmlContent, err := scalar.ApiReferenceHTML(&scalar.Options{
 			// SpecURL: "https://generator3.swagger.io/openapi.json",// allow external URL or local path file
 			SpecURL: "./docs/swagger.json",
@@ -112,28 +84,34 @@ func (s *Server) routes() {
 		fmt.Fprintln(w, htmlContent)
 	})
 
-	// Sandbox lifecycle
-	r.Route("/sandbox", func(r chi.Router) {
-		r.Post("/create", s.handleCreateSandbox)
+	// API v1 routes
+	r.Route("/v1", func(r chi.Router) {
+		r.Get("/health", s.handleHealth)
+		r.Get("/vms", s.handleListVMs)
 
-		r.Route("/{id}", func(r chi.Router) {
-			r.Post("/sshkey", s.handleInjectSSHKey)
-			r.Post("/start", s.handleStartSandbox)
-			r.Post("/run", s.handleRunCommand)
-			r.Post("/snapshot", s.handleCreateSnapshot)
-			r.Post("/diff", s.handleDiffSnapshots)
+		// Sandbox lifecycle
+		r.Route("/sandbox", func(r chi.Router) {
+			r.Post("/create", s.handleCreateSandbox)
 
-			r.Post("/generate/{tool}", s.handleGenerate) // tool ∈ {ansible, puppet}
-			r.Post("/publish", s.handlePublish)
+			r.Route("/{id}", func(r chi.Router) {
+				r.Post("/sshkey", s.handleInjectSSHKey)
+				r.Post("/start", s.handleStartSandbox)
+				r.Post("/run", s.handleRunCommand)
+				r.Post("/snapshot", s.handleCreateSnapshot)
+				r.Post("/diff", s.handleDiffSnapshots)
 
-			r.Delete("/", s.handleDestroySandbox)
+				r.Post("/generate/{tool}", s.handleGenerate) // tool ∈ {ansible, puppet}
+				r.Post("/publish", s.handlePublish)
+
+				r.Delete("/", s.handleDestroySandbox)
+			})
 		})
-	})
 
-	// Ansible job management
-	if s.ansibleHandler != nil {
-		s.ansibleHandler.RegisterRoutes(r)
-	}
+		// Ansible job management
+		if s.ansibleHandler != nil {
+			s.ansibleHandler.RegisterRoutes(r)
+		}
+	})
 }
 
 // --- Request/Response DTOs ---
@@ -229,16 +207,28 @@ type listVMsResponse struct {
 
 // --- Handlers ---
 
+// handleHealth returns service health status.
+// @Summary Health check
+// @Description Returns service health status
+// @Tags Health
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /v1/health [get]
+func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
+	_ = serverJSON.RespondJSON(w, http.StatusOK, map[string]any{"status": "ok"})
+}
+
 // @Summary Create a new sandbox
 // @Description Creates a new virtual machine sandbox by cloning from an existing VM
-// @Tags sandbox
+// @Tags Sandbox
 // @Accept json
 // @Produce json
 // @Param request body createSandboxRequest true "Sandbox creation parameters"
 // @Success 201 {object} createSandboxResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /api/v1/sandbox/create [post]
+// @Router /v1/sandbox/create [post]
 func (s *Server) handleCreateSandbox(w http.ResponseWriter, r *http.Request) {
 	var req createSandboxRequest
 	if err := serverJSON.DecodeJSON(r.Context(), r, &req); err != nil {
@@ -260,7 +250,7 @@ func (s *Server) handleCreateSandbox(w http.ResponseWriter, r *http.Request) {
 
 // @Summary Inject SSH key into sandbox
 // @Description Injects a public SSH key for a user in the sandbox
-// @Tags sandbox
+// @Tags Sandbox
 // @Accept json
 // @Produce json
 // @Param id path string true "Sandbox ID"
@@ -268,7 +258,7 @@ func (s *Server) handleCreateSandbox(w http.ResponseWriter, r *http.Request) {
 // @Success 204
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /api/v1/sandbox/{id}/sshkey [post]
+// @Router /v1/sandbox/{id}/sshkey [post]
 func (s *Server) handleInjectSSHKey(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var req injectSSHKeyRequest
@@ -290,7 +280,7 @@ func (s *Server) handleInjectSSHKey(w http.ResponseWriter, r *http.Request) {
 
 // @Summary Start sandbox
 // @Description Starts the virtual machine sandbox
-// @Tags sandbox
+// @Tags Sandbox
 // @Accept json
 // @Produce json
 // @Param id path string true "Sandbox ID"
@@ -298,7 +288,7 @@ func (s *Server) handleInjectSSHKey(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} startSandboxResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /api/v1/sandbox/{id}/start [post]
+// @Router /v1/sandbox/{id}/start [post]
 func (s *Server) handleStartSandbox(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
@@ -321,7 +311,7 @@ func (s *Server) handleStartSandbox(w http.ResponseWriter, r *http.Request) {
 
 // @Summary Run command in sandbox
 // @Description Executes a command inside the sandbox via SSH
-// @Tags sandbox
+// @Tags Sandbox
 // @Accept json
 // @Produce json
 // @Param id path string true "Sandbox ID"
@@ -329,7 +319,7 @@ func (s *Server) handleStartSandbox(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} runCommandResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /api/v1/sandbox/{id}/run [post]
+// @Router /v1/sandbox/{id}/run [post]
 func (s *Server) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var req runCommandRequest
@@ -352,7 +342,7 @@ func (s *Server) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 
 // @Summary Create snapshot
 // @Description Creates a snapshot of the sandbox
-// @Tags sandbox
+// @Tags Sandbox
 // @Accept json
 // @Produce json
 // @Param id path string true "Sandbox ID"
@@ -360,7 +350,7 @@ func (s *Server) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 // @Success 201 {object} snapshotResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /api/v1/sandbox/{id}/snapshot [post]
+// @Router /v1/sandbox/{id}/snapshot [post]
 func (s *Server) handleCreateSnapshot(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var req snapshotRequest
@@ -382,7 +372,7 @@ func (s *Server) handleCreateSnapshot(w http.ResponseWriter, r *http.Request) {
 
 // @Summary Diff snapshots
 // @Description Computes differences between two snapshots
-// @Tags sandbox
+// @Tags Sandbox
 // @Accept json
 // @Produce json
 // @Param id path string true "Sandbox ID"
@@ -390,7 +380,7 @@ func (s *Server) handleCreateSnapshot(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} diffResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /api/v1/sandbox/{id}/diff [post]
+// @Router /v1/sandbox/{id}/diff [post]
 func (s *Server) handleDiffSnapshots(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var req diffRequest
@@ -412,14 +402,14 @@ func (s *Server) handleDiffSnapshots(w http.ResponseWriter, r *http.Request) {
 
 // @Summary Generate configuration
 // @Description Generates Ansible or Puppet configuration from sandbox changes
-// @Tags sandbox
+// @Tags Sandbox
 // @Accept json
 // @Produce json
 // @Param id path string true "Sandbox ID"
 // @Param tool path string true "Tool type (ansible or puppet)"
 // @Success 501 {object} generateResponse
 // @Failure 400 {object} ErrorResponse
-// @Router /api/v1/sandbox/{id}/generate/{tool} [post]
+// @Router /v1/sandbox/{id}/generate/{tool} [post]
 func (s *Server) handleGenerate(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	tool := chi.URLParam(r, "tool")
@@ -441,14 +431,14 @@ func (s *Server) handleGenerate(w http.ResponseWriter, r *http.Request) {
 
 // @Summary Publish changes
 // @Description Publishes sandbox changes to GitOps repository
-// @Tags sandbox
+// @Tags Sandbox
 // @Accept json
 // @Produce json
 // @Param id path string true "Sandbox ID"
 // @Param request body publishRequest true "Publish parameters"
 // @Success 501 {object} publishResponse
 // @Failure 400 {object} ErrorResponse
-// @Router /api/v1/sandbox/{id}/publish [post]
+// @Router /v1/sandbox/{id}/publish [post]
 func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request) {
 	var req publishRequest
 	if err := serverJSON.DecodeJSON(r.Context(), r, &req); err != nil {
@@ -468,12 +458,12 @@ func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request) {
 
 // @Summary List all VMs
 // @Description Returns a list of all virtual machines from the libvirt instance
-// @Tags vms
+// @Tags VMs
 // @Accept json
 // @Produce json
 // @Success 200 {object} listVMsResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /api/v1/vms [get]
+// @Router /v1/vms [get]
 func (s *Server) handleListVMs(w http.ResponseWriter, r *http.Request) {
 	domains, err := s.domainMgr.ListDomains(r.Context())
 	if err != nil {
@@ -497,14 +487,14 @@ func (s *Server) handleListVMs(w http.ResponseWriter, r *http.Request) {
 
 // @Summary Destroy sandbox
 // @Description Destroys the sandbox and cleans up resources
-// @Tags sandbox
+// @Tags Sandbox
 // @Accept json
 // @Produce json
 // @Param id path string true "Sandbox ID"
 // @Success 204
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /api/v1/sandbox/{id} [delete]
+// @Router /v1/sandbox/{id} [delete]
 func (s *Server) handleDestroySandbox(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {

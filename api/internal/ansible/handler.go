@@ -45,13 +45,13 @@ func (w *wsOutputWriter) WriteLine(line string) error {
 // HandleCreateJob creates a new Ansible job.
 // @Summary Create Ansible job
 // @Description Creates a new Ansible playbook execution job
-// @Tags ansible
+// @Tags Ansible
 // @Accept json
 // @Produce json
 // @Param request body JobRequest true "Job creation parameters"
 // @Success 200 {object} JobResponse
-// @Failure 400 {object} error.ErrorResponse
-// @Router /api/v1/ansible/jobs [post]
+// @Failure 400 {object} serverError.ErrorResponse
+// @Router /v1/ansible/jobs [post]
 func (h *Handler) HandleCreateJob(w http.ResponseWriter, r *http.Request) {
 	var req JobRequest
 	if err := serverJSON.DecodeJSON(r.Context(), r, &req); err != nil {
@@ -82,13 +82,13 @@ func (h *Handler) HandleCreateJob(w http.ResponseWriter, r *http.Request) {
 // HandleGetJob retrieves job status.
 // @Summary Get Ansible job
 // @Description Gets the status of an Ansible job
-// @Tags ansible
+// @Tags Ansible
 // @Accept json
 // @Produce json
 // @Param job_id path string true "Job ID"
 // @Success 200 {object} Job
-// @Failure 404 {object} error.ErrorResponse
-// @Router /api/v1/ansible/jobs/{job_id} [get]
+// @Failure 404 {object} serverError.ErrorResponse
+// @Router /v1/ansible/jobs/{job_id} [get]
 func (h *Handler) HandleGetJob(w http.ResponseWriter, r *http.Request) {
 	jobID := chi.URLParam(r, "job_id")
 
@@ -105,9 +105,9 @@ func (h *Handler) HandleGetJob(w http.ResponseWriter, r *http.Request) {
 // HandleJobWebSocket handles WebSocket connections for job output streaming.
 // @Summary Run Ansible job via WebSocket
 // @Description Connects via WebSocket to run an Ansible job and stream output
-// @Tags ansible
+// @Tags Ansible
 // @Param job_id path string true "Job ID"
-// @Router /ws/ansible/jobs/{job_id} [get]
+// @Router /v1/ansible/jobs/{job_id}/stream [get]
 func (h *Handler) HandleJobWebSocket(w http.ResponseWriter, r *http.Request) {
 	jobID := chi.URLParam(r, "job_id")
 
@@ -152,13 +152,8 @@ func (h *Handler) RegisterRoutes(r chi.Router) {
 	r.Route("/ansible", func(r chi.Router) {
 		r.Post("/jobs", h.HandleCreateJob)
 		r.Get("/jobs/{job_id}", h.HandleGetJob)
+		r.Get("/jobs/{job_id}/stream", h.HandleJobWebSocket)
 	})
-}
-
-// RegisterWebSocketRoutes registers WebSocket routes on the given router.
-// These should be registered at the top level, not under /api/v1.
-func (h *Handler) RegisterWebSocketRoutes(r chi.Router) {
-	r.Get("/ws/ansible/jobs/{job_id}", h.HandleJobWebSocket)
 }
 
 // validationError represents a validation error.

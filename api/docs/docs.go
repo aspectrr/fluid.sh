@@ -15,7 +15,128 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/sandbox/create": {
+        "/v1/ansible/jobs": {
+            "post": {
+                "description": "Creates a new Ansible playbook execution job",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ansible"
+                ],
+                "summary": "Create Ansible job",
+                "parameters": [
+                    {
+                        "description": "Job creation parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_ansible.JobRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_ansible.JobResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/virsh-sandbox_internal_error.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/ansible/jobs/{job_id}": {
+            "get": {
+                "description": "Gets the status of an Ansible job",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ansible"
+                ],
+                "summary": "Get Ansible job",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Job ID",
+                        "name": "job_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_ansible.Job"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/virsh-sandbox_internal_error.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/ansible/jobs/{job_id}/stream": {
+            "get": {
+                "description": "Connects via WebSocket to run an Ansible job and stream output",
+                "tags": [
+                    "Ansible"
+                ],
+                "summary": "Run Ansible job via WebSocket",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Job ID",
+                        "name": "job_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/v1/health": {
+            "get": {
+                "description": "Returns service health status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/sandbox/create": {
             "post": {
                 "description": "Creates a new virtual machine sandbox by cloning from an existing VM",
                 "consumes": [
@@ -25,7 +146,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sandbox"
+                    "Sandbox"
                 ],
                 "summary": "Create a new sandbox",
                 "parameters": [
@@ -35,7 +156,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.createSandboxRequest"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.createSandboxRequest"
                         }
                     }
                 ],
@@ -43,25 +164,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.createSandboxResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.createSandboxResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/api/v1/sandbox/{id}": {
+        "/v1/sandbox/{id}": {
             "delete": {
                 "description": "Destroys the sandbox and cleans up resources",
                 "consumes": [
@@ -71,7 +192,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sandbox"
+                    "Sandbox"
                 ],
                 "summary": "Destroy sandbox",
                 "parameters": [
@@ -90,19 +211,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/api/v1/sandbox/{id}/diff": {
+        "/v1/sandbox/{id}/diff": {
             "post": {
                 "description": "Computes differences between two snapshots",
                 "consumes": [
@@ -112,7 +233,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sandbox"
+                    "Sandbox"
                 ],
                 "summary": "Diff snapshots",
                 "parameters": [
@@ -129,7 +250,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.diffRequest"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.diffRequest"
                         }
                     }
                 ],
@@ -137,25 +258,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.diffResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.diffResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/api/v1/sandbox/{id}/generate/{tool}": {
+        "/v1/sandbox/{id}/generate/{tool}": {
             "post": {
                 "description": "Generates Ansible or Puppet configuration from sandbox changes",
                 "consumes": [
@@ -165,7 +286,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sandbox"
+                    "Sandbox"
                 ],
                 "summary": "Generate configuration",
                 "parameters": [
@@ -188,19 +309,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     },
                     "501": {
                         "description": "Not Implemented",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.generateResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.generateResponse"
                         }
                     }
                 }
             }
         },
-        "/api/v1/sandbox/{id}/publish": {
+        "/v1/sandbox/{id}/publish": {
             "post": {
                 "description": "Publishes sandbox changes to GitOps repository",
                 "consumes": [
@@ -210,7 +331,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sandbox"
+                    "Sandbox"
                 ],
                 "summary": "Publish changes",
                 "parameters": [
@@ -227,7 +348,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.publishRequest"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.publishRequest"
                         }
                     }
                 ],
@@ -235,19 +356,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     },
                     "501": {
                         "description": "Not Implemented",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.publishResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.publishResponse"
                         }
                     }
                 }
             }
         },
-        "/api/v1/sandbox/{id}/run": {
+        "/v1/sandbox/{id}/run": {
             "post": {
                 "description": "Executes a command inside the sandbox via SSH",
                 "consumes": [
@@ -257,7 +378,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sandbox"
+                    "Sandbox"
                 ],
                 "summary": "Run command in sandbox",
                 "parameters": [
@@ -274,7 +395,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.runCommandRequest"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.runCommandRequest"
                         }
                     }
                 ],
@@ -282,25 +403,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.runCommandResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.runCommandResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/api/v1/sandbox/{id}/snapshot": {
+        "/v1/sandbox/{id}/snapshot": {
             "post": {
                 "description": "Creates a snapshot of the sandbox",
                 "consumes": [
@@ -310,7 +431,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sandbox"
+                    "Sandbox"
                 ],
                 "summary": "Create snapshot",
                 "parameters": [
@@ -327,7 +448,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.snapshotRequest"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.snapshotRequest"
                         }
                     }
                 ],
@@ -335,25 +456,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.snapshotResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.snapshotResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/api/v1/sandbox/{id}/sshkey": {
+        "/v1/sandbox/{id}/sshkey": {
             "post": {
                 "description": "Injects a public SSH key for a user in the sandbox",
                 "consumes": [
@@ -363,7 +484,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sandbox"
+                    "Sandbox"
                 ],
                 "summary": "Inject SSH key into sandbox",
                 "parameters": [
@@ -380,7 +501,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.injectSSHKeyRequest"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.injectSSHKeyRequest"
                         }
                     }
                 ],
@@ -391,19 +512,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/api/v1/sandbox/{id}/start": {
+        "/v1/sandbox/{id}/start": {
             "post": {
                 "description": "Starts the virtual machine sandbox",
                 "consumes": [
@@ -413,7 +534,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sandbox"
+                    "Sandbox"
                 ],
                 "summary": "Start sandbox",
                 "parameters": [
@@ -429,7 +550,7 @@ const docTemplate = `{
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.startSandboxRequest"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.startSandboxRequest"
                         }
                     }
                 ],
@@ -437,25 +558,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.startSandboxResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.startSandboxResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/api/v1/vms": {
+        "/v1/vms": {
             "get": {
                 "description": "Returns a list of all virtual machines from the libvirt instance",
                 "consumes": [
@@ -465,20 +586,20 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "vms"
+                    "VMs"
                 ],
                 "summary": "List all VMs",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.listVMsResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.listVMsResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.ErrorResponse"
+                            "$ref": "#/definitions/virsh-sandbox_internal_rest.ErrorResponse"
                         }
                     }
                 }
@@ -486,6 +607,66 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "internal_ansible.Job": {
+            "type": "object",
+            "properties": {
+                "check": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "playbook": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/internal_ansible.JobStatus"
+                },
+                "vm_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_ansible.JobRequest": {
+            "type": "object",
+            "properties": {
+                "check": {
+                    "type": "boolean"
+                },
+                "playbook": {
+                    "type": "string"
+                },
+                "vm_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_ansible.JobResponse": {
+            "type": "object",
+            "properties": {
+                "job_id": {
+                    "type": "string"
+                },
+                "ws_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_ansible.JobStatus": {
+            "type": "string",
+            "enum": [
+                "pending",
+                "running",
+                "finished",
+                "failed"
+            ],
+            "x-enum-varnames": [
+                "JobStatusPending",
+                "JobStatusRunning",
+                "JobStatusFinished",
+                "JobStatusFailed"
+            ]
+        },
         "internal_rest.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -737,6 +918,80 @@ const docTemplate = `{
                 "Minute",
                 "Hour"
             ]
+        },
+        "virsh-sandbox_internal_ansible.Job": {
+            "type": "object",
+            "properties": {
+                "check": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "playbook": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/virsh-sandbox_internal_ansible.JobStatus"
+                },
+                "vm_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "virsh-sandbox_internal_ansible.JobRequest": {
+            "type": "object",
+            "properties": {
+                "check": {
+                    "type": "boolean"
+                },
+                "playbook": {
+                    "type": "string"
+                },
+                "vm_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "virsh-sandbox_internal_ansible.JobResponse": {
+            "type": "object",
+            "properties": {
+                "job_id": {
+                    "type": "string"
+                },
+                "ws_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "virsh-sandbox_internal_ansible.JobStatus": {
+            "type": "string",
+            "enum": [
+                "pending",
+                "running",
+                "finished",
+                "failed"
+            ],
+            "x-enum-varnames": [
+                "JobStatusPending",
+                "JobStatusRunning",
+                "JobStatusFinished",
+                "JobStatusFailed"
+            ]
+        },
+        "virsh-sandbox_internal_error.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "details": {
+                    "type": "string"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
         },
         "virsh-sandbox_internal_rest.ErrorResponse": {
             "type": "object",
@@ -1247,14 +1502,32 @@ const docTemplate = `{
                 "SnapshotKindExternal"
             ]
         }
-    }
+    },
+    "tags": [
+        {
+            "description": "Sandbox lifecycle management - create, start, run commands, snapshot, and destroy sandboxes",
+            "name": "Sandbox"
+        },
+        {
+            "description": "Virtual machine listing and information",
+            "name": "VMs"
+        },
+        {
+            "description": "Ansible playbook job management",
+            "name": "Ansible"
+        },
+        {
+            "description": "Health check endpoints",
+            "name": "Health"
+        }
+    ]
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.0.1-beta",
 	Host:             "localhost:8080",
-	BasePath:         "/v1",
+	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "virsh-sandbox API",
 	Description:      "API for managing virtual machine sandboxes using libvirt",
