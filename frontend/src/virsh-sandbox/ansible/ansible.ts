@@ -219,7 +219,7 @@ export const getGetV1AnsibleJobsJobIdStreamQueryKey = (jobId?: string,) => {
     }
 
     
-export const getGetV1AnsibleJobsJobIdStreamQueryOptions = <TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<unknown>>(jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getGetV1AnsibleJobsJobIdStreamQueryOptions = <TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<string>>(jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
@@ -238,10 +238,10 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type GetV1AnsibleJobsJobIdStreamQueryResult = NonNullable<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>>
-export type GetV1AnsibleJobsJobIdStreamQueryError = AxiosError<unknown>
+export type GetV1AnsibleJobsJobIdStreamQueryError = AxiosError<string>
 
 
-export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<unknown>>(
+export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<string>>(
  jobId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>,
@@ -251,7 +251,7 @@ export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof
       >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<unknown>>(
+export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<string>>(
  jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>,
@@ -261,7 +261,7 @@ export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof
       >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<unknown>>(
+export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<string>>(
  jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -269,7 +269,7 @@ export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof
  * @summary Stream Ansible job output
  */
 
-export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<unknown>>(
+export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<string>>(
  jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
