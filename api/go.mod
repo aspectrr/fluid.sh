@@ -8,6 +8,7 @@ require (
 	github.com/MarceloPetrucio/go-scalar-api-reference v0.0.0-20240521013641-ce5d2efe0e06
 	github.com/go-chi/chi/v5 v5.0.10
 	github.com/google/uuid v1.6.0
+	github.com/gorilla/websocket v1.5.3
 	github.com/jackc/pgconn v1.14.3
 	github.com/swaggo/swag v1.16.6
 	gorm.io/datatypes v1.2.7

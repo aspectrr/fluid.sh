@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
+	"virsh-sandbox/internal/ansible"
 	serverError "virsh-sandbox/internal/error"
 	serverJSON "virsh-sandbox/internal/json"
 	"virsh-sandbox/internal/libvirt"
@@ -19,22 +20,30 @@ import (
 
 // Server wires the HTTP layer to application services.
 type Server struct {
-	Router    chi.Router
-	vmSvc     *vm.Service
-	domainMgr *libvirt.DomainManager
+	Router         chi.Router
+	vmSvc          *vm.Service
+	domainMgr      *libvirt.DomainManager
+	ansibleHandler *ansible.Handler
 }
 
 // NewServer constructs a REST server with routes registered.
-func NewServer(vmSvc *vm.Service, domainMgr *libvirt.DomainManager) *Server {
+func NewServer(vmSvc *vm.Service, domainMgr *libvirt.DomainManager, ansibleRunner *ansible.Runner) *Server {
 	router := chi.NewRouter()
 
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
+
+	var ansibleHandler *ansible.Handler
+	if ansibleRunner != nil {
+		ansibleHandler = ansible.NewHandler(ansibleRunner)
+	}
+
 	s := &Server{
-		Router:    router,
-		vmSvc:     vmSvc,
-		domainMgr: domainMgr,
+		Router:         router,
+		vmSvc:          vmSvc,
+		domainMgr:      domainMgr,
+		ansibleHandler: ansibleHandler,
 	}
 	s.routes()
 	return s
@@ -52,6 +61,11 @@ func (s *Server) StartHTTP(addr string) error {
 
 func (s *Server) routes() {
 	r := s.Router
+
+	// Register WebSocket routes at top level (not under /api/v1)
+	if s.ansibleHandler != nil {
+		s.ansibleHandler.RegisterWebSocketRoutes(r)
+	}
 
 	// Basic liveness endpoint
 	// @Summary Health check
@@ -115,6 +129,11 @@ func (s *Server) routes() {
 			r.Delete("/", s.handleDestroySandbox)
 		})
 	})
+
+	// Ansible job management
+	if s.ansibleHandler != nil {
+		s.ansibleHandler.RegisterRoutes(r)
+	}
 }
 
 // --- Request/Response DTOs ---
