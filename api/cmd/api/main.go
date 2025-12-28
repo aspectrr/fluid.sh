@@ -12,6 +12,7 @@ import (
 	"syscall"
 	"time"
 
+	"virsh-sandbox/internal/ansible"
 	"virsh-sandbox/internal/libvirt"
 	"virsh-sandbox/internal/rest"
 	"virsh-sandbox/internal/store"
@@ -43,6 +44,11 @@ func main() {
 	defaultMemMB := atoiDefault(getenv("DEFAULT_MEMORY_MB", "2048"), 2048)
 	cmdTimeout := durationFromSecondsEnv("COMMAND_TIMEOUT_SEC", 600)              // 10m default
 	ipDiscoveryTimeout := durationFromSecondsEnv("IP_DISCOVERY_TIMEOUT_SEC", 120) // 2m default
+
+	// Ansible configuration
+	ansibleInventoryPath := getenv("ANSIBLE_INVENTORY_PATH", "/ansible/inventory")
+	ansibleImage := getenv("ANSIBLE_IMAGE", "ansible-sandbox")
+	ansiblePlaybooks := strings.Split(getenv("ANSIBLE_ALLOWED_PLAYBOOKS", "ping.yml"), ",")
 
 	logger.Info("starting virsh-sandbox API",
 		"addr", apiAddr,
@@ -87,8 +93,11 @@ func main() {
 		IPDiscoveryTimeout: ipDiscoveryTimeout,
 	})
 
+	// Initialize Ansible runner
+	ansibleRunner := ansible.NewRunner(ansibleInventoryPath, ansibleImage, ansiblePlaybooks)
+
 	// REST server setup
-	restSrv := rest.NewServer(vmSvc, domainMgr)
+	restSrv := rest.NewServer(vmSvc, domainMgr, ansibleRunner)
 
 	// Build http.Server so we can gracefully shutdown
 	httpSrv := &http.Server{

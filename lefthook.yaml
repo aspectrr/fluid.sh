@@ -27,12 +27,3 @@ pre-commit:
       glob: "*.go"
       root: "tmux-client"
       run: make lint
-    fmt-ansible-runner:
-      glob: "*.py"
-      root: "ansible-runner"
-      run: uvx ruff format
-      stage_fixed: true
-    lint-ansible-runner:
-      glob: "*.py"
-      root: "ansible-runner"
-      run: uvx ruff check --fix
