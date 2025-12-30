@@ -1,0 +1,111 @@
+name: Publish SDK
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g., 1.2.3)"
+        required: true
+      environment:
+        description: "Environment to publish to"
+        required: true
+        default: "pypi"
+        type: choice
+        options:
+          - pypi
+          - testpypi
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'pypi' }}
+
+    permissions:
+      contents: write
+      id-token: write # For trusted publishing to PyPI
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+          npm install -g openapi-merge-cli
+
+      - name: Extract version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION=${{ github.event.inputs.version }}
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Publishing version: $VERSION"
+
+      - name: Update version in config
+        run: |
+          sed -i "s/packageVersion: .*/packageVersion: ${{ steps.version.outputs.version }}/" .openapi-generator/config.yaml
+
+      - name: Generate SDK
+        run: bash scripts/generate.sh
+
+      - name: Build package
+        run: |
+          cd sdk
+          python -m build
+
+      - name: Check distribution
+        run: |
+          cd sdk
+          twine check dist/*
+
+      - name: Publish to TestPyPI
+        if: github.event.inputs.environment == 'testpypi' || github.event_name == 'workflow_dispatch'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          packages-dir: sdk/dist/
+          skip-existing: true
+
+      - name: Publish to PyPI
+        if: github.event_name == 'release' || github.event.inputs.environment == 'pypi'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: sdk/dist/
+
+      - name: Create GitHub Release Assets
+        if: github.event_name == 'release'
+        run: |
+          cd sdk/dist
+          for file in *; do
+            gh release upload ${{ github.ref_name }} "$file"
+          done
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Commit generated SDK
+        if: github.event_name == 'release'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add sdk/
+          git commit -m "chore: update SDK to version ${{ steps.version.outputs.version }}" || echo "No changes to commit"
+          git push origin HEAD:main || echo "No changes to push"

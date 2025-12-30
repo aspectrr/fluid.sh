@@ -5,9 +5,7 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import {
-  useQuery
-} from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -17,113 +15,165 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
-import * as axios from 'axios';
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
+import * as axios from "axios";
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 import type {
-  VirshSandboxInternalRestErrorResponse,
-  VirshSandboxInternalRestListVMsResponse
-} from '.././model';
-
-
-
-
+  InternalRestErrorResponse,
+  InternalRestListVMsResponse,
+} from ".././model";
 
 /**
  * Returns a list of all virtual machines from the libvirt instance
  * @summary List all VMs
  */
-export const getV1Vms = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<VirshSandboxInternalRestListVMsResponse>> => {
-    
-    
-    return axios.default.get(
-      `/v1/vms`,options
-    );
-  }
+export const listVirtualMachines = (
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<InternalRestListVMsResponse>> => {
+  return axios.default.get(`/v1/vms`, options);
+};
 
+export const getListVirtualMachinesQueryKey = () => {
+  return [`/v1/vms`] as const;
+};
 
+export const getListVirtualMachinesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listVirtualMachines>>,
+  TError = AxiosError<InternalRestErrorResponse>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof listVirtualMachines>>,
+      TError,
+      TData
+    >
+  >;
+  axios?: AxiosRequestConfig;
+}) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
+  const queryKey = queryOptions?.queryKey ?? getListVirtualMachinesQueryKey();
 
-export const getGetV1VmsQueryKey = () => {
-    return [
-    `/v1/vms`
-    ] as const;
-    }
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof listVirtualMachines>>
+  > = ({ signal }) => listVirtualMachines({ signal, ...axiosOptions });
 
-    
-export const getGetV1VmsQueryOptions = <TData = Awaited<ReturnType<typeof getV1Vms>>, TError = AxiosError<VirshSandboxInternalRestErrorResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Vms>>, TError, TData>>, axios?: AxiosRequestConfig}
-) => {
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listVirtualMachines>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+export type ListVirtualMachinesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listVirtualMachines>>
+>;
+export type ListVirtualMachinesQueryError =
+  AxiosError<InternalRestErrorResponse>;
 
-  const queryKey =  queryOptions?.queryKey ?? getGetV1VmsQueryKey();
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1Vms>>> = ({ signal }) => getV1Vms({ signal, ...axiosOptions });
-
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1Vms>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetV1VmsQueryResult = NonNullable<Awaited<ReturnType<typeof getV1Vms>>>
-export type GetV1VmsQueryError = AxiosError<VirshSandboxInternalRestErrorResponse>
-
-
-export function useGetV1Vms<TData = Awaited<ReturnType<typeof getV1Vms>>, TError = AxiosError<VirshSandboxInternalRestErrorResponse>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Vms>>, TError, TData>> & Pick<
+export function useListVirtualMachines<
+  TData = Awaited<ReturnType<typeof listVirtualMachines>>,
+  TError = AxiosError<InternalRestErrorResponse>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof listVirtualMachines>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1Vms>>,
+          Awaited<ReturnType<typeof listVirtualMachines>>,
           TError,
-          Awaited<ReturnType<typeof getV1Vms>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1Vms<TData = Awaited<ReturnType<typeof getV1Vms>>, TError = AxiosError<VirshSandboxInternalRestErrorResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Vms>>, TError, TData>> & Pick<
+          Awaited<ReturnType<typeof listVirtualMachines>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListVirtualMachines<
+  TData = Awaited<ReturnType<typeof listVirtualMachines>>,
+  TError = AxiosError<InternalRestErrorResponse>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof listVirtualMachines>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1Vms>>,
+          Awaited<ReturnType<typeof listVirtualMachines>>,
           TError,
-          Awaited<ReturnType<typeof getV1Vms>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1Vms<TData = Awaited<ReturnType<typeof getV1Vms>>, TError = AxiosError<VirshSandboxInternalRestErrorResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Vms>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof listVirtualMachines>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListVirtualMachines<
+  TData = Awaited<ReturnType<typeof listVirtualMachines>>,
+  TError = AxiosError<InternalRestErrorResponse>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof listVirtualMachines>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary List all VMs
  */
 
-export function useGetV1Vms<TData = Awaited<ReturnType<typeof getV1Vms>>, TError = AxiosError<VirshSandboxInternalRestErrorResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Vms>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useListVirtualMachines<
+  TData = Awaited<ReturnType<typeof listVirtualMachines>>,
+  TError = AxiosError<InternalRestErrorResponse>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof listVirtualMachines>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getListVirtualMachinesQueryOptions(options);
 
-  const queryOptions = getGetV1VmsQueryOptions(options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
-

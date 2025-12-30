@@ -5,10 +5,7 @@
  * API for managing tmux sessions and windows
  * OpenAPI spec version: 0.0.1-beta
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -21,458 +18,682 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
-import * as axios from 'axios';
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
+import * as axios from "axios";
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 import type {
-  DeleteV1HumanPendingRequestID200,
-  PostV1HumanAskAsync200,
+  AskHumanAsync200,
+  CancelApproval200,
   TmuxClientInternalTypesAPIError,
   TmuxClientInternalTypesApproveRequest,
   TmuxClientInternalTypesAskHumanRequest,
   TmuxClientInternalTypesAskHumanResponse,
   TmuxClientInternalTypesListApprovalsResponse,
-  TmuxClientInternalTypesPendingApproval
-} from '.././model';
-
-
-
-
+  TmuxClientInternalTypesPendingApproval,
+} from ".././model";
 
 /**
  * Requests approval from a human for an action
  * @summary Request human approval
  */
-export const postV1HumanAsk = (
-    tmuxClientInternalTypesAskHumanRequest: TmuxClientInternalTypesAskHumanRequest, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<TmuxClientInternalTypesAskHumanResponse>> => {
-    
-    
-    return axios.default.post(
-      `/v1/human/ask`,
-      tmuxClientInternalTypesAskHumanRequest,options
-    );
-  }
+export const askHuman = (
+  tmuxClientInternalTypesAskHumanRequest: TmuxClientInternalTypesAskHumanRequest,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<TmuxClientInternalTypesAskHumanResponse>> => {
+  return axios.default.post(
+    `/v1/human/ask`,
+    tmuxClientInternalTypesAskHumanRequest,
+    options,
+  );
+};
 
+export const getAskHumanMutationOptions = <
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof askHuman>>,
+    TError,
+    { data: TmuxClientInternalTypesAskHumanRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof askHuman>>,
+  TError,
+  { data: TmuxClientInternalTypesAskHumanRequest },
+  TContext
+> => {
+  const mutationKey = ["askHuman"];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof askHuman>>,
+    { data: TmuxClientInternalTypesAskHumanRequest }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export const getPostV1HumanAskMutationOptions = <TError = AxiosError<TmuxClientInternalTypesAPIError>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1HumanAsk>>, TError,{data: TmuxClientInternalTypesAskHumanRequest}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof postV1HumanAsk>>, TError,{data: TmuxClientInternalTypesAskHumanRequest}, TContext> => {
+    return askHuman(data, axiosOptions);
+  };
 
-const mutationKey = ['postV1HumanAsk'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type AskHumanMutationResult = NonNullable<
+  Awaited<ReturnType<typeof askHuman>>
+>;
+export type AskHumanMutationBody = TmuxClientInternalTypesAskHumanRequest;
+export type AskHumanMutationError = AxiosError<TmuxClientInternalTypesAPIError>;
 
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1HumanAsk>>, {data: TmuxClientInternalTypesAskHumanRequest}> = (props) => {
-          const {data} = props ?? {};
-
-          return  postV1HumanAsk(data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostV1HumanAskMutationResult = NonNullable<Awaited<ReturnType<typeof postV1HumanAsk>>>
-    export type PostV1HumanAskMutationBody = TmuxClientInternalTypesAskHumanRequest
-    export type PostV1HumanAskMutationError = AxiosError<TmuxClientInternalTypesAPIError>
-
-    /**
+/**
  * @summary Request human approval
  */
-export const usePostV1HumanAsk = <TError = AxiosError<TmuxClientInternalTypesAPIError>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1HumanAsk>>, TError,{data: TmuxClientInternalTypesAskHumanRequest}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postV1HumanAsk>>,
-        TError,
-        {data: TmuxClientInternalTypesAskHumanRequest},
-        TContext
-      > => {
+export const useAskHuman = <
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof askHuman>>,
+      TError,
+      { data: TmuxClientInternalTypesAskHumanRequest },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof askHuman>>,
+  TError,
+  { data: TmuxClientInternalTypesAskHumanRequest },
+  TContext
+> => {
+  const mutationOptions = getAskHumanMutationOptions(options);
 
-      const mutationOptions = getPostV1HumanAskMutationOptions(options);
-
-      return useMutation(mutationOptions, queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Requests approval from a human asynchronously
  * @summary Request human approval asynchronously
  */
-export const postV1HumanAskAsync = (
-    tmuxClientInternalTypesAskHumanRequest: TmuxClientInternalTypesAskHumanRequest, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<PostV1HumanAskAsync200>> => {
-    
-    
-    return axios.default.post(
-      `/v1/human/ask-async`,
-      tmuxClientInternalTypesAskHumanRequest,options
-    );
-  }
+export const askHumanAsync = (
+  tmuxClientInternalTypesAskHumanRequest: TmuxClientInternalTypesAskHumanRequest,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<AskHumanAsync200>> => {
+  return axios.default.post(
+    `/v1/human/ask-async`,
+    tmuxClientInternalTypesAskHumanRequest,
+    options,
+  );
+};
 
+export const getAskHumanAsyncMutationOptions = <
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof askHumanAsync>>,
+    TError,
+    { data: TmuxClientInternalTypesAskHumanRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof askHumanAsync>>,
+  TError,
+  { data: TmuxClientInternalTypesAskHumanRequest },
+  TContext
+> => {
+  const mutationKey = ["askHumanAsync"];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof askHumanAsync>>,
+    { data: TmuxClientInternalTypesAskHumanRequest }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export const getPostV1HumanAskAsyncMutationOptions = <TError = AxiosError<TmuxClientInternalTypesAPIError>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1HumanAskAsync>>, TError,{data: TmuxClientInternalTypesAskHumanRequest}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof postV1HumanAskAsync>>, TError,{data: TmuxClientInternalTypesAskHumanRequest}, TContext> => {
+    return askHumanAsync(data, axiosOptions);
+  };
 
-const mutationKey = ['postV1HumanAskAsync'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type AskHumanAsyncMutationResult = NonNullable<
+  Awaited<ReturnType<typeof askHumanAsync>>
+>;
+export type AskHumanAsyncMutationBody = TmuxClientInternalTypesAskHumanRequest;
+export type AskHumanAsyncMutationError =
+  AxiosError<TmuxClientInternalTypesAPIError>;
 
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1HumanAskAsync>>, {data: TmuxClientInternalTypesAskHumanRequest}> = (props) => {
-          const {data} = props ?? {};
-
-          return  postV1HumanAskAsync(data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostV1HumanAskAsyncMutationResult = NonNullable<Awaited<ReturnType<typeof postV1HumanAskAsync>>>
-    export type PostV1HumanAskAsyncMutationBody = TmuxClientInternalTypesAskHumanRequest
-    export type PostV1HumanAskAsyncMutationError = AxiosError<TmuxClientInternalTypesAPIError>
-
-    /**
+/**
  * @summary Request human approval asynchronously
  */
-export const usePostV1HumanAskAsync = <TError = AxiosError<TmuxClientInternalTypesAPIError>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1HumanAskAsync>>, TError,{data: TmuxClientInternalTypesAskHumanRequest}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postV1HumanAskAsync>>,
-        TError,
-        {data: TmuxClientInternalTypesAskHumanRequest},
-        TContext
-      > => {
+export const useAskHumanAsync = <
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof askHumanAsync>>,
+      TError,
+      { data: TmuxClientInternalTypesAskHumanRequest },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof askHumanAsync>>,
+  TError,
+  { data: TmuxClientInternalTypesAskHumanRequest },
+  TContext
+> => {
+  const mutationOptions = getAskHumanAsyncMutationOptions(options);
 
-      const mutationOptions = getPostV1HumanAskAsyncMutationOptions(options);
-
-      return useMutation(mutationOptions, queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Lists all pending human approval requests
  * @summary List pending approvals
  */
-export const getV1HumanPending = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<TmuxClientInternalTypesListApprovalsResponse>> => {
-    
-    
-    return axios.default.get(
-      `/v1/human/pending`,options
-    );
-  }
+export const listPendingApprovals = (
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<TmuxClientInternalTypesListApprovalsResponse>> => {
+  return axios.default.get(`/v1/human/pending`, options);
+};
 
+export const getListPendingApprovalsQueryKey = () => {
+  return [`/v1/human/pending`] as const;
+};
 
+export const getListPendingApprovalsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listPendingApprovals>>,
+  TError = AxiosError<unknown>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof listPendingApprovals>>,
+      TError,
+      TData
+    >
+  >;
+  axios?: AxiosRequestConfig;
+}) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
+  const queryKey = queryOptions?.queryKey ?? getListPendingApprovalsQueryKey();
 
-export const getGetV1HumanPendingQueryKey = () => {
-    return [
-    `/v1/human/pending`
-    ] as const;
-    }
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof listPendingApprovals>>
+  > = ({ signal }) => listPendingApprovals({ signal, ...axiosOptions });
 
-    
-export const getGetV1HumanPendingQueryOptions = <TData = Awaited<ReturnType<typeof getV1HumanPending>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1HumanPending>>, TError, TData>>, axios?: AxiosRequestConfig}
-) => {
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listPendingApprovals>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+export type ListPendingApprovalsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listPendingApprovals>>
+>;
+export type ListPendingApprovalsQueryError = AxiosError<unknown>;
 
-  const queryKey =  queryOptions?.queryKey ?? getGetV1HumanPendingQueryKey();
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1HumanPending>>> = ({ signal }) => getV1HumanPending({ signal, ...axiosOptions });
-
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1HumanPending>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetV1HumanPendingQueryResult = NonNullable<Awaited<ReturnType<typeof getV1HumanPending>>>
-export type GetV1HumanPendingQueryError = AxiosError<unknown>
-
-
-export function useGetV1HumanPending<TData = Awaited<ReturnType<typeof getV1HumanPending>>, TError = AxiosError<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1HumanPending>>, TError, TData>> & Pick<
+export function useListPendingApprovals<
+  TData = Awaited<ReturnType<typeof listPendingApprovals>>,
+  TError = AxiosError<unknown>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof listPendingApprovals>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1HumanPending>>,
+          Awaited<ReturnType<typeof listPendingApprovals>>,
           TError,
-          Awaited<ReturnType<typeof getV1HumanPending>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1HumanPending<TData = Awaited<ReturnType<typeof getV1HumanPending>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1HumanPending>>, TError, TData>> & Pick<
+          Awaited<ReturnType<typeof listPendingApprovals>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListPendingApprovals<
+  TData = Awaited<ReturnType<typeof listPendingApprovals>>,
+  TError = AxiosError<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof listPendingApprovals>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1HumanPending>>,
+          Awaited<ReturnType<typeof listPendingApprovals>>,
           TError,
-          Awaited<ReturnType<typeof getV1HumanPending>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1HumanPending<TData = Awaited<ReturnType<typeof getV1HumanPending>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1HumanPending>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof listPendingApprovals>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListPendingApprovals<
+  TData = Awaited<ReturnType<typeof listPendingApprovals>>,
+  TError = AxiosError<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof listPendingApprovals>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary List pending approvals
  */
 
-export function useGetV1HumanPending<TData = Awaited<ReturnType<typeof getV1HumanPending>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1HumanPending>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useListPendingApprovals<
+  TData = Awaited<ReturnType<typeof listPendingApprovals>>,
+  TError = AxiosError<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof listPendingApprovals>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getListPendingApprovalsQueryOptions(options);
 
-  const queryOptions = getGetV1HumanPendingQueryOptions(options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * Cancels a pending approval request
  * @summary Cancel approval
  */
-export const deleteV1HumanPendingRequestID = (
-    requestID: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<DeleteV1HumanPendingRequestID200>> => {
-    
-    
-    return axios.default.delete(
-      `/v1/human/pending/${requestID}`,options
-    );
-  }
+export const cancelApproval = (
+  requestID: string,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<CancelApproval200>> => {
+  return axios.default.delete(`/v1/human/pending/${requestID}`, options);
+};
 
+export const getCancelApprovalMutationOptions = <
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof cancelApproval>>,
+    TError,
+    { requestID: string },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof cancelApproval>>,
+  TError,
+  { requestID: string },
+  TContext
+> => {
+  const mutationKey = ["cancelApproval"];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof cancelApproval>>,
+    { requestID: string }
+  > = (props) => {
+    const { requestID } = props ?? {};
 
-export const getDeleteV1HumanPendingRequestIDMutationOptions = <TError = AxiosError<TmuxClientInternalTypesAPIError>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1HumanPendingRequestID>>, TError,{requestID: string}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteV1HumanPendingRequestID>>, TError,{requestID: string}, TContext> => {
+    return cancelApproval(requestID, axiosOptions);
+  };
 
-const mutationKey = ['deleteV1HumanPendingRequestID'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type CancelApprovalMutationResult = NonNullable<
+  Awaited<ReturnType<typeof cancelApproval>>
+>;
 
+export type CancelApprovalMutationError =
+  AxiosError<TmuxClientInternalTypesAPIError>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1HumanPendingRequestID>>, {requestID: string}> = (props) => {
-          const {requestID} = props ?? {};
-
-          return  deleteV1HumanPendingRequestID(requestID,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteV1HumanPendingRequestIDMutationResult = NonNullable<Awaited<ReturnType<typeof deleteV1HumanPendingRequestID>>>
-    
-    export type DeleteV1HumanPendingRequestIDMutationError = AxiosError<TmuxClientInternalTypesAPIError>
-
-    /**
+/**
  * @summary Cancel approval
  */
-export const useDeleteV1HumanPendingRequestID = <TError = AxiosError<TmuxClientInternalTypesAPIError>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1HumanPendingRequestID>>, TError,{requestID: string}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteV1HumanPendingRequestID>>,
-        TError,
-        {requestID: string},
-        TContext
-      > => {
+export const useCancelApproval = <
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof cancelApproval>>,
+      TError,
+      { requestID: string },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof cancelApproval>>,
+  TError,
+  { requestID: string },
+  TContext
+> => {
+  const mutationOptions = getCancelApprovalMutationOptions(options);
 
-      const mutationOptions = getDeleteV1HumanPendingRequestIDMutationOptions(options);
-
-      return useMutation(mutationOptions, queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Retrieves a specific pending approval request
  * @summary Get pending approval
  */
-export const getV1HumanPendingRequestID = (
-    requestID: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<TmuxClientInternalTypesPendingApproval>> => {
-    
-    
-    return axios.default.get(
-      `/v1/human/pending/${requestID}`,options
-    );
-  }
+export const getPendingApproval = (
+  requestID: string,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<TmuxClientInternalTypesPendingApproval>> => {
+  return axios.default.get(`/v1/human/pending/${requestID}`, options);
+};
 
+export const getGetPendingApprovalQueryKey = (requestID?: string) => {
+  return [`/v1/human/pending/${requestID}`] as const;
+};
 
-
-
-export const getGetV1HumanPendingRequestIDQueryKey = (requestID?: string,) => {
-    return [
-    `/v1/human/pending/${requestID}`
-    ] as const;
-    }
-
-    
-export const getGetV1HumanPendingRequestIDQueryOptions = <TData = Awaited<ReturnType<typeof getV1HumanPendingRequestID>>, TError = AxiosError<TmuxClientInternalTypesAPIError>>(requestID: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1HumanPendingRequestID>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getGetPendingApprovalQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPendingApproval>>,
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+>(
+  requestID: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getPendingApproval>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
 ) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getGetPendingApprovalQueryKey(requestID);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetV1HumanPendingRequestIDQueryKey(requestID);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getPendingApproval>>
+  > = ({ signal }) =>
+    getPendingApproval(requestID, { signal, ...axiosOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!requestID,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPendingApproval>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1HumanPendingRequestID>>> = ({ signal }) => getV1HumanPendingRequestID(requestID, { signal, ...axiosOptions });
+export type GetPendingApprovalQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPendingApproval>>
+>;
+export type GetPendingApprovalQueryError =
+  AxiosError<TmuxClientInternalTypesAPIError>;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(requestID), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1HumanPendingRequestID>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetV1HumanPendingRequestIDQueryResult = NonNullable<Awaited<ReturnType<typeof getV1HumanPendingRequestID>>>
-export type GetV1HumanPendingRequestIDQueryError = AxiosError<TmuxClientInternalTypesAPIError>
-
-
-export function useGetV1HumanPendingRequestID<TData = Awaited<ReturnType<typeof getV1HumanPendingRequestID>>, TError = AxiosError<TmuxClientInternalTypesAPIError>>(
- requestID: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1HumanPendingRequestID>>, TError, TData>> & Pick<
+export function useGetPendingApproval<
+  TData = Awaited<ReturnType<typeof getPendingApproval>>,
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+>(
+  requestID: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getPendingApproval>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1HumanPendingRequestID>>,
+          Awaited<ReturnType<typeof getPendingApproval>>,
           TError,
-          Awaited<ReturnType<typeof getV1HumanPendingRequestID>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1HumanPendingRequestID<TData = Awaited<ReturnType<typeof getV1HumanPendingRequestID>>, TError = AxiosError<TmuxClientInternalTypesAPIError>>(
- requestID: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1HumanPendingRequestID>>, TError, TData>> & Pick<
+          Awaited<ReturnType<typeof getPendingApproval>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetPendingApproval<
+  TData = Awaited<ReturnType<typeof getPendingApproval>>,
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+>(
+  requestID: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getPendingApproval>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1HumanPendingRequestID>>,
+          Awaited<ReturnType<typeof getPendingApproval>>,
           TError,
-          Awaited<ReturnType<typeof getV1HumanPendingRequestID>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1HumanPendingRequestID<TData = Awaited<ReturnType<typeof getV1HumanPendingRequestID>>, TError = AxiosError<TmuxClientInternalTypesAPIError>>(
- requestID: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1HumanPendingRequestID>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof getPendingApproval>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetPendingApproval<
+  TData = Awaited<ReturnType<typeof getPendingApproval>>,
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+>(
+  requestID: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getPendingApproval>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get pending approval
  */
 
-export function useGetV1HumanPendingRequestID<TData = Awaited<ReturnType<typeof getV1HumanPendingRequestID>>, TError = AxiosError<TmuxClientInternalTypesAPIError>>(
- requestID: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1HumanPendingRequestID>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetPendingApproval<
+  TData = Awaited<ReturnType<typeof getPendingApproval>>,
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+>(
+  requestID: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getPendingApproval>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetPendingApprovalQueryOptions(requestID, options);
 
-  const queryOptions = getGetV1HumanPendingRequestIDQueryOptions(requestID,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * Responds to a pending approval request
  * @summary Respond to approval
  */
-export const postV1HumanRespond = (
-    tmuxClientInternalTypesApproveRequest: TmuxClientInternalTypesApproveRequest, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<TmuxClientInternalTypesAskHumanResponse>> => {
-    
-    
-    return axios.default.post(
-      `/v1/human/respond`,
-      tmuxClientInternalTypesApproveRequest,options
-    );
-  }
+export const respondToApproval = (
+  tmuxClientInternalTypesApproveRequest: TmuxClientInternalTypesApproveRequest,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<TmuxClientInternalTypesAskHumanResponse>> => {
+  return axios.default.post(
+    `/v1/human/respond`,
+    tmuxClientInternalTypesApproveRequest,
+    options,
+  );
+};
 
+export const getRespondToApprovalMutationOptions = <
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof respondToApproval>>,
+    TError,
+    { data: TmuxClientInternalTypesApproveRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof respondToApproval>>,
+  TError,
+  { data: TmuxClientInternalTypesApproveRequest },
+  TContext
+> => {
+  const mutationKey = ["respondToApproval"];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof respondToApproval>>,
+    { data: TmuxClientInternalTypesApproveRequest }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export const getPostV1HumanRespondMutationOptions = <TError = AxiosError<TmuxClientInternalTypesAPIError>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1HumanRespond>>, TError,{data: TmuxClientInternalTypesApproveRequest}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof postV1HumanRespond>>, TError,{data: TmuxClientInternalTypesApproveRequest}, TContext> => {
+    return respondToApproval(data, axiosOptions);
+  };
 
-const mutationKey = ['postV1HumanRespond'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type RespondToApprovalMutationResult = NonNullable<
+  Awaited<ReturnType<typeof respondToApproval>>
+>;
+export type RespondToApprovalMutationBody =
+  TmuxClientInternalTypesApproveRequest;
+export type RespondToApprovalMutationError =
+  AxiosError<TmuxClientInternalTypesAPIError>;
 
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1HumanRespond>>, {data: TmuxClientInternalTypesApproveRequest}> = (props) => {
-          const {data} = props ?? {};
-
-          return  postV1HumanRespond(data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostV1HumanRespondMutationResult = NonNullable<Awaited<ReturnType<typeof postV1HumanRespond>>>
-    export type PostV1HumanRespondMutationBody = TmuxClientInternalTypesApproveRequest
-    export type PostV1HumanRespondMutationError = AxiosError<TmuxClientInternalTypesAPIError>
-
-    /**
+/**
  * @summary Respond to approval
  */
-export const usePostV1HumanRespond = <TError = AxiosError<TmuxClientInternalTypesAPIError>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1HumanRespond>>, TError,{data: TmuxClientInternalTypesApproveRequest}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postV1HumanRespond>>,
-        TError,
-        {data: TmuxClientInternalTypesApproveRequest},
-        TContext
-      > => {
+export const useRespondToApproval = <
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof respondToApproval>>,
+      TError,
+      { data: TmuxClientInternalTypesApproveRequest },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof respondToApproval>>,
+  TError,
+  { data: TmuxClientInternalTypesApproveRequest },
+  TContext
+> => {
+  const mutationOptions = getRespondToApprovalMutationOptions(options);
 
-      const mutationOptions = getPostV1HumanRespondMutationOptions(options);
-
-      return useMutation(mutationOptions, queryClient);
-    }
-    
+  return useMutation(mutationOptions, queryClient);
+};

@@ -5,7 +5,7 @@
  * API for managing tmux sessions and windows
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { TmuxClientInternalTypesPendingApproval } from './tmuxClientInternalTypesPendingApproval';
+import type { TmuxClientInternalTypesPendingApproval } from "./tmuxClientInternalTypesPendingApproval";
 
 export interface TmuxClientInternalTypesListApprovalsResponse {
   pending?: TmuxClientInternalTypesPendingApproval[];

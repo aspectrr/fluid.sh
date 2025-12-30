@@ -5,7 +5,7 @@
  * API for managing tmux sessions and windows
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { TmuxClientInternalTypesAPIError } from './tmuxClientInternalTypesAPIError';
+import type { TmuxClientInternalTypesAPIError } from "./tmuxClientInternalTypesAPIError";
 
 export interface TmuxClientInternalTypesAuditEntry {
   action?: string;

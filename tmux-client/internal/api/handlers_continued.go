@@ -22,6 +22,7 @@ import (
 // @Failure 400 {object} types.APIError
 // @Failure 404 {object} types.APIError
 // @Failure 500 {object} types.APIError
+// @Id listDirectory
 // @Router /v1/file/list [post]
 func (h *Handler) handleListDir(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -64,6 +65,7 @@ func (h *Handler) handleListDir(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} types.APIError
 // @Failure 500 {object} types.APIError
+// @Id checkFileExists
 // @Router /v1/file/exists [post]
 func (h *Handler) handleFileExists(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -108,6 +110,7 @@ func (h *Handler) handleFileExists(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} types.APIError
 // @Failure 500 {object} types.APIError
+// @Id getFileHash
 // @Router /v1/file/hash [post]
 func (h *Handler) handleFileHash(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -155,6 +158,7 @@ func (h *Handler) handleFileHash(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} types.APIError
 // @Failure 403 {object} types.APIError
 // @Failure 500 {object} types.APIError
+// @Id runCommand
 // @Router /v1/command/run [post]
 func (h *Handler) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -215,6 +219,7 @@ func (h *Handler) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 // @Accept json
 // @Produce json
 // @Success 200 {object} map[string]any
+// @Id getAllowedCommands
 // @Router /v1/command/allowed [get]
 func (h *Handler) handleGetAllowedCommands(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -239,6 +244,7 @@ func (h *Handler) handleGetAllowedCommands(w http.ResponseWriter, r *http.Reques
 // @Success 200 {object} types.AskHumanResponse
 // @Failure 400 {object} types.APIError
 // @Failure 500 {object} types.APIError
+// @Id askHuman
 // @Router /v1/human/ask [post]
 func (h *Handler) handleAskHuman(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -280,6 +286,7 @@ func (h *Handler) handleAskHuman(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} types.APIError
 // @Failure 500 {object} types.APIError
+// @Id askHumanAsync
 // @Router /v1/human/ask-async [post]
 func (h *Handler) handleAskHumanAsync(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -323,6 +330,7 @@ func (h *Handler) handleAskHumanAsync(w http.ResponseWriter, r *http.Request) {
 // @Accept json
 // @Produce json
 // @Success 200 {object} types.ListApprovalsResponse
+// @Id listPendingApprovals
 // @Router /v1/human/pending [get]
 func (h *Handler) handleListPendingApprovals(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -346,6 +354,7 @@ func (h *Handler) handleListPendingApprovals(w http.ResponseWriter, r *http.Requ
 // @Success 200 {object} types.PendingApproval
 // @Failure 400 {object} types.APIError
 // @Failure 404 {object} types.APIError
+// @Id getPendingApproval
 // @Router /v1/human/pending/{requestID} [get]
 func (h *Handler) handleGetPendingApproval(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -377,6 +386,7 @@ func (h *Handler) handleGetPendingApproval(w http.ResponseWriter, r *http.Reques
 // @Success 200 {object} types.AskHumanResponse
 // @Failure 400 {object} types.APIError
 // @Failure 404 {object} types.APIError
+// @Id respondToApproval
 // @Router /v1/human/respond [post]
 func (h *Handler) handleRespondToApproval(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -418,6 +428,7 @@ func (h *Handler) handleRespondToApproval(w http.ResponseWriter, r *http.Request
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} types.APIError
 // @Failure 404 {object} types.APIError
+// @Id cancelApproval
 // @Router /v1/human/pending/{requestID} [delete]
 func (h *Handler) handleCancelApproval(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -456,6 +467,7 @@ func (h *Handler) handleCancelApproval(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} types.CreatePlanResponse
 // @Failure 400 {object} types.APIError
 // @Failure 500 {object} types.APIError
+// @Id createPlan
 // @Router /v1/plan/create [post]
 func (h *Handler) handleCreatePlan(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -490,6 +502,7 @@ func (h *Handler) handleCreatePlan(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Success 200 {object} types.ListPlansResponse
 // @Failure 500 {object} types.APIError
+// @Id listPlans
 // @Router /v1/plan/ [get]
 func (h *Handler) handleListPlans(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -515,6 +528,7 @@ func (h *Handler) handleListPlans(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} types.GetPlanResponse
 // @Failure 400 {object} types.APIError
 // @Failure 404 {object} types.APIError
+// @Id getPlan
 // @Router /v1/plan/{planID} [get]
 func (h *Handler) handleGetPlan(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -547,6 +561,7 @@ func (h *Handler) handleGetPlan(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} types.APIError
 // @Failure 404 {object} types.APIError
 // @Failure 500 {object} types.APIError
+// @Id updatePlan
 // @Router /v1/plan/update [post]
 func (h *Handler) handleUpdatePlan(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -591,6 +606,7 @@ func (h *Handler) handleUpdatePlan(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} types.APIError
 // @Failure 404 {object} types.APIError
 // @Failure 500 {object} types.APIError
+// @Id advancePlanStep
 // @Router /v1/plan/{planID}/advance [post]
 func (h *Handler) handleAdvanceStep(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -644,6 +660,7 @@ func (h *Handler) handleAdvanceStep(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} types.APIError
 // @Failure 404 {object} types.APIError
 // @Failure 500 {object} types.APIError
+// @Id abortPlan
 // @Router /v1/plan/{planID}/abort [post]
 func (h *Handler) handleAbortPlan(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -700,6 +717,7 @@ func (h *Handler) handleAbortPlan(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} types.APIError
 // @Failure 404 {object} types.APIError
+// @Id deletePlan
 // @Router /v1/plan/{planID} [delete]
 func (h *Handler) handleDeletePlan(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -738,6 +756,7 @@ func (h *Handler) handleDeletePlan(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} types.AuditQueryResponse
 // @Failure 400 {object} types.APIError
 // @Failure 500 {object} types.APIError
+// @Id queryAuditLog
 // @Router /v1/audit/query [post]
 func (h *Handler) handleQueryAudit(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
@@ -773,6 +792,7 @@ func (h *Handler) handleQueryAudit(w http.ResponseWriter, r *http.Request) {
 // @Accept json
 // @Produce json
 // @Success 200 {object} map[string]interface{}
+// @Id getAuditStats
 // @Router /v1/audit/stats [get]
 func (h *Handler) handleAuditStats(w http.ResponseWriter, r *http.Request) {
 	stats := h.auditLogger.Stats()

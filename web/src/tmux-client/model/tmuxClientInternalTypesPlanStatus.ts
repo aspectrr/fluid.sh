@@ -6,14 +6,14 @@
  * OpenAPI spec version: 0.0.1-beta
  */
 
-export type TmuxClientInternalTypesPlanStatus = typeof TmuxClientInternalTypesPlanStatus[keyof typeof TmuxClientInternalTypesPlanStatus];
-
+export type TmuxClientInternalTypesPlanStatus =
+  (typeof TmuxClientInternalTypesPlanStatus)[keyof typeof TmuxClientInternalTypesPlanStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const TmuxClientInternalTypesPlanStatus = {
-  PlanStatusPending: 'pending',
-  PlanStatusInProgress: 'in_progress',
-  PlanStatusCompleted: 'completed',
-  PlanStatusFailed: 'failed',
-  PlanStatusAborted: 'aborted',
+  PlanStatusPending: "pending",
+  PlanStatusInProgress: "in_progress",
+  PlanStatusCompleted: "completed",
+  PlanStatusFailed: "failed",
+  PlanStatusAborted: "aborted",
 } as const;

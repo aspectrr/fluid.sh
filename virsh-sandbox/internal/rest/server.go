@@ -214,6 +214,7 @@ type listVMsResponse struct {
 // @Accept json
 // @Produce json
 // @Success 200 {object} map[string]interface{}
+// @Id getHealth
 // @Router /v1/health [get]
 func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 	_ = serverJSON.RespondJSON(w, http.StatusOK, map[string]any{"status": "ok"})
@@ -228,6 +229,7 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 // @Success 201 {object} createSandboxResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
+// @Id createSandbox
 // @Router /v1/sandbox/create [post]
 func (s *Server) handleCreateSandbox(w http.ResponseWriter, r *http.Request) {
 	var req createSandboxRequest
@@ -258,6 +260,7 @@ func (s *Server) handleCreateSandbox(w http.ResponseWriter, r *http.Request) {
 // @Success 204
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
+// @Id injectSshKey
 // @Router /v1/sandbox/{id}/sshkey [post]
 func (s *Server) handleInjectSSHKey(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
@@ -288,6 +291,7 @@ func (s *Server) handleInjectSSHKey(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} startSandboxResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
+// @Id startSandbox
 // @Router /v1/sandbox/{id}/start [post]
 func (s *Server) handleStartSandbox(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
@@ -319,6 +323,7 @@ func (s *Server) handleStartSandbox(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} runCommandResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
+// @Id runSandboxCommand
 // @Router /v1/sandbox/{id}/run [post]
 func (s *Server) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
@@ -350,6 +355,7 @@ func (s *Server) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 // @Success 201 {object} snapshotResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
+// @Id createSnapshot
 // @Router /v1/sandbox/{id}/snapshot [post]
 func (s *Server) handleCreateSnapshot(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
@@ -380,6 +386,7 @@ func (s *Server) handleCreateSnapshot(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} diffResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
+// @Id diffSnapshots
 // @Router /v1/sandbox/{id}/diff [post]
 func (s *Server) handleDiffSnapshots(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
@@ -409,6 +416,7 @@ func (s *Server) handleDiffSnapshots(w http.ResponseWriter, r *http.Request) {
 // @Param tool path string true "Tool type (ansible or puppet)"
 // @Success 501 {object} generateResponse
 // @Failure 400 {object} ErrorResponse
+// @Id generateConfiguration
 // @Router /v1/sandbox/{id}/generate/{tool} [post]
 func (s *Server) handleGenerate(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
@@ -438,6 +446,7 @@ func (s *Server) handleGenerate(w http.ResponseWriter, r *http.Request) {
 // @Param request body publishRequest true "Publish parameters"
 // @Success 501 {object} publishResponse
 // @Failure 400 {object} ErrorResponse
+// @Id publishChanges
 // @Router /v1/sandbox/{id}/publish [post]
 func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request) {
 	var req publishRequest
@@ -463,6 +472,7 @@ func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Success 200 {object} listVMsResponse
 // @Failure 500 {object} ErrorResponse
+// @Id listVirtualMachines
 // @Router /v1/vms [get]
 func (s *Server) handleListVMs(w http.ResponseWriter, r *http.Request) {
 	domains, err := s.domainMgr.ListDomains(r.Context())
@@ -494,6 +504,7 @@ func (s *Server) handleListVMs(w http.ResponseWriter, r *http.Request) {
 // @Success 204
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
+// @Id destroySandbox
 // @Router /v1/sandbox/{id} [delete]
 func (s *Server) handleDestroySandbox(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")

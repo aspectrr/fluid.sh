@@ -28,18 +28,18 @@ import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-# Add the sdk folder to the path so we can import directly
-SDK_PATH = Path(__file__).parent / "sdk"
-sys.path.insert(0, str(SDK_PATH))
+# Add the sandbox_sdk folder to the path so we can import directly
+SANDBOX_SDK_PATH = Path(__file__).parent / "sandbox_sdk"
+sys.path.insert(0, str(SANDBOX_SDK_PATH))
 
-from sdk import openapi_client
-from sdk.openapi_client.api import (
+from sandbox_sdk import openapi_client
+from sandbox_sdk.openapi_client.api import (
     ansible_api,
     health_api,
     sandbox_api,
     vms_api,
 )
-from sdk.openapi_client.models import (
+from sandbox_sdk.openapi_client.models import (
     VirshSandboxInternalAnsibleJobRequest,
     VirshSandboxInternalRestCreateSandboxRequest,
     VirshSandboxInternalRestDiffRequest,
@@ -50,7 +50,7 @@ from sdk.openapi_client.models import (
 )
 
 if TYPE_CHECKING:
-    from sdk.openapi_client.models import (
+    from sandbox_sdk.openapi_client.models import (
         VirshSandboxInternalAnsibleJob,
         VirshSandboxInternalAnsibleJobResponse,
         VirshSandboxInternalRestCreateSandboxResponse,
@@ -62,7 +62,7 @@ if TYPE_CHECKING:
     )
 
 # Re-export ApiException for convenience
-from sdk.openapi_client.rest import ApiException
+from sandbox_sdk.openapi_client.rest import ApiException
 
 __all__ = ["VirshSandboxClient", "ApiException"]
 

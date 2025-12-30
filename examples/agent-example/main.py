@@ -14,6 +14,7 @@ from typing import Any
 from openai import OpenAI
 
 from client import VirshSandboxClient, ApiException
+from tmux_client import TmuxClient
 from tools import TOOLS
 
 
@@ -22,10 +23,12 @@ from tools import TOOLS
 # ---------------------------
 
 API_BASE = "http://localhost:8080"
+TMUX_BASE = "http://localhost:8081"
 MODEL = "gpt-5.2"
 
 openai_client = OpenAI()
 sandbox_client = VirshSandboxClient(host=API_BASE)
+tmux_client = TmuxClient(host=TMUX_BASE)
 
 
 # ---------------------------
@@ -214,12 +217,16 @@ def run_agent(user_goal: str) -> None:
 if __name__ == "__main__":
     print("Starting virsh-sandbox agent...")
     print("=" * 50)
+
     sandbox = None
+    session = None
+
     try:
         agent_id = str(uuid4())
 
-        sandbox = sandbox_client.create_sandbox(source_vm_name="test_vm_1", agent_id=agent_id)
-        sandbox_start = sandbox_client.start_sandbox(sandbox.id)
+        sandbox = sandbox_client.create_sandbox(source_vm_name="test_vm_1", agent_id=agent_id).to_dict()
+        sandbox_start = sandbox_client.start_sandbox(sandbox_id=sandbox["sandbox_id"])
+        session = tmux_client.create_session()
 
         run_agent(
             "Install an httpd server, create a basic html page and configure it to serve the page."
@@ -229,4 +236,4 @@ if __name__ == "__main__":
         print(f"Error: {e}")
     finally:
         if(sandbox):
-            sandbox_client.destroy_sandbox(sandbox.id)
+            sandbox_client.destroy_sandbox(sandbox["sandbox_id"])

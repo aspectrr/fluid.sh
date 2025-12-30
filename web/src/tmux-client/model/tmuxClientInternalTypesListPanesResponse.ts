@@ -5,7 +5,7 @@
  * API for managing tmux sessions and windows
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { TmuxClientInternalTypesPaneInfo } from './tmuxClientInternalTypesPaneInfo';
+import type { TmuxClientInternalTypesPaneInfo } from "./tmuxClientInternalTypesPaneInfo";
 
 export interface TmuxClientInternalTypesListPanesResponse {
   panes?: TmuxClientInternalTypesPaneInfo[];

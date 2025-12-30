@@ -16,20 +16,20 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { Button } from "~/components/ui/button";
-import { useGetApiV1Vms } from "~/virsh-sandbox/vms/vms";
-import { usePostApiV1SandboxCreate } from "~/virsh-sandbox/sandbox/sandbox";
+import { useListVirtualMachines } from "~/virsh-sandbox/vms/vms";
+import { useCreateSandbox } from "~/virsh-sandbox/sandbox/sandbox";
 import { type VirshSandboxInternalRestVmInfo } from "~/virsh-sandbox/model";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 
 export function VMTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [cloningId, setCloningId] = React.useState<string | null>(null);
 
   // Fetch VMs using React Query
-  const { data: vms = [], isLoading, isError } = useGetApiV1Vms();
+  const { data: vms = [], isLoading, isError } = useListVirtualMachines();
 
   // Clone VM mutation
-  const cloneMutation = usePostApiV1SandboxCreate();
+  const cloneMutation = useCreateSandbox();
 
   // Define columns
   const columns: ColumnDef<VirshSandboxInternalRestVmInfo>[] = [
@@ -60,7 +60,7 @@ export function VMTable() {
             onClick={() => {
               setCloningId(row?.original?.uuid ?? null);
               cloneMutation.mutate({
-                data: { uuid: row?.original?.uuid ?? null },
+                data: { source_vm_name: row?.original?.name },
               });
             }}
             disabled={isCloning}

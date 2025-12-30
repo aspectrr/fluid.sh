@@ -51,6 +51,7 @@ func (w *wsOutputWriter) WriteLine(line string) error {
 // @Param request body JobRequest true "Job creation parameters"
 // @Success 200 {object} JobResponse
 // @Failure 400 {object} serverError.ErrorResponse
+// @Id createAnsibleJob
 // @Router /v1/ansible/jobs [post]
 func (h *Handler) HandleCreateJob(w http.ResponseWriter, r *http.Request) {
 	var req JobRequest
@@ -88,6 +89,7 @@ func (h *Handler) HandleCreateJob(w http.ResponseWriter, r *http.Request) {
 // @Param job_id path string true "Job ID"
 // @Success 200 {object} Job
 // @Failure 404 {object} serverError.ErrorResponse
+// @Id getAnsibleJob
 // @Router /v1/ansible/jobs/{job_id} [get]
 func (h *Handler) HandleGetJob(w http.ResponseWriter, r *http.Request) {
 	jobID := chi.URLParam(r, "job_id")
@@ -110,6 +112,7 @@ func (h *Handler) HandleGetJob(w http.ResponseWriter, r *http.Request) {
 // @Success 101 {string} string "Switching Protocols - WebSocket connection established"
 // @Failure 404 {string} string "Invalid job ID"
 // @Failure 409 {string} string "Job already started or finished"
+// @Id streamAnsibleJobOutput
 // @Router /v1/ansible/jobs/{job_id}/stream [get]
 func (h *Handler) HandleJobWebSocket(w http.ResponseWriter, r *http.Request) {
 	jobID := chi.URLParam(r, "job_id")

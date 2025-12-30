@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "@tanstack/react-router";
 import {
   useReactTable,
   getCoreRowModel,
@@ -17,13 +18,14 @@ import {
 } from "~/components/ui/table";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
-import { useGetApiV1TmuxSessions } from "~/tmux-client/tmux/tmux";
+import { useListTmuxSessions } from "~/tmux-client/tmux/tmux";
 import { type TmuxClientInternalTypesSessionInfo } from "~/tmux-client/model";
 
 export function TmuxSessionTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const navigate = useNavigate();
 
-  const { data: sessions = [], isLoading, isError } = useGetApiV1TmuxSessions();
+  const { data: sessions = [], isLoading, isError } = useListTmuxSessions();
 
   const columns: ColumnDef<TmuxClientInternalTypesSessionInfo>[] = [
     {
@@ -62,7 +64,7 @@ export function TmuxSessionTable() {
           <Button
             size="sm"
             onClick={() => {
-              router.push(`/tmux/${row.original.id}`);
+              navigate({ to: `/tmux/${row.original.id}` });
             }}
           >
             View Details
