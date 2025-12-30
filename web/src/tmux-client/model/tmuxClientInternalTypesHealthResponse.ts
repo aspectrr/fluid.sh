@@ -5,8 +5,8 @@
  * API for managing tmux sessions and windows
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { TmuxClientInternalTypesComponentHealth } from './tmuxClientInternalTypesComponentHealth';
-import type { TmuxClientInternalTypesHealthStatus } from './tmuxClientInternalTypesHealthStatus';
+import type { TmuxClientInternalTypesComponentHealth } from "./tmuxClientInternalTypesComponentHealth";
+import type { TmuxClientInternalTypesHealthStatus } from "./tmuxClientInternalTypesHealthStatus";
 
 export interface TmuxClientInternalTypesHealthResponse {
   components?: TmuxClientInternalTypesComponentHealth[];

@@ -5,46 +5,36 @@ export default defineConfig({
     output: {
       client: "react-query",
       mode: "tags-split",
+      clean: true,
+      prettier: true,
       target: "src/virsh-sandbox",
       schemas: "src/virsh-sandbox/model",
-      mock: true,
+      override: {
+        operationName: (operation) => {
+          return operation.operationId || "";
+        },
+      },
     },
     input: {
-      target: "../virsh-sandbox/docs/swagger.yaml",
+      target: "../virsh-sandbox/docs/openapi.yaml",
     },
   },
-  // "virsh-sandbox-api-zod": {
-  //   output: {
-  //     client: "zod",
-  //     mode: "tags-split",
-  //     target: "./src/virsh-sandbox-client",
-  //     fileExtension: ".zod.ts",
-  //   },
-  //   input: {
-  //     target: "../virsh-sandbox/docs/swagger.yaml",
-  //   },
-  // },
   "tmux-client": {
     output: {
       client: "react-query",
       mode: "tags-split",
+      clean: true,
+      prettier: true,
       target: "./src/tmux-client",
       schemas: "./src/tmux-client/model",
-      mock: true,
+      override: {
+        operationName: (operation) => {
+          return operation.operationId || "";
+        },
+      },
     },
     input: {
-      target: "../tmux-client/docs/swagger.yaml",
+      target: "../tmux-client/docs/openapi.yaml",
     },
   },
-  // "tmux-client-zod": {
-  //   output: {
-  //     client: "zod",
-  //     mode: "tags-split",
-  //     target: "./src/tmux-client",
-  //     fileExtension: ".zod.ts",
-  //   },
-  //   input: {
-  //     target: "../tmux-client/docs/swagger.yaml",
-  //   },
-  // },
 });

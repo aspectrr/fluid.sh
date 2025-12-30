@@ -5,9 +5,7 @@
  * API for managing tmux sessions and windows
  * OpenAPI spec version: 0.0.1-beta
  */
-import {
-  useQuery
-} from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -17,112 +15,141 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
-import * as axios from 'axios';
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
+import * as axios from "axios";
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
-import type {
-  TmuxClientInternalTypesHealthResponse
-} from '.././model';
-
-
-
-
+import type { TmuxClientInternalTypesHealthResponse } from ".././model";
 
 /**
  * Retrieves the health status of the API server and its components
  * @summary Get health status
  */
-export const getV1Health = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<TmuxClientInternalTypesHealthResponse>> => {
-    
-    
-    return axios.default.get(
-      `/v1/health`,options
-    );
-  }
+export const getHealth = (
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<TmuxClientInternalTypesHealthResponse>> => {
+  return axios.default.get(`/v1/health`, options);
+};
 
+export const getGetHealthQueryKey = () => {
+  return [`/v1/health`] as const;
+};
 
+export const getGetHealthQueryOptions = <
+  TData = Awaited<ReturnType<typeof getHealth>>,
+  TError = AxiosError<unknown>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>
+  >;
+  axios?: AxiosRequestConfig;
+}) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
+  const queryKey = queryOptions?.queryKey ?? getGetHealthQueryKey();
 
-export const getGetV1HealthQueryKey = () => {
-    return [
-    `/v1/health`
-    ] as const;
-    }
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getHealth>>> = ({
+    signal,
+  }) => getHealth({ signal, ...axiosOptions });
 
-    
-export const getGetV1HealthQueryOptions = <TData = Awaited<ReturnType<typeof getV1Health>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Health>>, TError, TData>>, axios?: AxiosRequestConfig}
-) => {
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getHealth>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+export type GetHealthQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getHealth>>
+>;
+export type GetHealthQueryError = AxiosError<unknown>;
 
-  const queryKey =  queryOptions?.queryKey ?? getGetV1HealthQueryKey();
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1Health>>> = ({ signal }) => getV1Health({ signal, ...axiosOptions });
-
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1Health>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetV1HealthQueryResult = NonNullable<Awaited<ReturnType<typeof getV1Health>>>
-export type GetV1HealthQueryError = AxiosError<unknown>
-
-
-export function useGetV1Health<TData = Awaited<ReturnType<typeof getV1Health>>, TError = AxiosError<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Health>>, TError, TData>> & Pick<
+export function useGetHealth<
+  TData = Awaited<ReturnType<typeof getHealth>>,
+  TError = AxiosError<unknown>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>
+    > &
+      Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1Health>>,
+          Awaited<ReturnType<typeof getHealth>>,
           TError,
-          Awaited<ReturnType<typeof getV1Health>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1Health<TData = Awaited<ReturnType<typeof getV1Health>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Health>>, TError, TData>> & Pick<
+          Awaited<ReturnType<typeof getHealth>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetHealth<
+  TData = Awaited<ReturnType<typeof getHealth>>,
+  TError = AxiosError<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>
+    > &
+      Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1Health>>,
+          Awaited<ReturnType<typeof getHealth>>,
           TError,
-          Awaited<ReturnType<typeof getV1Health>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1Health<TData = Awaited<ReturnType<typeof getV1Health>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Health>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof getHealth>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetHealth<
+  TData = Awaited<ReturnType<typeof getHealth>>,
+  TError = AxiosError<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get health status
  */
 
-export function useGetV1Health<TData = Awaited<ReturnType<typeof getV1Health>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Health>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetHealth<
+  TData = Awaited<ReturnType<typeof getHealth>>,
+  TError = AxiosError<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetHealthQueryOptions(options);
 
-  const queryOptions = getGetV1HealthQueryOptions(options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
-

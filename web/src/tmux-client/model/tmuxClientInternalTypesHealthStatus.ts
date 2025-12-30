@@ -6,12 +6,12 @@
  * OpenAPI spec version: 0.0.1-beta
  */
 
-export type TmuxClientInternalTypesHealthStatus = typeof TmuxClientInternalTypesHealthStatus[keyof typeof TmuxClientInternalTypesHealthStatus];
-
+export type TmuxClientInternalTypesHealthStatus =
+  (typeof TmuxClientInternalTypesHealthStatus)[keyof typeof TmuxClientInternalTypesHealthStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const TmuxClientInternalTypesHealthStatus = {
-  HealthStatusHealthy: 'healthy',
-  HealthStatusDegraded: 'degraded',
-  HealthStatusUnhealthy: 'unhealthy',
+  HealthStatusHealthy: "healthy",
+  HealthStatusDegraded: "degraded",
+  HealthStatusUnhealthy: "unhealthy",
 } as const;

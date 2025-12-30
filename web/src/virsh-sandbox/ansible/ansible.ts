@@ -5,10 +5,7 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -21,268 +18,413 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
-import * as axios from 'axios';
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
+import * as axios from "axios";
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 import type {
   InternalAnsibleJob,
   InternalAnsibleJobRequest,
   InternalAnsibleJobResponse,
-  VirshSandboxInternalErrorErrorResponse
-} from '.././model';
-
-
-
-
+  VirshSandboxInternalErrorErrorResponse,
+} from ".././model";
 
 /**
  * Creates a new Ansible playbook execution job
  * @summary Create Ansible job
  */
-export const postV1AnsibleJobs = (
-    internalAnsibleJobRequest: InternalAnsibleJobRequest, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<InternalAnsibleJobResponse>> => {
-    
-    
-    return axios.default.post(
-      `/v1/ansible/jobs`,
-      internalAnsibleJobRequest,options
-    );
-  }
+export const createAnsibleJob = (
+  internalAnsibleJobRequest: InternalAnsibleJobRequest,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<InternalAnsibleJobResponse>> => {
+  return axios.default.post(
+    `/v1/ansible/jobs`,
+    internalAnsibleJobRequest,
+    options,
+  );
+};
 
+export const getCreateAnsibleJobMutationOptions = <
+  TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createAnsibleJob>>,
+    TError,
+    { data: InternalAnsibleJobRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createAnsibleJob>>,
+  TError,
+  { data: InternalAnsibleJobRequest },
+  TContext
+> => {
+  const mutationKey = ["createAnsibleJob"];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createAnsibleJob>>,
+    { data: InternalAnsibleJobRequest }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export const getPostV1AnsibleJobsMutationOptions = <TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AnsibleJobs>>, TError,{data: InternalAnsibleJobRequest}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof postV1AnsibleJobs>>, TError,{data: InternalAnsibleJobRequest}, TContext> => {
+    return createAnsibleJob(data, axiosOptions);
+  };
 
-const mutationKey = ['postV1AnsibleJobs'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type CreateAnsibleJobMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createAnsibleJob>>
+>;
+export type CreateAnsibleJobMutationBody = InternalAnsibleJobRequest;
+export type CreateAnsibleJobMutationError =
+  AxiosError<VirshSandboxInternalErrorErrorResponse>;
 
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AnsibleJobs>>, {data: InternalAnsibleJobRequest}> = (props) => {
-          const {data} = props ?? {};
-
-          return  postV1AnsibleJobs(data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostV1AnsibleJobsMutationResult = NonNullable<Awaited<ReturnType<typeof postV1AnsibleJobs>>>
-    export type PostV1AnsibleJobsMutationBody = InternalAnsibleJobRequest
-    export type PostV1AnsibleJobsMutationError = AxiosError<VirshSandboxInternalErrorErrorResponse>
-
-    /**
+/**
  * @summary Create Ansible job
  */
-export const usePostV1AnsibleJobs = <TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AnsibleJobs>>, TError,{data: InternalAnsibleJobRequest}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postV1AnsibleJobs>>,
-        TError,
-        {data: InternalAnsibleJobRequest},
-        TContext
-      > => {
+export const useCreateAnsibleJob = <
+  TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createAnsibleJob>>,
+      TError,
+      { data: InternalAnsibleJobRequest },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createAnsibleJob>>,
+  TError,
+  { data: InternalAnsibleJobRequest },
+  TContext
+> => {
+  const mutationOptions = getCreateAnsibleJobMutationOptions(options);
 
-      const mutationOptions = getPostV1AnsibleJobsMutationOptions(options);
-
-      return useMutation(mutationOptions, queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Gets the status of an Ansible job
  * @summary Get Ansible job
  */
-export const getV1AnsibleJobsJobId = (
-    jobId: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<InternalAnsibleJob>> => {
-    
-    
-    return axios.default.get(
-      `/v1/ansible/jobs/${jobId}`,options
-    );
-  }
+export const getAnsibleJob = (
+  jobId: string,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<InternalAnsibleJob>> => {
+  return axios.default.get(`/v1/ansible/jobs/${jobId}`, options);
+};
 
+export const getGetAnsibleJobQueryKey = (jobId?: string) => {
+  return [`/v1/ansible/jobs/${jobId}`] as const;
+};
 
-
-
-export const getGetV1AnsibleJobsJobIdQueryKey = (jobId?: string,) => {
-    return [
-    `/v1/ansible/jobs/${jobId}`
-    ] as const;
-    }
-
-    
-export const getGetV1AnsibleJobsJobIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>, TError = AxiosError<VirshSandboxInternalErrorErrorResponse>>(jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getGetAnsibleJobQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAnsibleJob>>,
+  TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
+>(
+  jobId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAnsibleJob>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
 ) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetAnsibleJobQueryKey(jobId);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetV1AnsibleJobsJobIdQueryKey(jobId);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAnsibleJob>>> = ({
+    signal,
+  }) => getAnsibleJob(jobId, { signal, ...axiosOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!jobId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAnsibleJob>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>> = ({ signal }) => getV1AnsibleJobsJobId(jobId, { signal, ...axiosOptions });
+export type GetAnsibleJobQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAnsibleJob>>
+>;
+export type GetAnsibleJobQueryError =
+  AxiosError<VirshSandboxInternalErrorErrorResponse>;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(jobId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetV1AnsibleJobsJobIdQueryResult = NonNullable<Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>>
-export type GetV1AnsibleJobsJobIdQueryError = AxiosError<VirshSandboxInternalErrorErrorResponse>
-
-
-export function useGetV1AnsibleJobsJobId<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>, TError = AxiosError<VirshSandboxInternalErrorErrorResponse>>(
- jobId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>, TError, TData>> & Pick<
+export function useGetAnsibleJob<
+  TData = Awaited<ReturnType<typeof getAnsibleJob>>,
+  TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
+>(
+  jobId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAnsibleJob>>, TError, TData>
+    > &
+      Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>,
+          Awaited<ReturnType<typeof getAnsibleJob>>,
           TError,
-          Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1AnsibleJobsJobId<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>, TError = AxiosError<VirshSandboxInternalErrorErrorResponse>>(
- jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>, TError, TData>> & Pick<
+          Awaited<ReturnType<typeof getAnsibleJob>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetAnsibleJob<
+  TData = Awaited<ReturnType<typeof getAnsibleJob>>,
+  TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
+>(
+  jobId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAnsibleJob>>, TError, TData>
+    > &
+      Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>,
+          Awaited<ReturnType<typeof getAnsibleJob>>,
           TError,
-          Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1AnsibleJobsJobId<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>, TError = AxiosError<VirshSandboxInternalErrorErrorResponse>>(
- jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof getAnsibleJob>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetAnsibleJob<
+  TData = Awaited<ReturnType<typeof getAnsibleJob>>,
+  TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
+>(
+  jobId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAnsibleJob>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get Ansible job
  */
 
-export function useGetV1AnsibleJobsJobId<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>, TError = AxiosError<VirshSandboxInternalErrorErrorResponse>>(
- jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobId>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetAnsibleJob<
+  TData = Awaited<ReturnType<typeof getAnsibleJob>>,
+  TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
+>(
+  jobId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAnsibleJob>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetAnsibleJobQueryOptions(jobId, options);
 
-  const queryOptions = getGetV1AnsibleJobsJobIdQueryOptions(jobId,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * Connects via WebSocket to run an Ansible job and stream output
  * @summary Stream Ansible job output
  */
-export const getV1AnsibleJobsJobIdStream = (
-    jobId: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<unknown>> => {
-    
-    
-    return axios.default.get(
-      `/v1/ansible/jobs/${jobId}/stream`,options
-    );
-  }
+export const streamAnsibleJobOutput = (
+  jobId: string,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<unknown>> => {
+  return axios.default.get(`/v1/ansible/jobs/${jobId}/stream`, options);
+};
 
+export const getStreamAnsibleJobOutputQueryKey = (jobId?: string) => {
+  return [`/v1/ansible/jobs/${jobId}/stream`] as const;
+};
 
-
-
-export const getGetV1AnsibleJobsJobIdStreamQueryKey = (jobId?: string,) => {
-    return [
-    `/v1/ansible/jobs/${jobId}/stream`
-    ] as const;
-    }
-
-    
-export const getGetV1AnsibleJobsJobIdStreamQueryOptions = <TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<string>>(jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getStreamAnsibleJobOutputQueryOptions = <
+  TData = Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
+  TError = AxiosError<string>,
+>(
+  jobId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
 ) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getStreamAnsibleJobOutputQueryKey(jobId);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetV1AnsibleJobsJobIdStreamQueryKey(jobId);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof streamAnsibleJobOutput>>
+  > = ({ signal }) =>
+    streamAnsibleJobOutput(jobId, { signal, ...axiosOptions });
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!jobId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>> = ({ signal }) => getV1AnsibleJobsJobIdStream(jobId, { signal, ...axiosOptions });
+export type StreamAnsibleJobOutputQueryResult = NonNullable<
+  Awaited<ReturnType<typeof streamAnsibleJobOutput>>
+>;
+export type StreamAnsibleJobOutputQueryError = AxiosError<string>;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(jobId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetV1AnsibleJobsJobIdStreamQueryResult = NonNullable<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>>
-export type GetV1AnsibleJobsJobIdStreamQueryError = AxiosError<string>
-
-
-export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<string>>(
- jobId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError, TData>> & Pick<
+export function useStreamAnsibleJobOutput<
+  TData = Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
+  TError = AxiosError<string>,
+>(
+  jobId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>,
+          Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
           TError,
-          Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<string>>(
- jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError, TData>> & Pick<
+          Awaited<ReturnType<typeof streamAnsibleJobOutput>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useStreamAnsibleJobOutput<
+  TData = Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
+  TError = AxiosError<string>,
+>(
+  jobId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>,
+          Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
           TError,
-          Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<string>>(
- jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof streamAnsibleJobOutput>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useStreamAnsibleJobOutput<
+  TData = Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
+  TError = AxiosError<string>,
+>(
+  jobId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Stream Ansible job output
  */
 
-export function useGetV1AnsibleJobsJobIdStream<TData = Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError = AxiosError<string>>(
- jobId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AnsibleJobsJobIdStream>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useStreamAnsibleJobOutput<
+  TData = Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
+  TError = AxiosError<string>,
+>(
+  jobId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof streamAnsibleJobOutput>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getStreamAnsibleJobOutputQueryOptions(jobId, options);
 
-  const queryOptions = getGetV1AnsibleJobsJobIdStreamQueryOptions(jobId,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
-

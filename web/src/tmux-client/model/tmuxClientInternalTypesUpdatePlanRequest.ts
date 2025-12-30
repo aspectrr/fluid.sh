@@ -5,7 +5,7 @@
  * API for managing tmux sessions and windows
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { TmuxClientInternalTypesStepStatus } from './tmuxClientInternalTypesStepStatus';
+import type { TmuxClientInternalTypesStepStatus } from "./tmuxClientInternalTypesStepStatus";
 
 export interface TmuxClientInternalTypesUpdatePlanRequest {
   error?: string;

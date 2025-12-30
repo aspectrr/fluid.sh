@@ -5,7 +5,7 @@
  * API for managing tmux sessions and windows
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { TmuxClientInternalTypesApprovalStatus } from './tmuxClientInternalTypesApprovalStatus';
+import type { TmuxClientInternalTypesApprovalStatus } from "./tmuxClientInternalTypesApprovalStatus";
 
 export interface TmuxClientInternalTypesAskHumanResponse {
   approved?: boolean;

@@ -5,8 +5,8 @@
  * API for managing tmux sessions and windows
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { TmuxClientInternalTypesPlanStatus } from './tmuxClientInternalTypesPlanStatus';
-import type { TmuxClientInternalTypesPlanStep } from './tmuxClientInternalTypesPlanStep';
+import type { TmuxClientInternalTypesPlanStatus } from "./tmuxClientInternalTypesPlanStatus";
+import type { TmuxClientInternalTypesPlanStep } from "./tmuxClientInternalTypesPlanStep";
 
 export interface TmuxClientInternalTypesPlan {
   completed_at?: string;

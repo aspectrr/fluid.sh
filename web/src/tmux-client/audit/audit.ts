@@ -5,10 +5,7 @@
  * API for managing tmux sessions and windows
  * OpenAPI spec version: 0.0.1-beta
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -21,177 +18,233 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
-import * as axios from 'axios';
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
+import * as axios from "axios";
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 import type {
-  GetV1AuditStats200,
+  GetAuditStats200,
   TmuxClientInternalTypesAPIError,
   TmuxClientInternalTypesAuditQuery,
-  TmuxClientInternalTypesAuditQueryResponse
-} from '.././model';
-
-
-
-
+  TmuxClientInternalTypesAuditQueryResponse,
+} from ".././model";
 
 /**
  * Queries the audit log for entries
  * @summary Query audit log
  */
-export const postV1AuditQuery = (
-    tmuxClientInternalTypesAuditQuery: TmuxClientInternalTypesAuditQuery, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<TmuxClientInternalTypesAuditQueryResponse>> => {
-    
-    
-    return axios.default.post(
-      `/v1/audit/query`,
-      tmuxClientInternalTypesAuditQuery,options
-    );
-  }
+export const queryAuditLog = (
+  tmuxClientInternalTypesAuditQuery?: TmuxClientInternalTypesAuditQuery,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<TmuxClientInternalTypesAuditQueryResponse>> => {
+  return axios.default.post(
+    `/v1/audit/query`,
+    tmuxClientInternalTypesAuditQuery,
+    options,
+  );
+};
 
+export const getQueryAuditLogMutationOptions = <
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof queryAuditLog>>,
+    TError,
+    { data: TmuxClientInternalTypesAuditQuery },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof queryAuditLog>>,
+  TError,
+  { data: TmuxClientInternalTypesAuditQuery },
+  TContext
+> => {
+  const mutationKey = ["queryAuditLog"];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof queryAuditLog>>,
+    { data: TmuxClientInternalTypesAuditQuery }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export const getPostV1AuditQueryMutationOptions = <TError = AxiosError<TmuxClientInternalTypesAPIError>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuditQuery>>, TError,{data: TmuxClientInternalTypesAuditQuery}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof postV1AuditQuery>>, TError,{data: TmuxClientInternalTypesAuditQuery}, TContext> => {
+    return queryAuditLog(data, axiosOptions);
+  };
 
-const mutationKey = ['postV1AuditQuery'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type QueryAuditLogMutationResult = NonNullable<
+  Awaited<ReturnType<typeof queryAuditLog>>
+>;
+export type QueryAuditLogMutationBody = TmuxClientInternalTypesAuditQuery;
+export type QueryAuditLogMutationError =
+  AxiosError<TmuxClientInternalTypesAPIError>;
 
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AuditQuery>>, {data: TmuxClientInternalTypesAuditQuery}> = (props) => {
-          const {data} = props ?? {};
-
-          return  postV1AuditQuery(data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostV1AuditQueryMutationResult = NonNullable<Awaited<ReturnType<typeof postV1AuditQuery>>>
-    export type PostV1AuditQueryMutationBody = TmuxClientInternalTypesAuditQuery
-    export type PostV1AuditQueryMutationError = AxiosError<TmuxClientInternalTypesAPIError>
-
-    /**
+/**
  * @summary Query audit log
  */
-export const usePostV1AuditQuery = <TError = AxiosError<TmuxClientInternalTypesAPIError>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuditQuery>>, TError,{data: TmuxClientInternalTypesAuditQuery}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postV1AuditQuery>>,
-        TError,
-        {data: TmuxClientInternalTypesAuditQuery},
-        TContext
-      > => {
+export const useQueryAuditLog = <
+  TError = AxiosError<TmuxClientInternalTypesAPIError>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof queryAuditLog>>,
+      TError,
+      { data: TmuxClientInternalTypesAuditQuery },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof queryAuditLog>>,
+  TError,
+  { data: TmuxClientInternalTypesAuditQuery },
+  TContext
+> => {
+  const mutationOptions = getQueryAuditLogMutationOptions(options);
 
-      const mutationOptions = getPostV1AuditQueryMutationOptions(options);
-
-      return useMutation(mutationOptions, queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Retrieves audit log statistics
  * @summary Get audit stats
  */
-export const getV1AuditStats = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<GetV1AuditStats200>> => {
-    
-    
-    return axios.default.get(
-      `/v1/audit/stats`,options
-    );
-  }
+export const getAuditStats = (
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<GetAuditStats200>> => {
+  return axios.default.get(`/v1/audit/stats`, options);
+};
 
+export const getGetAuditStatsQueryKey = () => {
+  return [`/v1/audit/stats`] as const;
+};
 
+export const getGetAuditStatsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAuditStats>>,
+  TError = AxiosError<unknown>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof getAuditStats>>, TError, TData>
+  >;
+  axios?: AxiosRequestConfig;
+}) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
+  const queryKey = queryOptions?.queryKey ?? getGetAuditStatsQueryKey();
 
-export const getGetV1AuditStatsQueryKey = () => {
-    return [
-    `/v1/audit/stats`
-    ] as const;
-    }
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAuditStats>>> = ({
+    signal,
+  }) => getAuditStats({ signal, ...axiosOptions });
 
-    
-export const getGetV1AuditStatsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AuditStats>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuditStats>>, TError, TData>>, axios?: AxiosRequestConfig}
-) => {
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAuditStats>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+export type GetAuditStatsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAuditStats>>
+>;
+export type GetAuditStatsQueryError = AxiosError<unknown>;
 
-  const queryKey =  queryOptions?.queryKey ?? getGetV1AuditStatsQueryKey();
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AuditStats>>> = ({ signal }) => getV1AuditStats({ signal, ...axiosOptions });
-
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1AuditStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetV1AuditStatsQueryResult = NonNullable<Awaited<ReturnType<typeof getV1AuditStats>>>
-export type GetV1AuditStatsQueryError = AxiosError<unknown>
-
-
-export function useGetV1AuditStats<TData = Awaited<ReturnType<typeof getV1AuditStats>>, TError = AxiosError<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuditStats>>, TError, TData>> & Pick<
+export function useGetAuditStats<
+  TData = Awaited<ReturnType<typeof getAuditStats>>,
+  TError = AxiosError<unknown>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAuditStats>>, TError, TData>
+    > &
+      Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1AuditStats>>,
+          Awaited<ReturnType<typeof getAuditStats>>,
           TError,
-          Awaited<ReturnType<typeof getV1AuditStats>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1AuditStats<TData = Awaited<ReturnType<typeof getV1AuditStats>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuditStats>>, TError, TData>> & Pick<
+          Awaited<ReturnType<typeof getAuditStats>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetAuditStats<
+  TData = Awaited<ReturnType<typeof getAuditStats>>,
+  TError = AxiosError<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAuditStats>>, TError, TData>
+    > &
+      Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getV1AuditStats>>,
+          Awaited<ReturnType<typeof getAuditStats>>,
           TError,
-          Awaited<ReturnType<typeof getV1AuditStats>>
-        > , 'initialData'
-      >, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1AuditStats<TData = Awaited<ReturnType<typeof getV1AuditStats>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuditStats>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof getAuditStats>>
+        >,
+        "initialData"
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetAuditStats<
+  TData = Awaited<ReturnType<typeof getAuditStats>>,
+  TError = AxiosError<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAuditStats>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get audit stats
  */
 
-export function useGetV1AuditStats<TData = Awaited<ReturnType<typeof getV1AuditStats>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuditStats>>, TError, TData>>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetAuditStats<
+  TData = Awaited<ReturnType<typeof getAuditStats>>,
+  TError = AxiosError<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAuditStats>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetAuditStatsQueryOptions(options);
 
-  const queryOptions = getGetV1AuditStatsQueryOptions(options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
-
