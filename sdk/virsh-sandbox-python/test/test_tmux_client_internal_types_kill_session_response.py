@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.tmux_client_internal_types_kill_session_response import (
-    TmuxClientInternalTypesKillSessionResponse,
-)
+from virsh_sandbox.models.tmux_client_internal_types_kill_session_response import \
+    TmuxClientInternalTypesKillSessionResponse
 
 
 class TestTmuxClientInternalTypesKillSessionResponse(unittest.TestCase):

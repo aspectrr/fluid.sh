@@ -18,15 +18,16 @@ docker run --rm \
   -c /local/.openapi-generator/config.yaml \
   -t /local/.openapi-generator/templates/python/
 
-echo "Running polish script..."
-python3 scripts/polish_sdk.py
+# echo "Running polish script..."
+# python3 scripts/polish_sdk.py
 
 echo "Running tests..."
 cd virsh-sandbox-python
-pip install -e ".[dev]"
+pip install -r requirements.txt
 black .
 isort .
 mypy virsh_sandbox
+pip install -r test-requirements.txt
 pytest
 
-echo "Finished !"
+echo "Finished!"

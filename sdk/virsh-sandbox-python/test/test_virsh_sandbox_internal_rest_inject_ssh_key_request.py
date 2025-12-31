@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.virsh_sandbox_internal_rest_inject_ssh_key_request import (
-    VirshSandboxInternalRestInjectSSHKeyRequest,
-)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_inject_ssh_key_request import \
+    VirshSandboxInternalRestInjectSSHKeyRequest
 
 
 class TestVirshSandboxInternalRestInjectSSHKeyRequest(unittest.TestCase):

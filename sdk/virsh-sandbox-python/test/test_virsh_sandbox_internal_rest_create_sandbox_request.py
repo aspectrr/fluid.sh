@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_request import (
-    VirshSandboxInternalRestCreateSandboxRequest,
-)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_request import \
+    VirshSandboxInternalRestCreateSandboxRequest
 
 
 class TestVirshSandboxInternalRestCreateSandboxRequest(unittest.TestCase):

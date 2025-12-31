@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.tmux_client_internal_types_delete_file_request import (
-    TmuxClientInternalTypesDeleteFileRequest,
-)
+from virsh_sandbox.models.tmux_client_internal_types_delete_file_request import \
+    TmuxClientInternalTypesDeleteFileRequest
 
 
 class TestTmuxClientInternalTypesDeleteFileRequest(unittest.TestCase):

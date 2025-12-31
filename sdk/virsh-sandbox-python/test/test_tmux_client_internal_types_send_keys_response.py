@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.tmux_client_internal_types_send_keys_response import (
-    TmuxClientInternalTypesSendKeysResponse,
-)
+from virsh_sandbox.models.tmux_client_internal_types_send_keys_response import \
+    TmuxClientInternalTypesSendKeysResponse
 
 
 class TestTmuxClientInternalTypesSendKeysResponse(unittest.TestCase):

@@ -156,6 +156,28 @@ disallow_any_generics = true
 
 [[tool.mypy.overrides]]
 module = [
+  "urllib3.*",
+  "aiohttp.*",
+  "aiohttp_retry.*",
+  "pydantic.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+  "{{{packageName}}}.api",
+  "{{{packageName}}}.api.*",
+  "{{{packageName}}}.api_client",
+  "{{{packageName}}}.api_response",
+  "{{{packageName}}}.rest",
+  "{{{packageName}}}.models",
+  "{{{packageName}}}.models.*",
+]
+# Relax strict checks for generated API code
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
   "{{{packageName}}}.configuration",
 ]
 warn_unused_ignores = true
