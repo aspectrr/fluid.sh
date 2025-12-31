@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.tmux_client_internal_types_create_pane_response import (
-    TmuxClientInternalTypesCreatePaneResponse,
-)
+from virsh_sandbox.models.tmux_client_internal_types_create_pane_response import \
+    TmuxClientInternalTypesCreatePaneResponse
 
 
 class TestTmuxClientInternalTypesCreatePaneResponse(unittest.TestCase):

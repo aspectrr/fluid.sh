@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.virsh_sandbox_internal_store_snapshot import (
-    VirshSandboxInternalStoreSnapshot,
-)
+from virsh_sandbox.models.virsh_sandbox_internal_store_snapshot import \
+    VirshSandboxInternalStoreSnapshot
 
 
 class TestVirshSandboxInternalStoreSnapshot(unittest.TestCase):

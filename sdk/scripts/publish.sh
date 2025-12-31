@@ -31,7 +31,7 @@ bash scripts/generate.sh
 # Build
 echo -e "${BLUE}Building package...${NC}"
 cd virsh-sandbox-python
-python -m build
+python3 -m build
 
 # Check
 echo -e "${BLUE}Checking package...${NC}"

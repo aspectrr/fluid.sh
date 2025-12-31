@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.tmux_client_internal_types_list_dir_response import (
-    TmuxClientInternalTypesListDirResponse,
-)
+from virsh_sandbox.models.tmux_client_internal_types_list_dir_response import \
+    TmuxClientInternalTypesListDirResponse
 
 
 class TestTmuxClientInternalTypesListDirResponse(unittest.TestCase):

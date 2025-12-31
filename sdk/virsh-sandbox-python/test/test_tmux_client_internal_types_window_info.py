@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.tmux_client_internal_types_window_info import (
-    TmuxClientInternalTypesWindowInfo,
-)
+from virsh_sandbox.models.tmux_client_internal_types_window_info import \
+    TmuxClientInternalTypesWindowInfo
 
 
 class TestTmuxClientInternalTypesWindowInfo(unittest.TestCase):

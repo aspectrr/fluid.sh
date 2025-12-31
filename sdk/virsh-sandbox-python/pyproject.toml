@@ -80,6 +80,28 @@ disallow_any_generics = true
 
 [[tool.mypy.overrides]]
 module = [
+  "urllib3.*",
+  "aiohttp.*",
+  "aiohttp_retry.*",
+  "pydantic.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+  "virsh_sandbox.api",
+  "virsh_sandbox.api.*",
+  "virsh_sandbox.api_client",
+  "virsh_sandbox.api_response",
+  "virsh_sandbox.rest",
+  "virsh_sandbox.models",
+  "virsh_sandbox.models.*",
+]
+# Relax strict checks for generated API code
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
   "virsh_sandbox.configuration",
 ]
 warn_unused_ignores = true

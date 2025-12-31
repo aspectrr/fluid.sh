@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.tmux_client_internal_types_component_health import (
-    TmuxClientInternalTypesComponentHealth,
-)
+from virsh_sandbox.models.tmux_client_internal_types_component_health import \
+    TmuxClientInternalTypesComponentHealth
 
 
 class TestTmuxClientInternalTypesComponentHealth(unittest.TestCase):

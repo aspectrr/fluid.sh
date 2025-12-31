@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.tmux_client_internal_types_read_pane_request import (
-    TmuxClientInternalTypesReadPaneRequest,
-)
+from virsh_sandbox.models.tmux_client_internal_types_read_pane_request import \
+    TmuxClientInternalTypesReadPaneRequest
 
 
 class TestTmuxClientInternalTypesReadPaneRequest(unittest.TestCase):

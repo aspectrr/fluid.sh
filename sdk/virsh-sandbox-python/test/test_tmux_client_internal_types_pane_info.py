@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.tmux_client_internal_types_pane_info import (
-    TmuxClientInternalTypesPaneInfo,
-)
+from virsh_sandbox.models.tmux_client_internal_types_pane_info import \
+    TmuxClientInternalTypesPaneInfo
 
 
 class TestTmuxClientInternalTypesPaneInfo(unittest.TestCase):

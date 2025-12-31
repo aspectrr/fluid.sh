@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_request import (
-    VirshSandboxInternalRestRunCommandRequest,
-)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_request import \
+    VirshSandboxInternalRestRunCommandRequest
 
 
 class TestVirshSandboxInternalRestRunCommandRequest(unittest.TestCase):

@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.virsh_sandbox_internal_store_service_change import (
-    VirshSandboxInternalStoreServiceChange,
-)
+from virsh_sandbox.models.virsh_sandbox_internal_store_service_change import \
+    VirshSandboxInternalStoreServiceChange
 
 
 class TestVirshSandboxInternalStoreServiceChange(unittest.TestCase):

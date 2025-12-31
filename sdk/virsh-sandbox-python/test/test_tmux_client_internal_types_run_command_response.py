@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.tmux_client_internal_types_run_command_response import (
-    TmuxClientInternalTypesRunCommandResponse,
-)
+from virsh_sandbox.models.tmux_client_internal_types_run_command_response import \
+    TmuxClientInternalTypesRunCommandResponse
 
 
 class TestTmuxClientInternalTypesRunCommandResponse(unittest.TestCase):

@@ -14,9 +14,8 @@
 
 import unittest
 
-from virsh_sandbox.models.virsh_sandbox_internal_store_change_diff import (
-    VirshSandboxInternalStoreChangeDiff,
-)
+from virsh_sandbox.models.virsh_sandbox_internal_store_change_diff import \
+    VirshSandboxInternalStoreChangeDiff
 
 
 class TestVirshSandboxInternalStoreChangeDiff(unittest.TestCase):

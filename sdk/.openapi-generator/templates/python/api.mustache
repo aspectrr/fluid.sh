@@ -9,15 +9,16 @@
 {{/appDescription}}
 """
 
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional, Tuple, Union
 {{#asyncio}}
 import asyncio
 {{/asyncio}}
 
-from {{packageName}}.api_client import ApiClient
+from {{packageName}}.api_client import ApiClient, RequestSerialized
+from {{packageName}}.api_response import ApiResponse
 from {{packageName}}.exceptions import ApiException
 {{#imports}}
-{{{.}}}
+{{{import}}}
 {{/imports}}
 
 
@@ -29,38 +30,404 @@ class {{classname}}:
     {{/description}}
     """
 
-    def __init__(self, api_client: Optional[ApiClient] = None):
+    def __init__(self, api_client: Optional[ApiClient] = None) -> None:
         if api_client is None:
             api_client = ApiClient.get_default()
         self.api_client = api_client
 
-    {{#operations}}
-    {{#operation}}
-    def {{operationId}}(
+{{#operations}}
+{{#operation}}
+
+    {{#asyncio}}async {{/asyncio}}def {{operationId}}(
         self,
-        {{#allParams}}
-        {{paramName}}: {{#required}}{{dataType}}{{/required}}{{^required}}Optional[{{dataType}}] = None{{/required}},
-        {{/allParams}}
-        **kwargs
-    ) -> {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}None{{/returnType}}:
-        """{{summary}}
+{{#allParams}}
+        {{paramName}}: {{#required}}{{{dataType}}}{{/required}}{{^required}}Optional[{{{dataType}}}] = None{{/required}},
+{{/allParams}}
+        _request_timeout: Union[
+            None,
+            float,
+            Tuple[float, float]
+        ] = None,
+        _request_auth: Optional[Dict[str, Any]] = None,
+        _content_type: Optional[str] = None,
+        _headers: Optional[Dict[str, Any]] = None,
+        _host_index: int = 0,
+    ) -> {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}None{{/returnType}}:
+        """{{#isDeprecated}}(Deprecated) {{/isDeprecated}}{{{summary}}}{{^summary}}{{operationId}}{{/summary}}
 
-        {{#notes}}
-        {{{notes}}}
-        {{/notes}}
+{{#notes}}
+        {{{.}}}
 
-        Args:
-        {{#allParams}}
-            {{paramName}}: {{{description}}}
-        {{/allParams}}
-
-        Returns:
-            {{#returnType}}{{returnType}}: {{{returnTypeDescription}}}{{/returnType}}{{^returnType}}None{{/returnType}}
-
-        Raises:
-            ApiException: If the API call fails
+{{/notes}}
+{{#allParams}}
+        :param {{paramName}}:{{#description}} {{{.}}}{{/description}}{{#required}} (required){{/required}}{{^required}} (optional){{/required}}
+        :type {{paramName}}: {{{dataType}}}{{^required}}, optional{{/required}}
+{{/allParams}}
+        :param _request_timeout: Timeout setting for this request. If one
+                                 number is provided, it will be the total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: Override the auth_settings for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: Force content-type for the request.
+        :type _content_type: str, optional
+        :param _headers: Override headers for a single request.
+        :type _headers: dict, optional
+        :param _host_index: Override host index for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
         """
-        return self.{{operationId}}_with_http_info({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}}**kwargs)[0]
 
-    {{/operation}}
-    {{/operations}}
+        _param = self._{{operationId}}_serialize(
+{{#allParams}}
+            {{paramName}}={{paramName}},
+{{/allParams}}
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+{{#responses}}
+{{^isWildcard}}
+            '{{code}}': {{#dataType}}"{{{.}}}"{{/dataType}}{{^dataType}}None{{/dataType}},
+{{/isWildcard}}
+{{/responses}}
+        }
+        response_data = {{#asyncio}}await {{/asyncio}}self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        {{#asyncio}}await {{/asyncio}}response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    {{#asyncio}}async {{/asyncio}}def {{operationId}}_with_http_info(
+        self,
+{{#allParams}}
+        {{paramName}}: {{#required}}{{{dataType}}}{{/required}}{{^required}}Optional[{{{dataType}}}] = None{{/required}},
+{{/allParams}}
+        _request_timeout: Union[
+            None,
+            float,
+            Tuple[float, float]
+        ] = None,
+        _request_auth: Optional[Dict[str, Any]] = None,
+        _content_type: Optional[str] = None,
+        _headers: Optional[Dict[str, Any]] = None,
+        _host_index: int = 0,
+    ) -> ApiResponse[{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}None{{/returnType}}]:
+        """{{#isDeprecated}}(Deprecated) {{/isDeprecated}}{{{summary}}}{{^summary}}{{operationId}}{{/summary}}
+
+{{#notes}}
+        {{{.}}}
+
+{{/notes}}
+{{#allParams}}
+        :param {{paramName}}:{{#description}} {{{.}}}{{/description}}{{#required}} (required){{/required}}{{^required}} (optional){{/required}}
+        :type {{paramName}}: {{{dataType}}}{{^required}}, optional{{/required}}
+{{/allParams}}
+        :param _request_timeout: Timeout setting for this request. If one
+                                 number is provided, it will be the total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: Override the auth_settings for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: Force content-type for the request.
+        :type _content_type: str, optional
+        :param _headers: Override headers for a single request.
+        :type _headers: dict, optional
+        :param _host_index: Override host index for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object with HTTP info.
+        """
+
+        _param = self._{{operationId}}_serialize(
+{{#allParams}}
+            {{paramName}}={{paramName}},
+{{/allParams}}
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+{{#responses}}
+{{^isWildcard}}
+            '{{code}}': {{#dataType}}"{{{.}}}"{{/dataType}}{{^dataType}}None{{/dataType}},
+{{/isWildcard}}
+{{/responses}}
+        }
+        response_data = {{#asyncio}}await {{/asyncio}}self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        {{#asyncio}}await {{/asyncio}}response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    {{#asyncio}}async {{/asyncio}}def {{operationId}}_without_preload_content(
+        self,
+{{#allParams}}
+        {{paramName}}: {{#required}}{{{dataType}}}{{/required}}{{^required}}Optional[{{{dataType}}}] = None{{/required}},
+{{/allParams}}
+        _request_timeout: Union[
+            None,
+            float,
+            Tuple[float, float]
+        ] = None,
+        _request_auth: Optional[Dict[str, Any]] = None,
+        _content_type: Optional[str] = None,
+        _headers: Optional[Dict[str, Any]] = None,
+        _host_index: int = 0,
+    ) -> {{#asyncio}}Any{{/asyncio}}{{^asyncio}}Any{{/asyncio}}:
+        """{{#isDeprecated}}(Deprecated) {{/isDeprecated}}{{{summary}}}{{^summary}}{{operationId}}{{/summary}}
+
+{{#notes}}
+        {{{.}}}
+
+{{/notes}}
+{{#allParams}}
+        :param {{paramName}}:{{#description}} {{{.}}}{{/description}}{{#required}} (required){{/required}}{{^required}} (optional){{/required}}
+        :type {{paramName}}: {{{dataType}}}{{^required}}, optional{{/required}}
+{{/allParams}}
+        :param _request_timeout: Timeout setting for this request. If one
+                                 number is provided, it will be the total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: Override the auth_settings for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: Force content-type for the request.
+        :type _content_type: str, optional
+        :param _headers: Override headers for a single request.
+        :type _headers: dict, optional
+        :param _host_index: Override host index for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object without preloading content.
+        """
+
+        _param = self._{{operationId}}_serialize(
+{{#allParams}}
+            {{paramName}}={{paramName}},
+{{/allParams}}
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+{{#responses}}
+{{^isWildcard}}
+            '{{code}}': {{#dataType}}"{{{.}}}"{{/dataType}}{{^dataType}}None{{/dataType}},
+{{/isWildcard}}
+{{/responses}}
+        }
+        response_data = {{#asyncio}}await {{/asyncio}}self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _{{operationId}}_serialize(
+        self,
+{{#allParams}}
+        {{paramName}}: {{#required}}{{{dataType}}}{{/required}}{{^required}}Optional[{{{dataType}}}]{{/required}},
+{{/allParams}}
+        _request_auth: Optional[Dict[str, Any]],
+        _content_type: Optional[str],
+        _headers: Optional[Dict[str, Any]],
+        _host_index: int,
+    ) -> RequestSerialized:
+
+        _host = None
+{{#servers}}
+{{#-first}}
+
+        _hosts: List[str] = [
+{{/-first}}
+            '{{{url}}}'{{^-last}},{{/-last}}
+{{#-last}}
+        ]
+        if self.api_client.configuration.host is not None:
+            _host = self.api_client.configuration.host
+        elif _host_index >= 0 and _host_index < len(_hosts):
+            _host = _hosts[_host_index]
+{{/-last}}
+{{/servers}}
+
+        _collection_formats: Dict[str, str] = {
+{{#allParams}}
+{{#isArray}}
+            '{{baseName}}': '{{collectionFormat}}',
+{{/isArray}}
+{{/allParams}}
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]] = {}
+        _body_params: Any = None
+
+        # process the path parameters
+{{#pathParams}}
+        if {{paramName}} is not None:
+            _path_params['{{baseName}}'] = {{paramName}}{{#isEnumRef}}.value{{/isEnumRef}}
+{{/pathParams}}
+        # process the query parameters
+{{#queryParams}}
+        if {{paramName}} is not None:
+            {{#isDeepObject}}
+            {{#items.isEnumRef}}
+            _query_params.append(
+                (
+                    '{{baseName}}',
+                    [x.value for x in {{paramName}}]
+                )
+            )
+            {{/items.isEnumRef}}
+            {{^items.isEnumRef}}
+            for _key, _value in {{paramName}}.items():
+                _query_params.append(('{{baseName}}[{}]'.format(_key), _value))
+            {{/items.isEnumRef}}
+            {{/isDeepObject}}
+            {{^isDeepObject}}
+            {{#isExplode}}
+            {{#isArray}}
+            {{#items.isEnumRef}}
+            _query_params.append(
+                (
+                    '{{baseName}}',
+                    [x.value for x in {{paramName}}]
+                )
+            )
+            {{/items.isEnumRef}}
+            {{^items.isEnumRef}}
+            _query_params.append(('{{baseName}}', {{paramName}}))
+            {{/items.isEnumRef}}
+            {{/isArray}}
+            {{^isArray}}
+            _query_params.append(
+                (
+                    '{{baseName}}',
+                    {{paramName}}{{#isEnumRef}}.value{{/isEnumRef}}
+                )
+            )
+            {{/isArray}}
+            {{/isExplode}}
+            {{^isExplode}}
+            {{#isArray}}
+            {{#items.isEnumRef}}
+            _query_params.append(
+                (
+                    '{{baseName}}',
+                    ','.join([x.value for x in {{paramName}}])
+                )
+            )
+            {{/items.isEnumRef}}
+            {{^items.isEnumRef}}
+            _query_params.append(('{{baseName}}', ','.join({{paramName}})))
+            {{/items.isEnumRef}}
+            {{/isArray}}
+            {{^isArray}}
+            _query_params.append(
+                (
+                    '{{baseName}}',
+                    {{paramName}}{{#isEnumRef}}.value{{/isEnumRef}}
+                )
+            )
+            {{/isArray}}
+            {{/isExplode}}
+            {{/isDeepObject}}
+
+{{/queryParams}}
+        # process the header parameters
+{{#headerParams}}
+        if {{paramName}} is not None:
+            _header_params['{{baseName}}'] = {{paramName}}
+{{/headerParams}}
+        # process the form parameters
+{{#formParams}}
+        if {{paramName}} is not None:
+            {{#isFile}}
+            _files['{{baseName}}'] = {{paramName}}
+            {{/isFile}}
+            {{^isFile}}
+            _form_params.append(('{{baseName}}', {{paramName}}))
+            {{/isFile}}
+{{/formParams}}
+        # process the body parameter
+{{#bodyParam}}
+        if {{paramName}} is not None:
+            _body_params = {{paramName}}
+
+{{/bodyParam}}
+
+        # set the HTTP header `Accept`
+        {{#hasProduces}}
+        if '{{baseName}}' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+{{#produces}}
+                    '{{{mediaType}}}'{{^-last}},{{/-last}}
+{{/produces}}
+                ]
+            )
+        {{/hasProduces}}
+
+        # set the HTTP header `Content-Type`
+        {{#hasConsumes}}
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+{{#consumes}}
+                        '{{{mediaType}}}'{{^-last}},{{/-last}}
+{{/consumes}}
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+        {{/hasConsumes}}
+
+        # authentication setting
+        _auth_settings: List[str] = [
+{{#authMethods}}
+            '{{name}}'{{^-last}},{{/-last}}
+{{/authMethods}}
+        ]
+
+        return self.api_client.param_serialize(
+            method='{{httpMethod}}',
+            resource_path='{{{path}}}',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+{{/operation}}
+{{/operations}}
