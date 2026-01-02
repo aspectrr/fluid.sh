@@ -182,8 +182,11 @@ curl -X POST http://localhost:8080/v1/access/request \
 echo "<certificate_from_response>" > /tmp/sandbox_key-cert.pub
 
 # First connection: verify and accept the host key
-# Check the host key fingerprint matches your VM's known fingerprint
-ssh-keyscan 192.168.122.x >> ~/.ssh/known_hosts
+# IMPORTANT: Verify the fingerprint before adding to known_hosts
+# See "Host Key Management" section below for secure verification methods
+ssh-keyscan 192.168.122.x > /tmp/vm_host_key
+ssh-keygen -lf /tmp/vm_host_key  # Verify this matches your VM's fingerprint
+cat /tmp/vm_host_key >> ~/.ssh/known_hosts
 
 # Connect!
 ssh -i /tmp/sandbox_key \
