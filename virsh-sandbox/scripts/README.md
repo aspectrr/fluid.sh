@@ -205,6 +205,7 @@ For secure host key verification, use one of these approaches:
    ```bash
    # On control plane (with direct VM access), export host keys for all sandbox VMs
    # Run this from a trusted network location with direct VM access
+   # Alternatively, use VM console access to read keys directly from /etc/ssh/
    ssh-keyscan 192.168.122.x > sandbox_known_hosts
    
    # Distribute to users via secure channel (encrypted email, secure file share, etc.)
