@@ -181,12 +181,48 @@ curl -X POST http://localhost:8080/v1/access/request \
 # Save the certificate
 echo "<certificate_from_response>" > /tmp/sandbox_key-cert.pub
 
+# First connection: verify and accept the host key
+# Check the host key fingerprint matches your VM's known fingerprint
+ssh-keyscan 192.168.122.x >> ~/.ssh/known_hosts
+
 # Connect!
 ssh -i /tmp/sandbox_key \
     -o CertificateFile=/tmp/sandbox_key-cert.pub \
-    -o StrictHostKeyChecking=no \
     sandbox@192.168.122.x
 ```
+
+**Host Key Management:**
+
+For secure host key verification, use one of these approaches:
+
+1. **Pre-distribute known host keys** - Deploy known host keys to users via a secure channel:
+   ```bash
+   # On control plane, export host keys for all sandbox VMs
+   ssh-keyscan 192.168.122.x > sandbox_known_hosts
+   
+   # Distribute to users securely, then:
+   cat sandbox_known_hosts >> ~/.ssh/known_hosts
+   ```
+
+2. **Verify fingerprints manually** - On first connection, verify the fingerprint matches the VM's actual key:
+   ```bash
+   # On the VM, get the fingerprint:
+   ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub
+   
+   # Compare with the fingerprint shown during first SSH connection
+   ```
+
+3. **Use ssh-keyscan with verification** - Fetch and verify host keys before connecting:
+   ```bash
+   # Fetch host key
+   ssh-keyscan 192.168.122.x > /tmp/vm_host_key
+   
+   # Verify fingerprint matches expected value
+   ssh-keygen -lf /tmp/vm_host_key
+   
+   # If verified, add to known_hosts
+   cat /tmp/vm_host_key >> ~/.ssh/known_hosts
+   ```
 
 ---
 
