@@ -16,7 +16,8 @@ Example:
     client.command.run_command(command="ls", args=["-la"])
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union
+from typing_extensions import TypedDict, NotRequired
 
 from virsh_sandbox.api.access_api import AccessApi
 from virsh_sandbox.api.ansible_api import AnsibleApi
@@ -31,187 +32,532 @@ from virsh_sandbox.api.tmux_api import TmuxApi
 from virsh_sandbox.api.vms_api import VMsApi
 from virsh_sandbox.api_client import ApiClient
 from virsh_sandbox.configuration import Configuration
-from virsh_sandbox.models.internal_ansible_job import InternalAnsibleJob
 from virsh_sandbox.models.internal_ansible_job_request import \
     InternalAnsibleJobRequest
-from virsh_sandbox.models.internal_ansible_job_response import \
-    InternalAnsibleJobResponse
 from virsh_sandbox.models.internal_api_create_sandbox_session_request import \
     InternalApiCreateSandboxSessionRequest
-from virsh_sandbox.models.internal_api_create_sandbox_session_response import \
-    InternalApiCreateSandboxSessionResponse
-from virsh_sandbox.models.internal_api_list_sandbox_sessions_response import \
-    InternalApiListSandboxSessionsResponse
-from virsh_sandbox.models.internal_api_sandbox_session_info import \
-    InternalApiSandboxSessionInfo
 from virsh_sandbox.models.internal_rest_create_sandbox_request import \
     InternalRestCreateSandboxRequest
-from virsh_sandbox.models.internal_rest_create_sandbox_response import \
-    InternalRestCreateSandboxResponse
 from virsh_sandbox.models.internal_rest_diff_request import \
     InternalRestDiffRequest
-from virsh_sandbox.models.internal_rest_diff_response import \
-    InternalRestDiffResponse
 from virsh_sandbox.models.internal_rest_inject_ssh_key_request import \
     InternalRestInjectSSHKeyRequest
-from virsh_sandbox.models.internal_rest_list_vms_response import \
-    InternalRestListVMsResponse
 from virsh_sandbox.models.internal_rest_publish_request import \
     InternalRestPublishRequest
 from virsh_sandbox.models.internal_rest_run_command_request import \
     InternalRestRunCommandRequest
-from virsh_sandbox.models.internal_rest_run_command_response import \
-    InternalRestRunCommandResponse
 from virsh_sandbox.models.internal_rest_snapshot_request import \
     InternalRestSnapshotRequest
-from virsh_sandbox.models.internal_rest_snapshot_response import \
-    InternalRestSnapshotResponse
 from virsh_sandbox.models.internal_rest_start_sandbox_request import \
     InternalRestStartSandboxRequest
-from virsh_sandbox.models.internal_rest_start_sandbox_response import \
-    InternalRestStartSandboxResponse
 from virsh_sandbox.models.tmux_client_internal_types_approve_request import \
     TmuxClientInternalTypesApproveRequest
 from virsh_sandbox.models.tmux_client_internal_types_ask_human_request import \
     TmuxClientInternalTypesAskHumanRequest
-from virsh_sandbox.models.tmux_client_internal_types_ask_human_response import \
-    TmuxClientInternalTypesAskHumanResponse
 from virsh_sandbox.models.tmux_client_internal_types_audit_query import \
     TmuxClientInternalTypesAuditQuery
-from virsh_sandbox.models.tmux_client_internal_types_audit_query_response import \
-    TmuxClientInternalTypesAuditQueryResponse
 from virsh_sandbox.models.tmux_client_internal_types_copy_file_request import \
     TmuxClientInternalTypesCopyFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_copy_file_response import \
-    TmuxClientInternalTypesCopyFileResponse
 from virsh_sandbox.models.tmux_client_internal_types_create_pane_request import \
     TmuxClientInternalTypesCreatePaneRequest
-from virsh_sandbox.models.tmux_client_internal_types_create_pane_response import \
-    TmuxClientInternalTypesCreatePaneResponse
 from virsh_sandbox.models.tmux_client_internal_types_create_plan_request import \
     TmuxClientInternalTypesCreatePlanRequest
-from virsh_sandbox.models.tmux_client_internal_types_create_plan_response import \
-    TmuxClientInternalTypesCreatePlanResponse
 from virsh_sandbox.models.tmux_client_internal_types_delete_file_request import \
     TmuxClientInternalTypesDeleteFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_delete_file_response import \
-    TmuxClientInternalTypesDeleteFileResponse
 from virsh_sandbox.models.tmux_client_internal_types_edit_file_request import \
     TmuxClientInternalTypesEditFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_edit_file_response import \
-    TmuxClientInternalTypesEditFileResponse
-from virsh_sandbox.models.tmux_client_internal_types_get_plan_response import \
-    TmuxClientInternalTypesGetPlanResponse
-from virsh_sandbox.models.tmux_client_internal_types_health_response import \
-    TmuxClientInternalTypesHealthResponse
-from virsh_sandbox.models.tmux_client_internal_types_kill_session_response import \
-    TmuxClientInternalTypesKillSessionResponse
-from virsh_sandbox.models.tmux_client_internal_types_list_approvals_response import \
-    TmuxClientInternalTypesListApprovalsResponse
 from virsh_sandbox.models.tmux_client_internal_types_list_dir_request import \
     TmuxClientInternalTypesListDirRequest
-from virsh_sandbox.models.tmux_client_internal_types_list_dir_response import \
-    TmuxClientInternalTypesListDirResponse
-from virsh_sandbox.models.tmux_client_internal_types_list_panes_response import \
-    TmuxClientInternalTypesListPanesResponse
-from virsh_sandbox.models.tmux_client_internal_types_list_plans_response import \
-    TmuxClientInternalTypesListPlansResponse
-from virsh_sandbox.models.tmux_client_internal_types_pending_approval import \
-    TmuxClientInternalTypesPendingApproval
 from virsh_sandbox.models.tmux_client_internal_types_read_file_request import \
     TmuxClientInternalTypesReadFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_read_file_response import \
-    TmuxClientInternalTypesReadFileResponse
 from virsh_sandbox.models.tmux_client_internal_types_read_pane_request import \
     TmuxClientInternalTypesReadPaneRequest
-from virsh_sandbox.models.tmux_client_internal_types_read_pane_response import \
-    TmuxClientInternalTypesReadPaneResponse
 from virsh_sandbox.models.tmux_client_internal_types_run_command_request import \
     TmuxClientInternalTypesRunCommandRequest
-from virsh_sandbox.models.tmux_client_internal_types_run_command_response import \
-    TmuxClientInternalTypesRunCommandResponse
 from virsh_sandbox.models.tmux_client_internal_types_send_keys_request import \
     TmuxClientInternalTypesSendKeysRequest
-from virsh_sandbox.models.tmux_client_internal_types_send_keys_response import \
-    TmuxClientInternalTypesSendKeysResponse
-from virsh_sandbox.models.tmux_client_internal_types_session_info import \
-    TmuxClientInternalTypesSessionInfo
 from virsh_sandbox.models.tmux_client_internal_types_step_status import \
     TmuxClientInternalTypesStepStatus
 from virsh_sandbox.models.tmux_client_internal_types_switch_pane_request import \
     TmuxClientInternalTypesSwitchPaneRequest
-from virsh_sandbox.models.tmux_client_internal_types_switch_pane_response import \
-    TmuxClientInternalTypesSwitchPaneResponse
 from virsh_sandbox.models.tmux_client_internal_types_update_plan_request import \
     TmuxClientInternalTypesUpdatePlanRequest
-from virsh_sandbox.models.tmux_client_internal_types_update_plan_response import \
-    TmuxClientInternalTypesUpdatePlanResponse
-from virsh_sandbox.models.tmux_client_internal_types_window_info import \
-    TmuxClientInternalTypesWindowInfo
 from virsh_sandbox.models.tmux_client_internal_types_write_file_request import \
     TmuxClientInternalTypesWriteFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_write_file_response import \
-    TmuxClientInternalTypesWriteFileResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_ca_public_key_response import \
-    VirshSandboxInternalRestCaPublicKeyResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_certificate_response import \
-    VirshSandboxInternalRestCertificateResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_list_certificates_response import \
-    VirshSandboxInternalRestListCertificatesResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sessions_response import \
-    VirshSandboxInternalRestListSessionsResponse
 from virsh_sandbox.models.virsh_sandbox_internal_rest_request_access_request import \
     VirshSandboxInternalRestRequestAccessRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_request_access_response import \
-    VirshSandboxInternalRestRequestAccessResponse
 from virsh_sandbox.models.virsh_sandbox_internal_rest_revoke_certificate_request import \
     VirshSandboxInternalRestRevokeCertificateRequest
 from virsh_sandbox.models.virsh_sandbox_internal_rest_session_end_request import \
     VirshSandboxInternalRestSessionEndRequest
 from virsh_sandbox.models.virsh_sandbox_internal_rest_session_start_request import \
     VirshSandboxInternalRestSessionStartRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_session_start_response import \
-    VirshSandboxInternalRestSessionStartResponse
+
+
+# =============================================================================
+# TypedDict Definitions for Response Types
+# =============================================================================
+
+
+class SandboxDict(TypedDict, total=False):
+    """Sandbox information dictionary."""
+    id: str
+    agent_id: str
+    base_image: str
+    created_at: str
+    deleted_at: Optional[str]
+    ip_address: Optional[str]
+    job_id: str
+    network: str
+    sandbox_name: str
+    state: str
+    ttl_seconds: Optional[int]
+    updated_at: str
+
+
+class CreateSandboxResponseDict(TypedDict, total=False):
+    """Response from create_sandbox."""
+    sandbox: SandboxDict
+
+
+class StartSandboxResponseDict(TypedDict, total=False):
+    """Response from start_sandbox."""
+    sandbox: SandboxDict
+
+
+class SnapshotDict(TypedDict, total=False):
+    """Snapshot information dictionary."""
+    id: str
+    name: str
+    sandbox_id: str
+    created_at: str
+    kind: str
+
+
+class SnapshotResponseDict(TypedDict, total=False):
+    """Response from create_snapshot."""
+    snapshot: SnapshotDict
+
+
+class ChangeDiffDict(TypedDict, total=False):
+    """Change diff information."""
+    path: str
+    change_type: str
+    old_content: Optional[str]
+    new_content: Optional[str]
+
+
+class DiffResponseDict(TypedDict, total=False):
+    """Response from diff_snapshots."""
+    changes: List[ChangeDiffDict]
+    packages: List[Dict[str, Any]]
+    services: List[Dict[str, Any]]
+
+
+class RunCommandResponseDict(TypedDict, total=False):
+    """Response from run_command and run_sandbox_command."""
+    exit_code: int
+    stdout: str
+    stderr: str
+    timed_out: bool
+
+
+class FileInfoDict(TypedDict, total=False):
+    """File information dictionary."""
+    name: str
+    path: str
+    size: int
+    mode: str
+    mod_time: str
+    is_dir: bool
+
+
+class ListDirectoryResponseDict(TypedDict, total=False):
+    """Response from list_directory."""
+    files: List[FileInfoDict]
+    path: str
+
+
+class ReadFileResponseDict(TypedDict, total=False):
+    """Response from read_file."""
+    content: str
+    path: str
+    lines: int
+    truncated: bool
+
+
+class WriteFileResponseDict(TypedDict, total=False):
+    """Response from write_file."""
+    path: str
+    bytes_written: int
+    success: bool
+
+
+class CopyFileResponseDict(TypedDict, total=False):
+    """Response from copy_file."""
+    source: str
+    destination: str
+    success: bool
+
+
+class DeleteFileResponseDict(TypedDict, total=False):
+    """Response from delete_file."""
+    path: str
+    success: bool
+
+
+class EditFileResponseDict(TypedDict, total=False):
+    """Response from edit_file."""
+    path: str
+    replacements: int
+    success: bool
+
+
+class HealthComponentDict(TypedDict, total=False):
+    """Health component information."""
+    name: str
+    status: str
+    message: Optional[str]
+
+
+class HealthResponseDict(TypedDict, total=False):
+    """Response from get_health."""
+    status: str
+    components: List[HealthComponentDict]
+
+
+class AskHumanResponseDict(TypedDict, total=False):
+    """Response from ask_human."""
+    approved: bool
+    response: Optional[str]
+    comment: Optional[str]
+    approved_by: Optional[str]
+
+
+class PendingApprovalDict(TypedDict, total=False):
+    """Pending approval information."""
+    request_id: str
+    prompt: str
+    action_type: str
+    urgency: str
+    context: Optional[str]
+    alternatives: List[str]
+    created_at: str
+    timeout_secs: int
+    status: str
+
+
+class ListApprovalsResponseDict(TypedDict, total=False):
+    """Response from list_pending_approvals."""
+    approvals: List[PendingApprovalDict]
+
+
+class PlanStepDict(TypedDict, total=False):
+    """Plan step information."""
+    description: str
+    status: str
+    result: Optional[str]
+    error: Optional[str]
+
+
+class PlanDict(TypedDict, total=False):
+    """Plan information."""
+    id: str
+    name: str
+    description: Optional[str]
+    steps: List[PlanStepDict]
+    status: str
+    current_step: int
+    created_at: str
+    updated_at: str
+
+
+class CreatePlanResponseDict(TypedDict, total=False):
+    """Response from create_plan."""
+    plan: PlanDict
+
+
+class GetPlanResponseDict(TypedDict, total=False):
+    """Response from get_plan."""
+    plan: PlanDict
+
+
+class ListPlansResponseDict(TypedDict, total=False):
+    """Response from list_plans."""
+    plans: List[PlanDict]
+
+
+class UpdatePlanResponseDict(TypedDict, total=False):
+    """Response from update_plan."""
+    plan: PlanDict
+
+
+class AnsibleJobDict(TypedDict, total=False):
+    """Ansible job information."""
+    job_id: str
+    status: str
+    playbook: str
+    vm_name: str
+    output: Optional[str]
+    error: Optional[str]
+    created_at: str
+    updated_at: str
+
+
+class AnsibleJobResponseDict(TypedDict, total=False):
+    """Response from create_ansible_job."""
+    job: AnsibleJobDict
+
+
+class AuditEntryDict(TypedDict, total=False):
+    """Audit entry information."""
+    id: str
+    timestamp: str
+    action: str
+    actor: str
+    resource: str
+    details: Dict[str, Any]
+
+
+class AuditQueryResponseDict(TypedDict, total=False):
+    """Response from query_audit_log."""
+    entries: List[AuditEntryDict]
+    total: int
+
+
+class CaPublicKeyResponseDict(TypedDict, total=False):
+    """Response from v1_access_ca_pubkey_get."""
+    public_key: str
+
+
+class CertificateDict(TypedDict, total=False):
+    """Certificate information."""
+    cert_id: str
+    user_id: str
+    sandbox_id: str
+    certificate: str
+    status: str
+    created_at: str
+    expires_at: str
+    revoked_at: Optional[str]
+    revoke_reason: Optional[str]
+
+
+class CertificateResponseDict(TypedDict, total=False):
+    """Response from v1_access_certificate_cert_id_get."""
+    certificate: CertificateDict
+
+
+class ListCertificatesResponseDict(TypedDict, total=False):
+    """Response from v1_access_certificates_get."""
+    certificates: List[CertificateDict]
+    total: int
+
+
+class RequestAccessResponseDict(TypedDict, total=False):
+    """Response from v1_access_request_post."""
+    certificate: str
+    cert_id: str
+    expires_at: str
+
+
+class SessionDict(TypedDict, total=False):
+    """Session information."""
+    session_id: str
+    certificate_id: str
+    user_id: str
+    sandbox_id: str
+    source_ip: str
+    started_at: str
+    ended_at: Optional[str]
+    end_reason: Optional[str]
+
+
+class SessionStartResponseDict(TypedDict, total=False):
+    """Response from v1_access_session_start_post."""
+    session_id: str
+
+
+class ListSessionsResponseDict(TypedDict, total=False):
+    """Response from v1_access_sessions_get."""
+    sessions: List[SessionDict]
+    total: int
+
+
+class SandboxSessionInfoDict(TypedDict, total=False):
+    """Sandbox session information."""
+    session_name: str
+    sandbox_id: str
+    sandbox_ip: str
+    certificate: str
+    created_at: str
+    expires_at: str
+
+
+class CreateSandboxSessionResponseDict(TypedDict, total=False):
+    """Response from create_sandbox_session."""
+    session: SandboxSessionInfoDict
+
+
+class ListSandboxSessionsResponseDict(TypedDict, total=False):
+    """Response from list_sandbox_sessions."""
+    sessions: List[SandboxSessionInfoDict]
+
+
+class VMInfoDict(TypedDict, total=False):
+    """VM information."""
+    name: str
+    state: str
+    uuid: str
+    memory: int
+    vcpus: int
+
+
+class ListVMsResponseDict(TypedDict, total=False):
+    """Response from list_virtual_machines."""
+    vms: List[VMInfoDict]
+
+
+class TmuxSessionInfoDict(TypedDict, total=False):
+    """Tmux session information."""
+    name: str
+    created: str
+    attached: bool
+    windows: int
+
+
+class TmuxWindowInfoDict(TypedDict, total=False):
+    """Tmux window information."""
+    index: int
+    name: str
+    active: bool
+    panes: int
+
+
+class TmuxPaneInfoDict(TypedDict, total=False):
+    """Tmux pane information."""
+    id: str
+    index: int
+    active: bool
+    width: int
+    height: int
+    current_command: Optional[str]
+
+
+class CreatePaneResponseDict(TypedDict, total=False):
+    """Response from create_tmux_pane."""
+    pane_id: str
+    window_name: str
+
+
+class ListPanesResponseDict(TypedDict, total=False):
+    """Response from list_tmux_panes."""
+    panes: List[TmuxPaneInfoDict]
+
+
+class ReadPaneResponseDict(TypedDict, total=False):
+    """Response from read_tmux_pane."""
+    content: str
+    pane_id: str
+
+
+class SendKeysResponseDict(TypedDict, total=False):
+    """Response from send_keys_to_pane."""
+    success: bool
+
+
+class SwitchPaneResponseDict(TypedDict, total=False):
+    """Response from switch_tmux_pane."""
+    success: bool
+
+
+class KillSessionResponseDict(TypedDict, total=False):
+    """Response from release_tmux_session."""
+    success: bool
+
+
+# =============================================================================
+# Helper Functions
+# =============================================================================
+
+
+def _to_dict(response: Any) -> Any:
+    """Convert a response object to a dictionary.
+
+    If the response has a to_dict method, use it.
+    If it's a list, convert each item.
+    If it's already a dict or None, return as-is.
+
+    Args:
+        response: The response object to convert.
+
+    Returns:
+        A dictionary representation of the response.
+    """
+    if response is None:
+        return None
+    if isinstance(response, dict):
+        return response
+    if isinstance(response, list):
+        return [_to_dict(item) for item in response]
+    if hasattr(response, "to_dict"):
+        return response.to_dict()
+    return response
+
+
+# =============================================================================
+# Operation Classes
+# =============================================================================
 
 
 class AccessOperations:
     """Wrapper for AccessApi with simplified method signatures."""
 
-    def __init__(self, api: AccessApi):
-        self._api = api
+    def __init__(self, api: AccessApi) -> None:
+        self._api: AccessApi = api
 
-    def v1_access_ca_pubkey_get(self) -> VirshSandboxInternalRestCaPublicKeyResponse:
-        """Get the SSH CA public key"""
-        return self._api.v1_access_ca_pubkey_get()
+    def v1_access_ca_pubkey_get(self) -> CaPublicKeyResponseDict:
+        """Get the SSH CA public key.
+
+        Returns:
+            CaPublicKeyResponseDict: Dictionary containing the public key.
+        """
+        return _to_dict(self._api.v1_access_ca_pubkey_get())
 
     def v1_access_certificate_cert_id_delete(
         self,
         cert_id: str,
         reason: Optional[str] = None,
-    ) -> Dict[str, str]:
-        """Revoke a certificate
+    ) -> Dict[str, Any]:
+        """Revoke a certificate.
 
         Args:
-            cert_id: str
-            reason: reason
+            cert_id: The certificate ID to revoke.
+            reason: Optional reason for revocation.
+
+        Returns:
+            Dict containing the revocation status.
         """
         request = VirshSandboxInternalRestRevokeCertificateRequest(
             reason=reason,
         )
-        return self._api.v1_access_certificate_cert_id_delete(
+        return _to_dict(self._api.v1_access_certificate_cert_id_delete(
             cert_id=cert_id, request=request
-        )
+        ))
 
     def v1_access_certificate_cert_id_get(
         self,
         cert_id: str,
-    ) -> VirshSandboxInternalRestCertificateResponse:
-        """Get certificate details
+    ) -> CertificateResponseDict:
+        """Get certificate details.
 
         Args:
-            cert_id: str
+            cert_id: The certificate ID to retrieve.
+
+        Returns:
+            CertificateResponseDict: Dictionary containing certificate details.
         """
-        return self._api.v1_access_certificate_cert_id_get(cert_id=cert_id)
+        return _to_dict(self._api.v1_access_certificate_cert_id_get(cert_id=cert_id))
 
     def v1_access_certificates_get(
         self,
@@ -221,25 +567,28 @@ class AccessOperations:
         active_only: Optional[bool] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> VirshSandboxInternalRestListCertificatesResponse:
-        """List certificates
+    ) -> ListCertificatesResponseDict:
+        """List certificates.
 
         Args:
-            sandbox_id: Optional[str]
-            user_id: Optional[str]
-            status: Optional[str]
-            active_only: Optional[bool]
-            limit: Optional[int]
-            offset: Optional[int]
+            sandbox_id: Filter by sandbox ID.
+            user_id: Filter by user ID.
+            status: Filter by certificate status.
+            active_only: Only return active certificates.
+            limit: Maximum number of results.
+            offset: Pagination offset.
+
+        Returns:
+            ListCertificatesResponseDict: Dictionary containing list of certificates.
         """
-        return self._api.v1_access_certificates_get(
+        return _to_dict(self._api.v1_access_certificates_get(
             sandbox_id=sandbox_id,
             user_id=user_id,
             status=status,
             active_only=active_only,
             limit=limit,
             offset=offset,
-        )
+        ))
 
     def v1_access_request_post(
         self,
@@ -247,14 +596,17 @@ class AccessOperations:
         sandbox_id: Optional[str] = None,
         ttl_minutes: Optional[int] = None,
         user_id: Optional[str] = None,
-    ) -> VirshSandboxInternalRestRequestAccessResponse:
-        """Request SSH access to a sandbox
+    ) -> RequestAccessResponseDict:
+        """Request SSH access to a sandbox.
 
         Args:
-            public_key: PublicKey is the user
-            sandbox_id: SandboxID is the target sandbox.
-            ttl_minutes: TTLMinutes is the requested access duration (1-10 minutes).
-            user_id: UserID identifies the requesting user.
+            public_key: The user's SSH public key.
+            sandbox_id: The target sandbox ID.
+            ttl_minutes: Requested access duration (1-10 minutes).
+            user_id: The requesting user's ID.
+
+        Returns:
+            RequestAccessResponseDict: Dictionary containing the signed certificate.
         """
         request = VirshSandboxInternalRestRequestAccessRequest(
             public_key=public_key,
@@ -262,41 +614,47 @@ class AccessOperations:
             ttl_minutes=ttl_minutes,
             user_id=user_id,
         )
-        return self._api.v1_access_request_post(request=request)
+        return _to_dict(self._api.v1_access_request_post(request=request))
 
     def v1_access_session_end_post(
         self,
         reason: Optional[str] = None,
         session_id: Optional[str] = None,
-    ) -> Dict[str, str]:
-        """Record session end
+    ) -> Dict[str, Any]:
+        """Record session end.
 
         Args:
-            reason: reason
-            session_id: session_id
+            reason: Reason for ending the session.
+            session_id: The session ID to end.
+
+        Returns:
+            Dict containing the operation status.
         """
         request = VirshSandboxInternalRestSessionEndRequest(
             reason=reason,
             session_id=session_id,
         )
-        return self._api.v1_access_session_end_post(request=request)
+        return _to_dict(self._api.v1_access_session_end_post(request=request))
 
     def v1_access_session_start_post(
         self,
         certificate_id: Optional[str] = None,
         source_ip: Optional[str] = None,
-    ) -> VirshSandboxInternalRestSessionStartResponse:
-        """Record session start
+    ) -> SessionStartResponseDict:
+        """Record session start.
 
         Args:
-            certificate_id: certificate_id
-            source_ip: source_ip
+            certificate_id: The certificate ID for the session.
+            source_ip: The source IP address.
+
+        Returns:
+            SessionStartResponseDict: Dictionary containing the session ID.
         """
         request = VirshSandboxInternalRestSessionStartRequest(
             certificate_id=certificate_id,
             source_ip=source_ip,
         )
-        return self._api.v1_access_session_start_post(request=request)
+        return _to_dict(self._api.v1_access_session_start_post(request=request))
 
     def v1_access_sessions_get(
         self,
@@ -306,72 +664,81 @@ class AccessOperations:
         active_only: Optional[bool] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> VirshSandboxInternalRestListSessionsResponse:
-        """List sessions
+    ) -> ListSessionsResponseDict:
+        """List sessions.
 
         Args:
-            sandbox_id: Optional[str]
-            certificate_id: Optional[str]
-            user_id: Optional[str]
-            active_only: Optional[bool]
-            limit: Optional[int]
-            offset: Optional[int]
+            sandbox_id: Filter by sandbox ID.
+            certificate_id: Filter by certificate ID.
+            user_id: Filter by user ID.
+            active_only: Only return active sessions.
+            limit: Maximum number of results.
+            offset: Pagination offset.
+
+        Returns:
+            ListSessionsResponseDict: Dictionary containing list of sessions.
         """
-        return self._api.v1_access_sessions_get(
+        return _to_dict(self._api.v1_access_sessions_get(
             sandbox_id=sandbox_id,
             certificate_id=certificate_id,
             user_id=user_id,
             active_only=active_only,
             limit=limit,
             offset=offset,
-        )
+        ))
 
 
 class AnsibleOperations:
     """Wrapper for AnsibleApi with simplified method signatures."""
 
-    def __init__(self, api: AnsibleApi):
-        self._api = api
+    def __init__(self, api: AnsibleApi) -> None:
+        self._api: AnsibleApi = api
 
     def create_ansible_job(
         self,
         check: Optional[bool] = None,
         playbook: Optional[str] = None,
         vm_name: Optional[str] = None,
-    ) -> InternalAnsibleJobResponse:
-        """Create Ansible job
+    ) -> AnsibleJobResponseDict:
+        """Create Ansible job.
 
         Args:
-            check: check
-            playbook: playbook
-            vm_name: vm_name
+            check: Run in check mode (dry-run).
+            playbook: The playbook content or path.
+            vm_name: The target VM name.
+
+        Returns:
+            AnsibleJobResponseDict: Dictionary containing job information.
         """
         request = InternalAnsibleJobRequest(
             check=check,
             playbook=playbook,
             vm_name=vm_name,
         )
-        return self._api.create_ansible_job(request=request)
+        return _to_dict(self._api.create_ansible_job(request=request))
 
     def get_ansible_job(
         self,
         job_id: str,
-    ) -> InternalAnsibleJob:
-        """Get Ansible job
+    ) -> AnsibleJobDict:
+        """Get Ansible job.
 
         Args:
-            job_id: str
+            job_id: The job ID to retrieve.
+
+        Returns:
+            AnsibleJobDict: Dictionary containing job details.
         """
-        return self._api.get_ansible_job(job_id=job_id)
+        return _to_dict(self._api.get_ansible_job(job_id=job_id))
 
     def stream_ansible_job_output(
         self,
         job_id: str,
     ) -> None:
-        """Stream Ansible job output
+        """Stream Ansible job output.
 
         Args:
-            job_id: str
+            job_id: The job ID to stream output from.
         """
         return self._api.stream_ansible_job_output(job_id=job_id)
 
@@ -379,28 +746,40 @@ class AnsibleOperations:
 class AuditOperations:
     """Wrapper for AuditApi with simplified method signatures."""
 
-    def __init__(self, api: AuditApi):
-        self._api = api
+    def __init__(self, api: AuditApi) -> None:
+        self._api: AuditApi = api
 
-    def get_audit_stats(self) -> Dict[str, object]:
-        """Get audit stats"""
-        return self._api.get_audit_stats()
+    def get_audit_stats(self) -> Dict[str, Any]:
+        """Get audit stats.
 
-    def query_audit_log(self) -> TmuxClientInternalTypesAuditQueryResponse:
-        """Query audit log"""
+        Returns:
+            Dict containing audit statistics.
+        """
+        return _to_dict(self._api.get_audit_stats())
+
+    def query_audit_log(self) -> AuditQueryResponseDict:
+        """Query audit log.
+
+        Returns:
+            AuditQueryResponseDict: Dictionary containing audit entries.
+        """
         request = TmuxClientInternalTypesAuditQuery()
-        return self._api.query_audit_log(request=request)
+        return _to_dict(self._api.query_audit_log(request=request))
 
 
 class CommandOperations:
     """Wrapper for CommandApi with simplified method signatures."""
 
-    def __init__(self, api: CommandApi):
-        self._api = api
+    def __init__(self, api: CommandApi) -> None:
+        self._api: CommandApi = api
 
-    def get_allowed_commands(self) -> Dict[str, object]:
-        """Get allowed commands"""
-        return self._api.get_allowed_commands()
+    def get_allowed_commands(self) -> Dict[str, Any]:
+        """Get allowed commands.
+
+        Returns:
+            Dict containing list of allowed commands.
+        """
+        return _to_dict(self._api.get_allowed_commands())
 
     def run_command(
         self,
@@ -410,16 +789,19 @@ class CommandOperations:
         env: Optional[List[str]] = None,
         timeout: Optional[int] = None,
         work_dir: Optional[str] = None,
-    ) -> TmuxClientInternalTypesRunCommandResponse:
-        """Run command
+    ) -> RunCommandResponseDict:
+        """Run command.
 
         Args:
-            args: Arguments as separate items
-            command: Executable name only
-            dry_run: If true, don
-            env: Additional env vars (KEY=VALUE)
-            timeout: Seconds, 0 = default (30s)
-            work_dir: Working directory
+            args: Arguments as separate items.
+            command: Executable name only.
+            dry_run: If true, don't actually execute.
+            env: Additional env vars (KEY=VALUE format).
+            timeout: Seconds, 0 = default (30s).
+            work_dir: Working directory.
+
+        Returns:
+            RunCommandResponseDict: Dictionary containing command output.
         """
         request = TmuxClientInternalTypesRunCommandRequest(
             args=args,
@@ -429,55 +811,65 @@ class CommandOperations:
             timeout=timeout,
             work_dir=work_dir,
         )
-        return self._api.run_command(request=request)
+        return _to_dict(self._api.run_command(request=request))
 
 
 class FileOperations:
     """Wrapper for FileApi with simplified method signatures."""
 
-    def __init__(self, api: FileApi):
-        self._api = api
+    def __init__(self, api: FileApi) -> None:
+        self._api: FileApi = api
 
-    def check_file_exists(self) -> Dict[str, object]:
-        """Check if file exists"""
-        return self._api.check_file_exists(request={})
+    def check_file_exists(self) -> Dict[str, Any]:
+        """Check if file exists.
+
+        Returns:
+            Dict containing existence status.
+        """
+        return _to_dict(self._api.check_file_exists(request={}))
 
     def copy_file(
         self,
         destination: Optional[str] = None,
         overwrite: Optional[bool] = None,
         source: Optional[str] = None,
-    ) -> TmuxClientInternalTypesCopyFileResponse:
-        """Copy file
+    ) -> CopyFileResponseDict:
+        """Copy file.
 
         Args:
-            destination: destination
-            overwrite: overwrite
-            source: source
+            destination: Destination path.
+            overwrite: Whether to overwrite existing file.
+            source: Source path.
+
+        Returns:
+            CopyFileResponseDict: Dictionary containing copy status.
         """
         request = TmuxClientInternalTypesCopyFileRequest(
             destination=destination,
             overwrite=overwrite,
             source=source,
         )
-        return self._api.copy_file(request=request)
+        return _to_dict(self._api.copy_file(request=request))
 
     def delete_file(
         self,
         path: Optional[str] = None,
         recursive: Optional[bool] = None,
-    ) -> TmuxClientInternalTypesDeleteFileResponse:
-        """Delete file
+    ) -> DeleteFileResponseDict:
+        """Delete file.
 
         Args:
-            path: path
-            recursive: For directories
+            path: Path to delete.
+            recursive: For directories, delete recursively.
+
+        Returns:
+            DeleteFileResponseDict: Dictionary containing deletion status.
         """
         request = TmuxClientInternalTypesDeleteFileRequest(
             path=path,
             recursive=recursive,
         )
-        return self._api.delete_file(request=request)
+        return _to_dict(self._api.delete_file(request=request))
 
     def edit_file(
         self,
@@ -485,14 +877,17 @@ class FileOperations:
         new_text: Optional[str] = None,
         old_text: Optional[str] = None,
         path: Optional[str] = None,
-    ) -> TmuxClientInternalTypesEditFileResponse:
-        """Edit file
+    ) -> EditFileResponseDict:
+        """Edit file.
 
         Args:
-            all: Replace all occurrences (default: first only)
-            new_text: Replacement text
-            old_text: Text to find and replace
-            path: path
+            all: Replace all occurrences (default: first only).
+            new_text: Replacement text.
+            old_text: Text to find and replace.
+            path: File path.
+
+        Returns:
+            EditFileResponseDict: Dictionary containing edit status.
         """
         request = TmuxClientInternalTypesEditFileRequest(
             all=all,
@@ -500,31 +895,38 @@ class FileOperations:
             old_text=old_text,
             path=path,
         )
-        return self._api.edit_file(request=request)
+        return _to_dict(self._api.edit_file(request=request))
 
     def get_file_hash(self) -> Dict[str, str]:
-        """Get file hash"""
-        return self._api.get_file_hash(request={})
+        """Get file hash.
+
+        Returns:
+            Dict containing the file hash.
+        """
+        return _to_dict(self._api.get_file_hash(request={}))
 
     def list_directory(
         self,
         max_depth: Optional[int] = None,
         path: Optional[str] = None,
         recursive: Optional[bool] = None,
-    ) -> TmuxClientInternalTypesListDirResponse:
-        """List directory contents
+    ) -> ListDirectoryResponseDict:
+        """List directory contents.
 
         Args:
-            max_depth: max_depth
-            path: path
-            recursive: recursive
+            max_depth: Maximum depth for recursive listing.
+            path: Directory path.
+            recursive: Whether to list recursively.
+
+        Returns:
+            ListDirectoryResponseDict: Dictionary containing directory listing.
         """
         request = TmuxClientInternalTypesListDirRequest(
             max_depth=max_depth,
             path=path,
             recursive=recursive,
         )
-        return self._api.list_directory(request=request)
+        return _to_dict(self._api.list_directory(request=request))
 
     def read_file(
         self,
@@ -532,14 +934,17 @@ class FileOperations:
         max_lines: Optional[int] = None,
         path: Optional[str] = None,
         to_line: Optional[int] = None,
-    ) -> TmuxClientInternalTypesReadFileResponse:
-        """Read file
+    ) -> ReadFileResponseDict:
+        """Read file.
 
         Args:
-            from_line: 1-indexed, 0 = start
-            max_lines: 0 = no limit
-            path: path
-            to_line: 1-indexed, 0 = end
+            from_line: 1-indexed start line, 0 = start.
+            max_lines: Maximum lines to read, 0 = no limit.
+            path: File path.
+            to_line: 1-indexed end line, 0 = end.
+
+        Returns:
+            ReadFileResponseDict: Dictionary containing file content.
         """
         request = TmuxClientInternalTypesReadFileRequest(
             from_line=from_line,
@@ -547,7 +952,7 @@ class FileOperations:
             path=path,
             to_line=to_line,
         )
-        return self._api.read_file(request=request)
+        return _to_dict(self._api.read_file(request=request))
 
     def write_file(
         self,
@@ -556,15 +961,18 @@ class FileOperations:
         mode: Optional[str] = None,
         overwrite: Optional[bool] = None,
         path: Optional[str] = None,
-    ) -> TmuxClientInternalTypesWriteFileResponse:
-        """Write file
+    ) -> WriteFileResponseDict:
+        """Write file.
 
         Args:
-            content: content
-            create_dir: Create parent directories if needed
-            mode: e.g., \
-            overwrite: Must be true to overwrite existing
-            path: path
+            content: File content.
+            create_dir: Create parent directories if needed.
+            mode: File mode (e.g., "0644").
+            overwrite: Must be true to overwrite existing.
+            path: File path.
+
+        Returns:
+            WriteFileResponseDict: Dictionary containing write status.
         """
         request = TmuxClientInternalTypesWriteFileRequest(
             content=content,
@@ -573,25 +981,29 @@ class FileOperations:
             overwrite=overwrite,
             path=path,
         )
-        return self._api.write_file(request=request)
+        return _to_dict(self._api.write_file(request=request))
 
 
 class HealthOperations:
     """Wrapper for HealthApi with simplified method signatures."""
 
-    def __init__(self, api: HealthApi):
-        self._api = api
+    def __init__(self, api: HealthApi) -> None:
+        self._api: HealthApi = api
 
-    def get_health(self) -> TmuxClientInternalTypesHealthResponse:
-        """Get health status"""
-        return self._api.get_health()
+    def get_health(self) -> HealthResponseDict:
+        """Get health status.
+
+        Returns:
+            HealthResponseDict: Dictionary containing health status.
+        """
+        return _to_dict(self._api.get_health())
 
 
 class HumanOperations:
     """Wrapper for HumanApi with simplified method signatures."""
 
-    def __init__(self, api: HumanApi):
-        self._api = api
+    def __init__(self, api: HumanApi) -> None:
+        self._api: HumanApi = api
 
     def ask_human(
         self,
@@ -601,16 +1013,19 @@ class HumanOperations:
         prompt: Optional[str] = None,
         timeout_secs: Optional[int] = None,
         urgency: Optional[str] = None,
-    ) -> TmuxClientInternalTypesAskHumanResponse:
-        """Request human approval
+    ) -> AskHumanResponseDict:
+        """Request human approval (blocking).
 
         Args:
-            action_type: Category: \
-            alternatives: Suggested alternative actions
-            context: Additional context
-            prompt: Human-readable description
-            timeout_secs: Auto-reject after timeout, 0 = no timeout
-            urgency: \
+            action_type: Category of action.
+            alternatives: Suggested alternative actions.
+            context: Additional context.
+            prompt: Human-readable description.
+            timeout_secs: Auto-reject after timeout, 0 = no timeout.
+            urgency: Urgency level.
+
+        Returns:
+            AskHumanResponseDict: Dictionary containing approval response.
         """
         request = TmuxClientInternalTypesAskHumanRequest(
             action_type=action_type,
@@ -620,7 +1035,7 @@ class HumanOperations:
             timeout_secs=timeout_secs,
             urgency=urgency,
         )
-        return self._api.ask_human(request=request)
+        return _to_dict(self._api.ask_human(request=request))
 
     def ask_human_async(
         self,
@@ -631,15 +1046,18 @@ class HumanOperations:
         timeout_secs: Optional[int] = None,
         urgency: Optional[str] = None,
     ) -> Dict[str, str]:
-        """Request human approval asynchronously
+        """Request human approval asynchronously.
 
         Args:
-            action_type: Category: \
-            alternatives: Suggested alternative actions
-            context: Additional context
-            prompt: Human-readable description
-            timeout_secs: Auto-reject after timeout, 0 = no timeout
-            urgency: \
+            action_type: Category of action.
+            alternatives: Suggested alternative actions.
+            context: Additional context.
+            prompt: Human-readable description.
+            timeout_secs: Auto-reject after timeout, 0 = no timeout.
+            urgency: Urgency level.
+
+        Returns:
+            Dict containing the request_id for polling.
         """
         request = TmuxClientInternalTypesAskHumanRequest(
             action_type=action_type,
@@ -649,33 +1067,43 @@ class HumanOperations:
             timeout_secs=timeout_secs,
             urgency=urgency,
         )
-        return self._api.ask_human_async(request=request)
+        return _to_dict(self._api.ask_human_async(request=request))
 
     def cancel_approval(
         self,
         request_id: str,
-    ) -> Dict[str, object]:
-        """Cancel approval
+    ) -> Dict[str, Any]:
+        """Cancel approval.
 
         Args:
-            request_id: str
+            request_id: The approval request ID to cancel.
+
+        Returns:
+            Dict containing cancellation status.
         """
-        return self._api.cancel_approval(request_id=request_id)
+        return _to_dict(self._api.cancel_approval(request_id=request_id))
 
     def get_pending_approval(
         self,
         request_id: str,
-    ) -> TmuxClientInternalTypesPendingApproval:
-        """Get pending approval
+    ) -> PendingApprovalDict:
+        """Get pending approval.
 
         Args:
-            request_id: str
-        """
-        return self._api.get_pending_approval(request_id=request_id)
+            request_id: The approval request ID.
 
-    def list_pending_approvals(self) -> TmuxClientInternalTypesListApprovalsResponse:
-        """List pending approvals"""
-        return self._api.list_pending_approvals()
+        Returns:
+            PendingApprovalDict: Dictionary containing approval details.
+        """
+        return _to_dict(self._api.get_pending_approval(request_id=request_id))
+
+    def list_pending_approvals(self) -> ListApprovalsResponseDict:
+        """List pending approvals.
+
+        Returns:
+            ListApprovalsResponseDict: Dictionary containing pending approvals.
+        """
+        return _to_dict(self._api.list_pending_approvals())
 
     def respond_to_approval(
         self,
@@ -683,14 +1111,17 @@ class HumanOperations:
         approved_by: Optional[str] = None,
         comment: Optional[str] = None,
         request_id: Optional[str] = None,
-    ) -> TmuxClientInternalTypesAskHumanResponse:
-        """Respond to approval
+    ) -> AskHumanResponseDict:
+        """Respond to approval.
 
         Args:
-            approved: approved
-            approved_by: approved_by
-            comment: comment
-            request_id: request_id
+            approved: Whether to approve the request.
+            approved_by: Who approved/rejected the request.
+            comment: Optional comment.
+            request_id: The approval request ID.
+
+        Returns:
+            AskHumanResponseDict: Dictionary containing the response.
         """
         request = TmuxClientInternalTypesApproveRequest(
             approved=approved,
@@ -698,86 +1129,105 @@ class HumanOperations:
             comment=comment,
             request_id=request_id,
         )
-        return self._api.respond_to_approval(request=request)
+        return _to_dict(self._api.respond_to_approval(request=request))
 
 
 class PlanOperations:
     """Wrapper for PlanApi with simplified method signatures."""
 
-    def __init__(self, api: PlanApi):
-        self._api = api
+    def __init__(self, api: PlanApi) -> None:
+        self._api: PlanApi = api
 
     def abort_plan(
         self,
         plan_id: str,
         request: Optional[object] = None,
-    ) -> Dict[str, object]:
-        """Abort plan
+    ) -> Dict[str, Any]:
+        """Abort plan.
 
         Args:
-            plan_id: str
-            request: Optional[object]
+            plan_id: The plan ID to abort.
+            request: Optional request body.
+
+        Returns:
+            Dict containing abort status.
         """
-        return self._api.abort_plan(plan_id=plan_id, request=request)
+        return _to_dict(self._api.abort_plan(plan_id=plan_id, request=request))
 
     def advance_plan_step(
         self,
         plan_id: str,
         request: Optional[object] = None,
-    ) -> Dict[str, object]:
-        """Advance plan step
+    ) -> Dict[str, Any]:
+        """Advance plan step.
 
         Args:
-            plan_id: str
-            request: Optional[object]
+            plan_id: The plan ID.
+            request: Optional request body.
+
+        Returns:
+            Dict containing the new step information.
         """
-        return self._api.advance_plan_step(plan_id=plan_id, request=request)
+        return _to_dict(self._api.advance_plan_step(plan_id=plan_id, request=request))
 
     def create_plan(
         self,
         description: Optional[str] = None,
         name: Optional[str] = None,
         steps: Optional[List[str]] = None,
-    ) -> TmuxClientInternalTypesCreatePlanResponse:
-        """Create plan
+    ) -> CreatePlanResponseDict:
+        """Create plan.
 
         Args:
-            description: description
-            name: name
-            steps: Step descriptions
+            description: Plan description.
+            name: Plan name.
+            steps: List of step descriptions.
+
+        Returns:
+            CreatePlanResponseDict: Dictionary containing the created plan.
         """
         request = TmuxClientInternalTypesCreatePlanRequest(
             description=description,
             name=name,
             steps=steps,
         )
-        return self._api.create_plan(request=request)
+        return _to_dict(self._api.create_plan(request=request))
 
     def delete_plan(
         self,
         plan_id: str,
-    ) -> Dict[str, object]:
-        """Delete plan
+    ) -> Dict[str, Any]:
+        """Delete plan.
 
         Args:
-            plan_id: str
+            plan_id: The plan ID to delete.
+
+        Returns:
+            Dict containing deletion status.
         """
-        return self._api.delete_plan(plan_id=plan_id)
+        return _to_dict(self._api.delete_plan(plan_id=plan_id))
 
     def get_plan(
         self,
         plan_id: str,
-    ) -> TmuxClientInternalTypesGetPlanResponse:
-        """Get plan
+    ) -> GetPlanResponseDict:
+        """Get plan.
 
         Args:
-            plan_id: str
-        """
-        return self._api.get_plan(plan_id=plan_id)
+            plan_id: The plan ID to retrieve.
 
-    def list_plans(self) -> TmuxClientInternalTypesListPlansResponse:
-        """List plans"""
-        return self._api.list_plans()
+        Returns:
+            GetPlanResponseDict: Dictionary containing plan details.
+        """
+        return _to_dict(self._api.get_plan(plan_id=plan_id))
+
+    def list_plans(self) -> ListPlansResponseDict:
+        """List plans.
+
+        Returns:
+            ListPlansResponseDict: Dictionary containing list of plans.
+        """
+        return _to_dict(self._api.list_plans())
 
     def update_plan(
         self,
@@ -786,15 +1236,18 @@ class PlanOperations:
         result: Optional[str] = None,
         status: Optional[TmuxClientInternalTypesStepStatus] = None,
         step_index: Optional[int] = None,
-    ) -> TmuxClientInternalTypesUpdatePlanResponse:
-        """Update plan
+    ) -> UpdatePlanResponseDict:
+        """Update plan.
 
         Args:
-            error: error
-            plan_id: plan_id
-            result: result
-            status: status
-            step_index: step_index
+            error: Error message if step failed.
+            plan_id: The plan ID.
+            result: Step result.
+            status: New step status.
+            step_index: Index of step to update.
+
+        Returns:
+            UpdatePlanResponseDict: Dictionary containing updated plan.
         """
         request = TmuxClientInternalTypesUpdatePlanRequest(
             error=error,
@@ -803,14 +1256,14 @@ class PlanOperations:
             status=status,
             step_index=step_index,
         )
-        return self._api.update_plan(request=request)
+        return _to_dict(self._api.update_plan(request=request))
 
 
 class SandboxOperations:
     """Wrapper for SandboxApi with simplified method signatures."""
 
-    def __init__(self, api: SandboxApi):
-        self._api = api
+    def __init__(self, api: SandboxApi) -> None:
+        self._api: SandboxApi = api
 
     def create_sandbox(
         self,
@@ -819,15 +1272,18 @@ class SandboxOperations:
         memory_mb: Optional[int] = None,
         source_vm_name: Optional[str] = None,
         vm_name: Optional[str] = None,
-    ) -> InternalRestCreateSandboxResponse:
-        """Create a new sandbox
+    ) -> CreateSandboxResponseDict:
+        """Create a new sandbox.
 
         Args:
-            agent_id: required
-            cpu: optional; default from service config if <=0
-            memory_mb: optional; default from service config if <=0
-            source_vm_name: required; name of existing VM in libvirt to clone from
-            vm_name: optional; generated if empty
+            agent_id: Required agent identity.
+            cpu: Optional CPU count; default from service config if <=0.
+            memory_mb: Optional memory in MB; default from service config if <=0.
+            source_vm_name: Required; name of existing VM in libvirt to clone from.
+            vm_name: Optional; generated if empty.
+
+        Returns:
+            CreateSandboxResponseDict: Dictionary containing the created sandbox.
         """
         request = InternalRestCreateSandboxRequest(
             agent_id=agent_id,
@@ -836,55 +1292,61 @@ class SandboxOperations:
             source_vm_name=source_vm_name,
             vm_name=vm_name,
         )
-        return self._api.create_sandbox(request=request)
+        return _to_dict(self._api.create_sandbox(request=request))
 
     def create_sandbox_session(
         self,
         sandbox_id: Optional[str] = None,
         session_name: Optional[str] = None,
         ttl_minutes: Optional[int] = None,
-    ) -> InternalApiCreateSandboxSessionResponse:
-        """Create sandbox session
+    ) -> CreateSandboxSessionResponseDict:
+        """Create sandbox session.
 
         Args:
-            sandbox_id: SandboxID is the ID of the sandbox to connect to
-            session_name: SessionName is the optional tmux session name (auto-generated if empty)
-            ttl_minutes: TTLMinutes is the certificate TTL in minutes (1-10, default 5)
+            sandbox_id: The ID of the sandbox to connect to.
+            session_name: Optional tmux session name (auto-generated if empty).
+            ttl_minutes: Certificate TTL in minutes (1-10, default 5).
+
+        Returns:
+            CreateSandboxSessionResponseDict: Dictionary containing session info.
         """
         request = InternalApiCreateSandboxSessionRequest(
             sandbox_id=sandbox_id,
             session_name=session_name,
             ttl_minutes=ttl_minutes,
         )
-        return self._api.create_sandbox_session(request=request)
+        return _to_dict(self._api.create_sandbox_session(request=request))
 
     def create_snapshot(
         self,
         id: str,
         external: Optional[bool] = None,
         name: Optional[str] = None,
-    ) -> InternalRestSnapshotResponse:
-        """Create snapshot
+    ) -> SnapshotResponseDict:
+        """Create snapshot.
 
         Args:
-            id: str
-            external: optional; default false (internal snapshot)
-            name: required
+            id: Sandbox ID.
+            external: Optional; default false (internal snapshot).
+            name: Required snapshot name.
+
+        Returns:
+            SnapshotResponseDict: Dictionary containing snapshot info.
         """
         request = InternalRestSnapshotRequest(
             external=external,
             name=name,
         )
-        return self._api.create_snapshot(id=id, request=request)
+        return _to_dict(self._api.create_snapshot(id=id, request=request))
 
     def destroy_sandbox(
         self,
         id: str,
     ) -> None:
-        """Destroy sandbox
+        """Destroy sandbox.
 
         Args:
-            id: str
+            id: Sandbox ID to destroy.
         """
         return self._api.destroy_sandbox(id=id)
 
@@ -893,43 +1355,49 @@ class SandboxOperations:
         id: str,
         from_snapshot: Optional[str] = None,
         to_snapshot: Optional[str] = None,
-    ) -> InternalRestDiffResponse:
-        """Diff snapshots
+    ) -> DiffResponseDict:
+        """Diff snapshots.
 
         Args:
-            id: str
-            from_snapshot: required
-            to_snapshot: required
+            id: Sandbox ID.
+            from_snapshot: Required; source snapshot name.
+            to_snapshot: Required; target snapshot name.
+
+        Returns:
+            DiffResponseDict: Dictionary containing diff information.
         """
         request = InternalRestDiffRequest(
             from_snapshot=from_snapshot,
             to_snapshot=to_snapshot,
         )
-        return self._api.diff_snapshots(id=id, request=request)
+        return _to_dict(self._api.diff_snapshots(id=id, request=request))
 
     def generate_configuration(
         self,
         id: str,
         tool: str,
     ) -> None:
-        """Generate configuration
+        """Generate configuration.
 
         Args:
-            id: str
-            tool: str
+            id: Sandbox ID.
+            tool: Tool to generate configuration for.
         """
         return self._api.generate_configuration(id=id, tool=tool)
 
     def get_sandbox_session(
         self,
         session_name: str,
-    ) -> InternalApiSandboxSessionInfo:
-        """Get sandbox session
+    ) -> SandboxSessionInfoDict:
+        """Get sandbox session.
 
         Args:
-            session_name: str
+            session_name: The session name to retrieve.
+
+        Returns:
+            SandboxSessionInfoDict: Dictionary containing session info.
         """
-        return self._api.get_sandbox_session(session_name=session_name)
+        return _to_dict(self._api.get_sandbox_session(session_name=session_name))
 
     def inject_ssh_key(
         self,
@@ -937,12 +1405,12 @@ class SandboxOperations:
         public_key: Optional[str] = None,
         username: Optional[str] = None,
     ) -> None:
-        """Inject SSH key into sandbox
+        """Inject SSH key into sandbox.
 
         Args:
-            id: str
-            public_key: required
-            username: required (explicit); typical: \
+            id: Sandbox ID.
+            public_key: Required; the SSH public key.
+            username: Required; target username (e.g., "root").
         """
         request = InternalRestInjectSSHKeyRequest(
             public_key=public_key,
@@ -953,17 +1421,24 @@ class SandboxOperations:
     def kill_sandbox_session(
         self,
         session_name: str,
-    ) -> Dict[str, object]:
-        """Kill sandbox session
+    ) -> Dict[str, Any]:
+        """Kill sandbox session.
 
         Args:
-            session_name: str
-        """
-        return self._api.kill_sandbox_session(session_name=session_name)
+            session_name: The session name to kill.
 
-    def list_sandbox_sessions(self) -> InternalApiListSandboxSessionsResponse:
-        """List sandbox sessions"""
-        return self._api.list_sandbox_sessions()
+        Returns:
+            Dict containing the operation status.
+        """
+        return _to_dict(self._api.kill_sandbox_session(session_name=session_name))
+
+    def list_sandbox_sessions(self) -> ListSandboxSessionsResponseDict:
+        """List sandbox sessions.
+
+        Returns:
+            ListSandboxSessionsResponseDict: Dictionary containing sessions list.
+        """
+        return _to_dict(self._api.list_sandbox_sessions())
 
     def publish_changes(
         self,
@@ -972,13 +1447,13 @@ class SandboxOperations:
         message: Optional[str] = None,
         reviewers: Optional[List[str]] = None,
     ) -> None:
-        """Publish changes
+        """Publish changes.
 
         Args:
-            id: str
-            job_id: required
-            message: optional commit/PR message
-            reviewers: optional
+            id: Sandbox ID.
+            job_id: Required job ID.
+            message: Optional commit/PR message.
+            reviewers: Optional list of reviewers.
         """
         request = InternalRestPublishRequest(
             job_id=job_id,
@@ -995,16 +1470,19 @@ class SandboxOperations:
         private_key_path: Optional[str] = None,
         timeout_sec: Optional[int] = None,
         username: Optional[str] = None,
-    ) -> InternalRestRunCommandResponse:
-        """Run command in sandbox
+    ) -> RunCommandResponseDict:
+        """Run command in sandbox.
 
         Args:
-            id: str
-            command: required
-            env: optional
-            private_key_path: required; path on API host
-            timeout_sec: optional; default from service config
-            username: required
+            id: Sandbox ID.
+            command: Required command to run.
+            env: Optional environment variables.
+            private_key_path: Required; path on API host.
+            timeout_sec: Optional; default from service config.
+            username: Required username.
+
+        Returns:
+            RunCommandResponseDict: Dictionary containing command output.
         """
         request = InternalRestRunCommandRequest(
             command=command,
@@ -1013,34 +1491,41 @@ class SandboxOperations:
             timeout_sec=timeout_sec,
             username=username,
         )
-        return self._api.run_sandbox_command(id=id, request=request)
+        return _to_dict(self._api.run_sandbox_command(id=id, request=request))
 
-    def sandbox_api_health(self) -> Dict[str, object]:
-        """Check sandbox API health"""
-        return self._api.sandbox_api_health()
+    def sandbox_api_health(self) -> Dict[str, Any]:
+        """Check sandbox API health.
+
+        Returns:
+            Dict containing health status.
+        """
+        return _to_dict(self._api.sandbox_api_health())
 
     def start_sandbox(
         self,
         id: str,
         wait_for_ip: Optional[bool] = None,
-    ) -> InternalRestStartSandboxResponse:
-        """Start sandbox
+    ) -> StartSandboxResponseDict:
+        """Start sandbox.
 
         Args:
-            id: str
-            wait_for_ip: optional; default false
+            id: Sandbox ID.
+            wait_for_ip: Optional; default false.
+
+        Returns:
+            StartSandboxResponseDict: Dictionary containing started sandbox info.
         """
         request = InternalRestStartSandboxRequest(
             wait_for_ip=wait_for_ip,
         )
-        return self._api.start_sandbox(id=id, request=request)
+        return _to_dict(self._api.start_sandbox(id=id, request=request))
 
 
 class TmuxOperations:
     """Wrapper for TmuxApi with simplified method signatures."""
 
-    def __init__(self, api: TmuxApi):
-        self._api = api
+    def __init__(self, api: TmuxApi) -> None:
+        self._api: TmuxApi = api
 
     def create_tmux_pane(
         self,
@@ -1049,15 +1534,18 @@ class TmuxOperations:
         new_window: Optional[bool] = None,
         session_name: Optional[str] = None,
         window_name: Optional[str] = None,
-    ) -> TmuxClientInternalTypesCreatePaneResponse:
-        """Create tmux pane
+    ) -> CreatePaneResponseDict:
+        """Create tmux pane.
 
         Args:
-            command: command
-            horizontal: false = vertical split
-            new_window: true = create new window instead of split
-            session_name: session_name
-            window_name: window_name
+            command: Command to run in the pane.
+            horizontal: False = vertical split.
+            new_window: True = create new window instead of split.
+            session_name: Target session name.
+            window_name: Target window name.
+
+        Returns:
+            CreatePaneResponseDict: Dictionary containing pane info.
         """
         request = TmuxClientInternalTypesCreatePaneRequest(
             command=command,
@@ -1066,129 +1554,170 @@ class TmuxOperations:
             session_name=session_name,
             window_name=window_name,
         )
-        return self._api.create_tmux_pane(request=request)
+        return _to_dict(self._api.create_tmux_pane(request=request))
 
     def create_tmux_session(self) -> Dict[str, str]:
-        """Create tmux session"""
-        return self._api.create_tmux_session(request={})
+        """Create tmux session.
+
+        Returns:
+            Dict containing the session name.
+        """
+        return _to_dict(self._api.create_tmux_session(request={}))
 
     def kill_tmux_pane(
         self,
         pane_id: str,
-    ) -> Dict[str, object]:
-        """Kill tmux pane
+    ) -> Dict[str, Any]:
+        """Kill tmux pane.
 
         Args:
-            pane_id: str
+            pane_id: The pane ID to kill.
+
+        Returns:
+            Dict containing the operation status.
         """
-        return self._api.kill_tmux_pane(pane_id=pane_id)
+        return _to_dict(self._api.kill_tmux_pane(pane_id=pane_id))
 
     def kill_tmux_session(
         self,
         session_name: str,
-    ) -> Dict[str, object]:
-        """Kill tmux session
+    ) -> Dict[str, Any]:
+        """Kill tmux session.
 
         Args:
-            session_name: str
+            session_name: The session name to kill.
+
+        Returns:
+            Dict containing the operation status.
         """
-        return self._api.kill_tmux_session(session_name=session_name)
+        return _to_dict(self._api.kill_tmux_session(session_name=session_name))
 
     def list_tmux_panes(
         self,
         session: Optional[str] = None,
-    ) -> TmuxClientInternalTypesListPanesResponse:
-        """List tmux panes
+    ) -> ListPanesResponseDict:
+        """List tmux panes.
 
         Args:
-            session: Optional[str]
-        """
-        return self._api.list_tmux_panes(session=session)
+            session: Optional session name to filter.
 
-    def list_tmux_sessions(self) -> List[TmuxClientInternalTypesSessionInfo]:
-        """List tmux sessions"""
-        return self._api.list_tmux_sessions()
+        Returns:
+            ListPanesResponseDict: Dictionary containing panes list.
+        """
+        return _to_dict(self._api.list_tmux_panes(session=session))
+
+    def list_tmux_sessions(self) -> List[TmuxSessionInfoDict]:
+        """List tmux sessions.
+
+        Returns:
+            List of TmuxSessionInfoDict dictionaries.
+        """
+        return _to_dict(self._api.list_tmux_sessions())
 
     def list_tmux_windows(
         self,
         session: Optional[str] = None,
-    ) -> List[TmuxClientInternalTypesWindowInfo]:
-        """List tmux windows
+    ) -> List[TmuxWindowInfoDict]:
+        """List tmux windows.
 
         Args:
-            session: Optional[str]
+            session: Optional session name to filter.
+
+        Returns:
+            List of TmuxWindowInfoDict dictionaries.
         """
-        return self._api.list_tmux_windows(session=session)
+        return _to_dict(self._api.list_tmux_windows(session=session))
 
     def read_tmux_pane(
         self,
         last_n_lines: Optional[int] = None,
         pane_id: Optional[str] = None,
-    ) -> TmuxClientInternalTypesReadPaneResponse:
-        """Read tmux pane
+    ) -> ReadPaneResponseDict:
+        """Read tmux pane.
 
         Args:
-            last_n_lines: 0 means all visible content
-            pane_id: pane_id
+            last_n_lines: 0 means all visible content.
+            pane_id: The pane ID to read.
+
+        Returns:
+            ReadPaneResponseDict: Dictionary containing pane content.
         """
         request = TmuxClientInternalTypesReadPaneRequest(
             last_n_lines=last_n_lines,
             pane_id=pane_id,
         )
-        return self._api.read_tmux_pane(request=request)
+        return _to_dict(self._api.read_tmux_pane(request=request))
 
     def release_tmux_session(
         self,
         session_id: str,
-    ) -> TmuxClientInternalTypesKillSessionResponse:
-        """Release tmux session
+    ) -> KillSessionResponseDict:
+        """Release tmux session.
 
         Args:
-            session_id: str
+            session_id: The session ID to release.
+
+        Returns:
+            KillSessionResponseDict: Dictionary containing release status.
         """
-        return self._api.release_tmux_session(session_id=session_id)
+        return _to_dict(self._api.release_tmux_session(session_id=session_id))
 
     def send_keys_to_pane(
         self,
         key: Optional[str] = None,
         pane_id: Optional[str] = None,
-    ) -> TmuxClientInternalTypesSendKeysResponse:
-        """Send keys to tmux pane
+    ) -> SendKeysResponseDict:
+        """Send keys to tmux pane.
 
         Args:
-            key: Must be from approved list: \
-            pane_id: pane_id
+            key: Key to send (must be from approved list).
+            pane_id: Target pane ID.
+
+        Returns:
+            SendKeysResponseDict: Dictionary containing send status.
         """
         request = TmuxClientInternalTypesSendKeysRequest(
             key=key,
             pane_id=pane_id,
         )
-        return self._api.send_keys_to_pane(request=request)
+        return _to_dict(self._api.send_keys_to_pane(request=request))
 
     def switch_tmux_pane(
         self,
         pane_id: Optional[str] = None,
-    ) -> TmuxClientInternalTypesSwitchPaneResponse:
-        """Switch tmux pane
+    ) -> SwitchPaneResponseDict:
+        """Switch tmux pane.
 
         Args:
-            pane_id: pane_id
+            pane_id: Target pane ID.
+
+        Returns:
+            SwitchPaneResponseDict: Dictionary containing switch status.
         """
         request = TmuxClientInternalTypesSwitchPaneRequest(
             pane_id=pane_id,
         )
-        return self._api.switch_tmux_pane(request=request)
+        return _to_dict(self._api.switch_tmux_pane(request=request))
 
 
 class VMsOperations:
     """Wrapper for VMsApi with simplified method signatures."""
 
-    def __init__(self, api: VMsApi):
-        self._api = api
+    def __init__(self, api: VMsApi) -> None:
+        self._api: VMsApi = api
 
-    def list_virtual_machines(self) -> InternalRestListVMsResponse:
-        """List all VMs"""
-        return self._api.list_virtual_machines()
+    def list_virtual_machines(self) -> ListVMsResponseDict:
+        """List all VMs.
+
+        Returns:
+            ListVMsResponseDict: Dictionary containing VMs list.
+        """
+        return _to_dict(self._api.list_virtual_machines())
+
+
+# =============================================================================
+# Main Client Class
+# =============================================================================
 
 
 class VirshSandbox:
@@ -1199,10 +1728,15 @@ class VirshSandbox:
     All methods use flattened parameters instead of request objects.
 
     Args:
-        host: Base URL for the main virsh-sandbox API
-        tmux_host: Base URL for the tmux API (defaults to host)
-        api_key: Optional API key for authentication
-        verify_ssl: Whether to verify SSL certificates
+        host: Base URL for the main virsh-sandbox API.
+        tmux_host: Base URL for the tmux API (defaults to host).
+        api_key: Optional API key for authentication.
+        access_token: Optional access token for authentication.
+        username: Optional username for basic auth.
+        password: Optional password for basic auth.
+        verify_ssl: Whether to verify SSL certificates.
+        ssl_ca_cert: Path to CA certificate file.
+        retries: Number of retries for failed requests.
 
     Example:
         >>> from virsh_sandbox import VirshSandbox
@@ -1223,7 +1757,7 @@ class VirshSandbox:
         retries: Optional[int] = None,
     ) -> None:
         """Initialize the VirshSandbox client."""
-        self._main_config = Configuration(
+        self._main_config: Configuration = Configuration(
             host=host,
             api_key={"Authorization": api_key} if api_key else None,
             access_token=access_token,
@@ -1233,11 +1767,11 @@ class VirshSandbox:
             retries=retries,
         )
         self._main_config.verify_ssl = verify_ssl
-        self._main_api_client = ApiClient(configuration=self._main_config)
+        self._main_api_client: ApiClient = ApiClient(configuration=self._main_config)
 
         tmux_host = tmux_host or host
         if tmux_host != host:
-            self._tmux_config = Configuration(
+            self._tmux_config: Configuration = Configuration(
                 host=tmux_host,
                 api_key={"Authorization": api_key} if api_key else None,
                 access_token=access_token,
@@ -1247,7 +1781,7 @@ class VirshSandbox:
                 retries=retries,
             )
             self._tmux_config.verify_ssl = verify_ssl
-            self._tmux_api_client = ApiClient(configuration=self._tmux_config)
+            self._tmux_api_client: ApiClient = ApiClient(configuration=self._tmux_config)
         else:
             self._tmux_config = self._main_config
             self._tmux_api_client = self._main_api_client
@@ -1363,7 +1897,11 @@ class VirshSandbox:
         return self._tmux_config
 
     def set_debug(self, debug: bool) -> None:
-        """Enable or disable debug mode."""
+        """Enable or disable debug mode.
+
+        Args:
+            debug: Whether to enable debug mode.
+        """
         self._main_config.debug = debug
         if self._tmux_config is not self._main_config:
             self._tmux_config.debug = debug
@@ -1371,15 +1909,20 @@ class VirshSandbox:
     def close(self) -> None:
         """Close the API client connections."""
         if hasattr(self._main_api_client.rest_client, "close"):
-            self._main_api_client.rest_client.close()
+            self._main_api_client.rest_client.close()  # type: ignore
         if self._tmux_api_client is not self._main_api_client:
             if hasattr(self._tmux_api_client.rest_client, "close"):
-                self._tmux_api_client.rest_client.close()
+                self._tmux_api_client.rest_client.close()  # type: ignore
 
     def __enter__(self) -> "VirshSandbox":
         """Context manager entry."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+    def __exit__(
+        self,
+        exc_type: Optional[type],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[Any],
+    ) -> None:
         """Context manager exit."""
         self.close()
