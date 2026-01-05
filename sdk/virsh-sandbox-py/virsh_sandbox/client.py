@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from __future__ import annotations
+
 """
 Unified VirshSandbox Client
 
@@ -20,6 +22,8 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from typing_extensions import TypedDict
 
+from virsh_sandbox.api_client import ApiClient
+from virsh_sandbox.configuration import Configuration
 from virsh_sandbox.api.access_api import AccessApi
 from virsh_sandbox.api.ansible_api import AnsibleApi
 from virsh_sandbox.api.audit_api import AuditApi
@@ -31,153 +35,79 @@ from virsh_sandbox.api.plan_api import PlanApi
 from virsh_sandbox.api.sandbox_api import SandboxApi
 from virsh_sandbox.api.tmux_api import TmuxApi
 from virsh_sandbox.api.vms_api import VMsApi
-from virsh_sandbox.api_client import ApiClient
-from virsh_sandbox.configuration import Configuration
 from virsh_sandbox.models.internal_ansible_job import InternalAnsibleJob
-from virsh_sandbox.models.internal_ansible_job_request import \
-    InternalAnsibleJobRequest
-from virsh_sandbox.models.internal_ansible_job_response import \
-    InternalAnsibleJobResponse
-from virsh_sandbox.models.internal_api_create_sandbox_session_request import \
-    InternalApiCreateSandboxSessionRequest
-from virsh_sandbox.models.internal_api_create_sandbox_session_response import \
-    InternalApiCreateSandboxSessionResponse
-from virsh_sandbox.models.internal_api_list_sandbox_sessions_response import \
-    InternalApiListSandboxSessionsResponse
-from virsh_sandbox.models.internal_api_sandbox_session_info import \
-    InternalApiSandboxSessionInfo
-from virsh_sandbox.models.internal_rest_ca_public_key_response import \
-    InternalRestCaPublicKeyResponse
-from virsh_sandbox.models.internal_rest_certificate_response import \
-    InternalRestCertificateResponse
-from virsh_sandbox.models.internal_rest_list_certificates_response import \
-    InternalRestListCertificatesResponse
-from virsh_sandbox.models.internal_rest_list_sessions_response import \
-    InternalRestListSessionsResponse
-from virsh_sandbox.models.internal_rest_request_access_request import \
-    InternalRestRequestAccessRequest
-from virsh_sandbox.models.internal_rest_request_access_response import \
-    InternalRestRequestAccessResponse
-from virsh_sandbox.models.internal_rest_revoke_certificate_request import \
-    InternalRestRevokeCertificateRequest
-from virsh_sandbox.models.internal_rest_session_end_request import \
-    InternalRestSessionEndRequest
-from virsh_sandbox.models.internal_rest_session_start_request import \
-    InternalRestSessionStartRequest
-from virsh_sandbox.models.internal_rest_session_start_response import \
-    InternalRestSessionStartResponse
-from virsh_sandbox.models.tmux_client_internal_types_approve_request import \
-    TmuxClientInternalTypesApproveRequest
-from virsh_sandbox.models.tmux_client_internal_types_ask_human_request import \
-    TmuxClientInternalTypesAskHumanRequest
-from virsh_sandbox.models.tmux_client_internal_types_ask_human_response import \
-    TmuxClientInternalTypesAskHumanResponse
-from virsh_sandbox.models.tmux_client_internal_types_audit_query import \
-    TmuxClientInternalTypesAuditQuery
-from virsh_sandbox.models.tmux_client_internal_types_audit_query_response import \
-    TmuxClientInternalTypesAuditQueryResponse
-from virsh_sandbox.models.tmux_client_internal_types_copy_file_request import \
-    TmuxClientInternalTypesCopyFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_copy_file_response import \
-    TmuxClientInternalTypesCopyFileResponse
-from virsh_sandbox.models.tmux_client_internal_types_create_pane_request import \
-    TmuxClientInternalTypesCreatePaneRequest
-from virsh_sandbox.models.tmux_client_internal_types_create_pane_response import \
-    TmuxClientInternalTypesCreatePaneResponse
-from virsh_sandbox.models.tmux_client_internal_types_create_plan_request import \
-    TmuxClientInternalTypesCreatePlanRequest
-from virsh_sandbox.models.tmux_client_internal_types_create_plan_response import \
-    TmuxClientInternalTypesCreatePlanResponse
-from virsh_sandbox.models.tmux_client_internal_types_delete_file_request import \
-    TmuxClientInternalTypesDeleteFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_delete_file_response import \
-    TmuxClientInternalTypesDeleteFileResponse
-from virsh_sandbox.models.tmux_client_internal_types_edit_file_request import \
-    TmuxClientInternalTypesEditFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_edit_file_response import \
-    TmuxClientInternalTypesEditFileResponse
-from virsh_sandbox.models.tmux_client_internal_types_get_plan_response import \
-    TmuxClientInternalTypesGetPlanResponse
-from virsh_sandbox.models.tmux_client_internal_types_health_response import \
-    TmuxClientInternalTypesHealthResponse
-from virsh_sandbox.models.tmux_client_internal_types_kill_session_response import \
-    TmuxClientInternalTypesKillSessionResponse
-from virsh_sandbox.models.tmux_client_internal_types_list_approvals_response import \
-    TmuxClientInternalTypesListApprovalsResponse
-from virsh_sandbox.models.tmux_client_internal_types_list_dir_request import \
-    TmuxClientInternalTypesListDirRequest
-from virsh_sandbox.models.tmux_client_internal_types_list_dir_response import \
-    TmuxClientInternalTypesListDirResponse
-from virsh_sandbox.models.tmux_client_internal_types_list_panes_response import \
-    TmuxClientInternalTypesListPanesResponse
-from virsh_sandbox.models.tmux_client_internal_types_list_plans_response import \
-    TmuxClientInternalTypesListPlansResponse
-from virsh_sandbox.models.tmux_client_internal_types_pending_approval import \
-    TmuxClientInternalTypesPendingApproval
-from virsh_sandbox.models.tmux_client_internal_types_read_file_request import \
-    TmuxClientInternalTypesReadFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_read_file_response import \
-    TmuxClientInternalTypesReadFileResponse
-from virsh_sandbox.models.tmux_client_internal_types_read_pane_request import \
-    TmuxClientInternalTypesReadPaneRequest
-from virsh_sandbox.models.tmux_client_internal_types_read_pane_response import \
-    TmuxClientInternalTypesReadPaneResponse
-from virsh_sandbox.models.tmux_client_internal_types_run_command_request import \
-    TmuxClientInternalTypesRunCommandRequest
-from virsh_sandbox.models.tmux_client_internal_types_run_command_response import \
-    TmuxClientInternalTypesRunCommandResponse
-from virsh_sandbox.models.tmux_client_internal_types_send_keys_request import \
-    TmuxClientInternalTypesSendKeysRequest
-from virsh_sandbox.models.tmux_client_internal_types_send_keys_response import \
-    TmuxClientInternalTypesSendKeysResponse
-from virsh_sandbox.models.tmux_client_internal_types_session_info import \
-    TmuxClientInternalTypesSessionInfo
-from virsh_sandbox.models.tmux_client_internal_types_step_status import \
-    TmuxClientInternalTypesStepStatus
-from virsh_sandbox.models.tmux_client_internal_types_switch_pane_request import \
-    TmuxClientInternalTypesSwitchPaneRequest
-from virsh_sandbox.models.tmux_client_internal_types_switch_pane_response import \
-    TmuxClientInternalTypesSwitchPaneResponse
-from virsh_sandbox.models.tmux_client_internal_types_update_plan_request import \
-    TmuxClientInternalTypesUpdatePlanRequest
-from virsh_sandbox.models.tmux_client_internal_types_update_plan_response import \
-    TmuxClientInternalTypesUpdatePlanResponse
-from virsh_sandbox.models.tmux_client_internal_types_window_info import \
-    TmuxClientInternalTypesWindowInfo
-from virsh_sandbox.models.tmux_client_internal_types_write_file_request import \
-    TmuxClientInternalTypesWriteFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_write_file_response import \
-    TmuxClientInternalTypesWriteFileResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_request import \
-    VirshSandboxInternalRestCreateSandboxRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_response import \
-    VirshSandboxInternalRestCreateSandboxResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_destroy_sandbox_response import \
-    VirshSandboxInternalRestDestroySandboxResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_request import \
-    VirshSandboxInternalRestDiffRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_response import \
-    VirshSandboxInternalRestDiffResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_inject_ssh_key_request import \
-    VirshSandboxInternalRestInjectSSHKeyRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sandboxes_response import \
-    VirshSandboxInternalRestListSandboxesResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_list_vms_response import \
-    VirshSandboxInternalRestListVMsResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_publish_request import \
-    VirshSandboxInternalRestPublishRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_request import \
-    VirshSandboxInternalRestRunCommandRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_response import \
-    VirshSandboxInternalRestRunCommandResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_request import \
-    VirshSandboxInternalRestSnapshotRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_response import \
-    VirshSandboxInternalRestSnapshotResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_request import \
-    VirshSandboxInternalRestStartSandboxRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_response import \
-    VirshSandboxInternalRestStartSandboxResponse
+from virsh_sandbox.models.internal_ansible_job_request import InternalAnsibleJobRequest
+from virsh_sandbox.models.internal_ansible_job_response import InternalAnsibleJobResponse
+from virsh_sandbox.models.internal_api_create_sandbox_session_request import InternalApiCreateSandboxSessionRequest
+from virsh_sandbox.models.internal_api_create_sandbox_session_response import InternalApiCreateSandboxSessionResponse
+from virsh_sandbox.models.internal_api_list_sandbox_sessions_response import InternalApiListSandboxSessionsResponse
+from virsh_sandbox.models.internal_api_sandbox_session_info import InternalApiSandboxSessionInfo
+from virsh_sandbox.models.internal_rest_ca_public_key_response import InternalRestCaPublicKeyResponse
+from virsh_sandbox.models.internal_rest_certificate_response import InternalRestCertificateResponse
+from virsh_sandbox.models.internal_rest_list_certificates_response import InternalRestListCertificatesResponse
+from virsh_sandbox.models.internal_rest_list_sessions_response import InternalRestListSessionsResponse
+from virsh_sandbox.models.internal_rest_request_access_request import InternalRestRequestAccessRequest
+from virsh_sandbox.models.internal_rest_request_access_response import InternalRestRequestAccessResponse
+from virsh_sandbox.models.internal_rest_revoke_certificate_request import InternalRestRevokeCertificateRequest
+from virsh_sandbox.models.internal_rest_session_end_request import InternalRestSessionEndRequest
+from virsh_sandbox.models.internal_rest_session_start_request import InternalRestSessionStartRequest
+from virsh_sandbox.models.internal_rest_session_start_response import InternalRestSessionStartResponse
+from virsh_sandbox.models.tmux_client_internal_types_approve_request import TmuxClientInternalTypesApproveRequest
+from virsh_sandbox.models.tmux_client_internal_types_ask_human_request import TmuxClientInternalTypesAskHumanRequest
+from virsh_sandbox.models.tmux_client_internal_types_ask_human_response import TmuxClientInternalTypesAskHumanResponse
+from virsh_sandbox.models.tmux_client_internal_types_audit_query import TmuxClientInternalTypesAuditQuery
+from virsh_sandbox.models.tmux_client_internal_types_audit_query_response import TmuxClientInternalTypesAuditQueryResponse
+from virsh_sandbox.models.tmux_client_internal_types_copy_file_request import TmuxClientInternalTypesCopyFileRequest
+from virsh_sandbox.models.tmux_client_internal_types_copy_file_response import TmuxClientInternalTypesCopyFileResponse
+from virsh_sandbox.models.tmux_client_internal_types_create_pane_request import TmuxClientInternalTypesCreatePaneRequest
+from virsh_sandbox.models.tmux_client_internal_types_create_pane_response import TmuxClientInternalTypesCreatePaneResponse
+from virsh_sandbox.models.tmux_client_internal_types_create_plan_request import TmuxClientInternalTypesCreatePlanRequest
+from virsh_sandbox.models.tmux_client_internal_types_create_plan_response import TmuxClientInternalTypesCreatePlanResponse
+from virsh_sandbox.models.tmux_client_internal_types_delete_file_request import TmuxClientInternalTypesDeleteFileRequest
+from virsh_sandbox.models.tmux_client_internal_types_delete_file_response import TmuxClientInternalTypesDeleteFileResponse
+from virsh_sandbox.models.tmux_client_internal_types_edit_file_request import TmuxClientInternalTypesEditFileRequest
+from virsh_sandbox.models.tmux_client_internal_types_edit_file_response import TmuxClientInternalTypesEditFileResponse
+from virsh_sandbox.models.tmux_client_internal_types_get_plan_response import TmuxClientInternalTypesGetPlanResponse
+from virsh_sandbox.models.tmux_client_internal_types_health_response import TmuxClientInternalTypesHealthResponse
+from virsh_sandbox.models.tmux_client_internal_types_kill_session_response import TmuxClientInternalTypesKillSessionResponse
+from virsh_sandbox.models.tmux_client_internal_types_list_approvals_response import TmuxClientInternalTypesListApprovalsResponse
+from virsh_sandbox.models.tmux_client_internal_types_list_dir_request import TmuxClientInternalTypesListDirRequest
+from virsh_sandbox.models.tmux_client_internal_types_list_dir_response import TmuxClientInternalTypesListDirResponse
+from virsh_sandbox.models.tmux_client_internal_types_list_panes_response import TmuxClientInternalTypesListPanesResponse
+from virsh_sandbox.models.tmux_client_internal_types_list_plans_response import TmuxClientInternalTypesListPlansResponse
+from virsh_sandbox.models.tmux_client_internal_types_pending_approval import TmuxClientInternalTypesPendingApproval
+from virsh_sandbox.models.tmux_client_internal_types_read_file_request import TmuxClientInternalTypesReadFileRequest
+from virsh_sandbox.models.tmux_client_internal_types_read_file_response import TmuxClientInternalTypesReadFileResponse
+from virsh_sandbox.models.tmux_client_internal_types_read_pane_request import TmuxClientInternalTypesReadPaneRequest
+from virsh_sandbox.models.tmux_client_internal_types_read_pane_response import TmuxClientInternalTypesReadPaneResponse
+from virsh_sandbox.models.tmux_client_internal_types_run_command_request import TmuxClientInternalTypesRunCommandRequest
+from virsh_sandbox.models.tmux_client_internal_types_run_command_response import TmuxClientInternalTypesRunCommandResponse
+from virsh_sandbox.models.tmux_client_internal_types_send_keys_request import TmuxClientInternalTypesSendKeysRequest
+from virsh_sandbox.models.tmux_client_internal_types_send_keys_response import TmuxClientInternalTypesSendKeysResponse
+from virsh_sandbox.models.tmux_client_internal_types_session_info import TmuxClientInternalTypesSessionInfo
+from virsh_sandbox.models.tmux_client_internal_types_step_status import TmuxClientInternalTypesStepStatus
+from virsh_sandbox.models.tmux_client_internal_types_switch_pane_request import TmuxClientInternalTypesSwitchPaneRequest
+from virsh_sandbox.models.tmux_client_internal_types_switch_pane_response import TmuxClientInternalTypesSwitchPaneResponse
+from virsh_sandbox.models.tmux_client_internal_types_update_plan_request import TmuxClientInternalTypesUpdatePlanRequest
+from virsh_sandbox.models.tmux_client_internal_types_update_plan_response import TmuxClientInternalTypesUpdatePlanResponse
+from virsh_sandbox.models.tmux_client_internal_types_window_info import TmuxClientInternalTypesWindowInfo
+from virsh_sandbox.models.tmux_client_internal_types_write_file_request import TmuxClientInternalTypesWriteFileRequest
+from virsh_sandbox.models.tmux_client_internal_types_write_file_response import TmuxClientInternalTypesWriteFileResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_request import VirshSandboxInternalRestCreateSandboxRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_response import VirshSandboxInternalRestCreateSandboxResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_destroy_sandbox_response import VirshSandboxInternalRestDestroySandboxResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_request import VirshSandboxInternalRestDiffRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_response import VirshSandboxInternalRestDiffResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_inject_ssh_key_request import VirshSandboxInternalRestInjectSSHKeyRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sandboxes_response import VirshSandboxInternalRestListSandboxesResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_list_vms_response import VirshSandboxInternalRestListVMsResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_publish_request import VirshSandboxInternalRestPublishRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_request import VirshSandboxInternalRestRunCommandRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_response import VirshSandboxInternalRestRunCommandResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_request import VirshSandboxInternalRestSnapshotRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_response import VirshSandboxInternalRestSnapshotResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_request import VirshSandboxInternalRestStartSandboxRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_response import VirshSandboxInternalRestStartSandboxResponse
 
 
 # TypedDict definitions for response types
@@ -192,13 +122,11 @@ class InternalAnsibleJobDict(TypedDict, total=False):
         status (str): status
         vm_name (str): vm_name
     """
-
     check: Optional[bool]
     id: Optional[str]
     playbook: Optional[str]
     status: Optional[str]
     vm_name: Optional[str]
-
 
 class InternalAnsibleJobResponseDict(TypedDict, total=False):
     """
@@ -208,10 +136,8 @@ class InternalAnsibleJobResponseDict(TypedDict, total=False):
         job_id (str): job_id
         ws_url (str): ws_url
     """
-
     job_id: Optional[str]
     ws_url: Optional[str]
-
 
 class InternalApiCreateSandboxSessionResponseDict(TypedDict, total=False):
     """
@@ -227,7 +153,6 @@ class InternalApiCreateSandboxSessionResponseDict(TypedDict, total=False):
         valid_until (str): ValidUntil is when the certificate expires (RFC3339)
         vm_ip_address (str): VMIPAddress is the IP of the sandbox VM
     """
-
     message: Optional[str]
     sandbox_id: Optional[str]
     session_id: Optional[str]
@@ -236,7 +161,6 @@ class InternalApiCreateSandboxSessionResponseDict(TypedDict, total=False):
     username: Optional[str]
     valid_until: Optional[str]
     vm_ip_address: Optional[str]
-
 
 class InternalApiSandboxSessionInfoDict(TypedDict, total=False):
     """
@@ -252,7 +176,6 @@ class InternalApiSandboxSessionInfoDict(TypedDict, total=False):
         valid_until (str): valid_until
         vm_ip_address (str): vm_ip_address
     """
-
     is_expired: Optional[bool]
     sandbox_id: Optional[str]
     session_id: Optional[str]
@@ -262,7 +185,6 @@ class InternalApiSandboxSessionInfoDict(TypedDict, total=False):
     valid_until: Optional[str]
     vm_ip_address: Optional[str]
 
-
 class InternalApiListSandboxSessionsResponseDict(TypedDict, total=False):
     """
     Dictionary representation of InternalApiListSandboxSessionsResponse.
@@ -271,10 +193,8 @@ class InternalApiListSandboxSessionsResponseDict(TypedDict, total=False):
         sessions (List[InternalApiSandboxSessionInfoDict]): sessions
         total (int): total
     """
-
     sessions: Optional[List[InternalApiSandboxSessionInfoDict]]
     total: Optional[int]
-
 
 class InternalRestAccessErrorResponseDict(TypedDict, total=False):
     """
@@ -285,11 +205,9 @@ class InternalRestAccessErrorResponseDict(TypedDict, total=False):
         details (str): details
         error (str): error
     """
-
     code: Optional[int]
     details: Optional[str]
     error: Optional[str]
-
 
 class InternalRestCaPublicKeyResponseDict(TypedDict, total=False):
     """
@@ -299,10 +217,8 @@ class InternalRestCaPublicKeyResponseDict(TypedDict, total=False):
         public_key (str): PublicKey is the CA public key in OpenSSH format.
         usage (str): Usage explains how to use this key.
     """
-
     public_key: Optional[str]
     usage: Optional[str]
-
 
 class InternalRestCertificateResponseDict(TypedDict, total=False):
     """
@@ -323,7 +239,6 @@ class InternalRestCertificateResponseDict(TypedDict, total=False):
         valid_before (str): valid_before
         vm_id (str): vm_id
     """
-
     id: Optional[str]
     identity: Optional[str]
     is_expired: Optional[bool]
@@ -338,7 +253,6 @@ class InternalRestCertificateResponseDict(TypedDict, total=False):
     valid_before: Optional[str]
     vm_id: Optional[str]
 
-
 class InternalRestErrorResponseDict(TypedDict, total=False):
     """
     Dictionary representation of InternalRestErrorResponse.
@@ -348,11 +262,9 @@ class InternalRestErrorResponseDict(TypedDict, total=False):
         details (str): details
         error (str): error
     """
-
     code: Optional[int]
     details: Optional[str]
     error: Optional[str]
-
 
 class InternalRestGenerateResponseDict(TypedDict, total=False):
     """
@@ -362,10 +274,8 @@ class InternalRestGenerateResponseDict(TypedDict, total=False):
         message (str): message
         note (str): note
     """
-
     message: Optional[str]
     note: Optional[str]
-
 
 class InternalRestListCertificatesResponseDict(TypedDict, total=False):
     """
@@ -375,10 +285,8 @@ class InternalRestListCertificatesResponseDict(TypedDict, total=False):
         certificates (List[InternalRestCertificateResponseDict]): certificates
         total (int): total
     """
-
     certificates: Optional[List[InternalRestCertificateResponseDict]]
     total: Optional[int]
-
 
 class InternalRestPublishResponseDict(TypedDict, total=False):
     """
@@ -388,10 +296,8 @@ class InternalRestPublishResponseDict(TypedDict, total=False):
         message (str): message
         note (str): note
     """
-
     message: Optional[str]
     note: Optional[str]
-
 
 class InternalRestRequestAccessResponseDict(TypedDict, total=False):
     """
@@ -408,7 +314,6 @@ class InternalRestRequestAccessResponseDict(TypedDict, total=False):
         valid_until (str): ValidUntil is when the certificate expires (RFC3339).
         vm_ip_address (str): VMIPAddress is the IP address of the sandbox VM.
     """
-
     certificate: Optional[str]
     certificate_id: Optional[str]
     connect_command: Optional[str]
@@ -418,7 +323,6 @@ class InternalRestRequestAccessResponseDict(TypedDict, total=False):
     username: Optional[str]
     valid_until: Optional[str]
     vm_ip_address: Optional[str]
-
 
 class InternalRestSandboxInfoDict(TypedDict, total=False):
     """
@@ -437,7 +341,6 @@ class InternalRestSandboxInfoDict(TypedDict, total=False):
         ttl_seconds (int): ttl_seconds
         updated_at (str): updated_at
     """
-
     agent_id: Optional[str]
     base_image: Optional[str]
     created_at: Optional[str]
@@ -450,7 +353,6 @@ class InternalRestSandboxInfoDict(TypedDict, total=False):
     ttl_seconds: Optional[int]
     updated_at: Optional[str]
 
-
 class InternalRestListSandboxesResponseDict(TypedDict, total=False):
     """
     Dictionary representation of InternalRestListSandboxesResponse.
@@ -459,10 +361,8 @@ class InternalRestListSandboxesResponseDict(TypedDict, total=False):
         sandboxes (List[InternalRestSandboxInfoDict]): sandboxes
         total (int): total
     """
-
     sandboxes: Optional[List[InternalRestSandboxInfoDict]]
     total: Optional[int]
-
 
 class InternalRestSessionResponseDict(TypedDict, total=False):
     """
@@ -481,7 +381,6 @@ class InternalRestSessionResponseDict(TypedDict, total=False):
         vm_id (str): vm_id
         vm_ip_address (str): vm_ip_address
     """
-
     certificate_id: Optional[str]
     duration_seconds: Optional[int]
     ended_at: Optional[str]
@@ -494,7 +393,6 @@ class InternalRestSessionResponseDict(TypedDict, total=False):
     vm_id: Optional[str]
     vm_ip_address: Optional[str]
 
-
 class InternalRestListSessionsResponseDict(TypedDict, total=False):
     """
     Dictionary representation of InternalRestListSessionsResponse.
@@ -503,10 +401,8 @@ class InternalRestListSessionsResponseDict(TypedDict, total=False):
         sessions (List[InternalRestSessionResponseDict]): sessions
         total (int): total
     """
-
     sessions: Optional[List[InternalRestSessionResponseDict]]
     total: Optional[int]
-
 
 class InternalRestSessionStartResponseDict(TypedDict, total=False):
     """
@@ -515,9 +411,7 @@ class InternalRestSessionStartResponseDict(TypedDict, total=False):
     Keys:
         session_id (str): session_id
     """
-
     session_id: Optional[str]
-
 
 class InternalRestStartSandboxResponseDict(TypedDict, total=False):
     """
@@ -526,9 +420,7 @@ class InternalRestStartSandboxResponseDict(TypedDict, total=False):
     Keys:
         ip_address (str): ip_address
     """
-
     ip_address: Optional[str]
-
 
 class InternalRestVmInfoDict(TypedDict, total=False):
     """
@@ -541,13 +433,11 @@ class InternalRestVmInfoDict(TypedDict, total=False):
         state (str): state
         uuid (str): uuid
     """
-
     disk_path: Optional[str]
     name: Optional[str]
     persistent: Optional[bool]
     state: Optional[str]
     uuid: Optional[str]
-
 
 class InternalRestListVMsResponseDict(TypedDict, total=False):
     """
@@ -556,13 +446,10 @@ class InternalRestListVMsResponseDict(TypedDict, total=False):
     Keys:
         vms (List[InternalRestVmInfoDict]): vms
     """
-
     vms: Optional[List[InternalRestVmInfoDict]]
-
 
 class TimeDurationDict(TypedDict, total=False):
     pass
-
 
 class TmuxClientInternalApiCreateSandboxSessionResponseDict(TypedDict, total=False):
     """
@@ -578,7 +465,6 @@ class TmuxClientInternalApiCreateSandboxSessionResponseDict(TypedDict, total=Fal
         valid_until (str): ValidUntil is when the certificate expires (RFC3339)
         vm_ip_address (str): VMIPAddress is the IP of the sandbox VM
     """
-
     message: Optional[str]
     sandbox_id: Optional[str]
     session_id: Optional[str]
@@ -587,7 +473,6 @@ class TmuxClientInternalApiCreateSandboxSessionResponseDict(TypedDict, total=Fal
     username: Optional[str]
     valid_until: Optional[str]
     vm_ip_address: Optional[str]
-
 
 class TmuxClientInternalApiSandboxSessionInfoDict(TypedDict, total=False):
     """
@@ -603,7 +488,6 @@ class TmuxClientInternalApiSandboxSessionInfoDict(TypedDict, total=False):
         valid_until (str): valid_until
         vm_ip_address (str): vm_ip_address
     """
-
     is_expired: Optional[bool]
     sandbox_id: Optional[str]
     session_id: Optional[str]
@@ -613,7 +497,6 @@ class TmuxClientInternalApiSandboxSessionInfoDict(TypedDict, total=False):
     valid_until: Optional[str]
     vm_ip_address: Optional[str]
 
-
 class TmuxClientInternalApiListSandboxSessionsResponseDict(TypedDict, total=False):
     """
     Dictionary representation of TmuxClientInternalApiListSandboxSessionsResponse.
@@ -622,10 +505,8 @@ class TmuxClientInternalApiListSandboxSessionsResponseDict(TypedDict, total=Fals
         sessions (List[TmuxClientInternalApiSandboxSessionInfoDict]): sessions
         total (int): total
     """
-
     sessions: Optional[List[TmuxClientInternalApiSandboxSessionInfoDict]]
     total: Optional[int]
-
 
 class TmuxClientInternalTypesAPIErrorDict(TypedDict, total=False):
     """
@@ -636,11 +517,9 @@ class TmuxClientInternalTypesAPIErrorDict(TypedDict, total=False):
         details (str): details
         message (str): message
     """
-
     code: Optional[str]
     details: Optional[str]
     message: Optional[str]
-
 
 class TmuxClientInternalTypesAskHumanResponseDict(TypedDict, total=False):
     """
@@ -655,7 +534,6 @@ class TmuxClientInternalTypesAskHumanResponseDict(TypedDict, total=False):
         request_id (str): request_id
         status (str): status
     """
-
     approved: Optional[bool]
     approved_at: Optional[str]
     approved_by: Optional[str]
@@ -663,7 +541,6 @@ class TmuxClientInternalTypesAskHumanResponseDict(TypedDict, total=False):
     expires_at: Optional[str]
     request_id: Optional[str]
     status: Optional[str]
-
 
 class TmuxClientInternalTypesAuditEntryDict(TypedDict, total=False):
     """
@@ -681,7 +558,6 @@ class TmuxClientInternalTypesAuditEntryDict(TypedDict, total=False):
         tool (str): tool
         user_agent (str): user_agent
     """
-
     action: Optional[str]
     arguments: Optional[List[int]]
     client_ip: Optional[str]
@@ -693,7 +569,6 @@ class TmuxClientInternalTypesAuditEntryDict(TypedDict, total=False):
     tool: Optional[str]
     user_agent: Optional[str]
 
-
 class TmuxClientInternalTypesAuditQueryResponseDict(TypedDict, total=False):
     """
     Dictionary representation of TmuxClientInternalTypesAuditQueryResponse.
@@ -703,11 +578,9 @@ class TmuxClientInternalTypesAuditQueryResponseDict(TypedDict, total=False):
         has_more (bool): has_more
         total_count (int): total_count
     """
-
     entries: Optional[List[TmuxClientInternalTypesAuditEntryDict]]
     has_more: Optional[bool]
     total_count: Optional[int]
-
 
 class TmuxClientInternalTypesComponentHealthDict(TypedDict, total=False):
     """
@@ -718,11 +591,9 @@ class TmuxClientInternalTypesComponentHealthDict(TypedDict, total=False):
         name (str): name
         status (str): status
     """
-
     message: Optional[str]
     name: Optional[str]
     status: Optional[str]
-
 
 class TmuxClientInternalTypesCopyFileResponseDict(TypedDict, total=False):
     """
@@ -734,12 +605,10 @@ class TmuxClientInternalTypesCopyFileResponseDict(TypedDict, total=False):
         destination (str): destination
         source (str): source
     """
-
     bytes_copied: Optional[int]
     copied: Optional[bool]
     destination: Optional[str]
     source: Optional[str]
-
 
 class TmuxClientInternalTypesCreatePaneResponseDict(TypedDict, total=False):
     """
@@ -751,12 +620,10 @@ class TmuxClientInternalTypesCreatePaneResponseDict(TypedDict, total=False):
         session_name (str): session_name
         window_index (int): window_index
     """
-
     pane_id: Optional[str]
     pane_index: Optional[int]
     session_name: Optional[str]
     window_index: Optional[int]
-
 
 class TmuxClientInternalTypesDeleteFileResponseDict(TypedDict, total=False):
     """
@@ -767,11 +634,9 @@ class TmuxClientInternalTypesDeleteFileResponseDict(TypedDict, total=False):
         path (str): path
         was_dir (bool): was_dir
     """
-
     deleted: Optional[bool]
     path: Optional[str]
     was_dir: Optional[bool]
-
 
 class TmuxClientInternalTypesEditFileResponseDict(TypedDict, total=False):
     """
@@ -785,14 +650,12 @@ class TmuxClientInternalTypesEditFileResponseDict(TypedDict, total=False):
         path (str): path
         replacements (int): replacements
     """
-
     content_after: Optional[str]
     content_before: Optional[str]
     diff: Optional[str]
     edited: Optional[bool]
     path: Optional[str]
     replacements: Optional[int]
-
 
 class TmuxClientInternalTypesFileInfoDict(TypedDict, total=False):
     """
@@ -806,14 +669,12 @@ class TmuxClientInternalTypesFileInfoDict(TypedDict, total=False):
         path (str): path
         size (int): size
     """
-
     is_dir: Optional[bool]
     mod_time: Optional[str]
     mode: Optional[str]
     name: Optional[str]
     path: Optional[str]
     size: Optional[int]
-
 
 class TmuxClientInternalTypesHealthResponseDict(TypedDict, total=False):
     """
@@ -825,12 +686,10 @@ class TmuxClientInternalTypesHealthResponseDict(TypedDict, total=False):
         uptime (str): uptime
         version (str): version
     """
-
     components: Optional[List[TmuxClientInternalTypesComponentHealthDict]]
     status: Optional[str]
     uptime: Optional[str]
     version: Optional[str]
-
 
 class TmuxClientInternalTypesKillSessionResponseDict(TypedDict, total=False):
     """
@@ -840,10 +699,8 @@ class TmuxClientInternalTypesKillSessionResponseDict(TypedDict, total=False):
         session_name (str): session_name
         success (bool): success
     """
-
     session_name: Optional[str]
     success: Optional[bool]
-
 
 class TmuxClientInternalTypesListDirResponseDict(TypedDict, total=False):
     """
@@ -853,10 +710,8 @@ class TmuxClientInternalTypesListDirResponseDict(TypedDict, total=False):
         files (List[TmuxClientInternalTypesFileInfoDict]): files
         path (str): path
     """
-
     files: Optional[List[TmuxClientInternalTypesFileInfoDict]]
     path: Optional[str]
-
 
 class TmuxClientInternalTypesPaneInfoDict(TypedDict, total=False):
     """
@@ -875,7 +730,6 @@ class TmuxClientInternalTypesPaneInfoDict(TypedDict, total=False):
         window_index (int): window_index
         window_name (str): window_name
     """
-
     active: Optional[bool]
     current_path: Optional[str]
     pane_height: Optional[int]
@@ -888,7 +742,6 @@ class TmuxClientInternalTypesPaneInfoDict(TypedDict, total=False):
     window_index: Optional[int]
     window_name: Optional[str]
 
-
 class TmuxClientInternalTypesListPanesResponseDict(TypedDict, total=False):
     """
     Dictionary representation of TmuxClientInternalTypesListPanesResponse.
@@ -896,9 +749,7 @@ class TmuxClientInternalTypesListPanesResponseDict(TypedDict, total=False):
     Keys:
         panes (List[TmuxClientInternalTypesPaneInfoDict]): panes
     """
-
     panes: Optional[List[TmuxClientInternalTypesPaneInfoDict]]
-
 
 class TmuxClientInternalTypesPendingApprovalDict(TypedDict, total=False):
     """
@@ -914,7 +765,6 @@ class TmuxClientInternalTypesPendingApprovalDict(TypedDict, total=False):
         status (str): status
         urgency (str): urgency
     """
-
     action_type: Optional[str]
     context: Optional[str]
     created_at: Optional[str]
@@ -924,7 +774,6 @@ class TmuxClientInternalTypesPendingApprovalDict(TypedDict, total=False):
     status: Optional[str]
     urgency: Optional[str]
 
-
 class TmuxClientInternalTypesListApprovalsResponseDict(TypedDict, total=False):
     """
     Dictionary representation of TmuxClientInternalTypesListApprovalsResponse.
@@ -932,9 +781,7 @@ class TmuxClientInternalTypesListApprovalsResponseDict(TypedDict, total=False):
     Keys:
         pending (List[TmuxClientInternalTypesPendingApprovalDict]): pending
     """
-
     pending: Optional[List[TmuxClientInternalTypesPendingApprovalDict]]
-
 
 class TmuxClientInternalTypesPlanStepDict(TypedDict, total=False):
     """
@@ -949,7 +796,6 @@ class TmuxClientInternalTypesPlanStepDict(TypedDict, total=False):
         started_at (str): started_at
         status (str): status
     """
-
     completed_at: Optional[str]
     description: Optional[str]
     error: Optional[str]
@@ -957,7 +803,6 @@ class TmuxClientInternalTypesPlanStepDict(TypedDict, total=False):
     result: Optional[str]
     started_at: Optional[str]
     status: Optional[str]
-
 
 class TmuxClientInternalTypesPlanDict(TypedDict, total=False):
     """
@@ -974,7 +819,6 @@ class TmuxClientInternalTypesPlanDict(TypedDict, total=False):
         steps (List[TmuxClientInternalTypesPlanStepDict]): steps
         updated_at (str): updated_at
     """
-
     completed_at: Optional[str]
     created_at: Optional[str]
     current_step: Optional[int]
@@ -985,7 +829,6 @@ class TmuxClientInternalTypesPlanDict(TypedDict, total=False):
     steps: Optional[List[TmuxClientInternalTypesPlanStepDict]]
     updated_at: Optional[str]
 
-
 class TmuxClientInternalTypesCreatePlanResponseDict(TypedDict, total=False):
     """
     Dictionary representation of TmuxClientInternalTypesCreatePlanResponse.
@@ -994,10 +837,8 @@ class TmuxClientInternalTypesCreatePlanResponseDict(TypedDict, total=False):
         plan (TmuxClientInternalTypesPlanDict): plan
         plan_id (str): plan_id
     """
-
     plan: Optional[TmuxClientInternalTypesPlanDict]
     plan_id: Optional[str]
-
 
 class TmuxClientInternalTypesGetPlanResponseDict(TypedDict, total=False):
     """
@@ -1006,9 +847,7 @@ class TmuxClientInternalTypesGetPlanResponseDict(TypedDict, total=False):
     Keys:
         plan (TmuxClientInternalTypesPlanDict): plan
     """
-
     plan: Optional[TmuxClientInternalTypesPlanDict]
-
 
 class TmuxClientInternalTypesListPlansResponseDict(TypedDict, total=False):
     """
@@ -1017,9 +856,7 @@ class TmuxClientInternalTypesListPlansResponseDict(TypedDict, total=False):
     Keys:
         plans (List[TmuxClientInternalTypesPlanDict]): plans
     """
-
     plans: Optional[List[TmuxClientInternalTypesPlanDict]]
-
 
 class TmuxClientInternalTypesReadFileResponseDict(TypedDict, total=False):
     """
@@ -1036,7 +873,6 @@ class TmuxClientInternalTypesReadFileResponseDict(TypedDict, total=False):
         total_lines (int): total_lines
         truncated (bool): truncated
     """
-
     content: Optional[str]
     from_line: Optional[int]
     mod_time: Optional[str]
@@ -1047,7 +883,6 @@ class TmuxClientInternalTypesReadFileResponseDict(TypedDict, total=False):
     total_lines: Optional[int]
     truncated: Optional[bool]
 
-
 class TmuxClientInternalTypesReadPaneResponseDict(TypedDict, total=False):
     """
     Dictionary representation of TmuxClientInternalTypesReadPaneResponse.
@@ -1057,11 +892,9 @@ class TmuxClientInternalTypesReadPaneResponseDict(TypedDict, total=False):
         lines (int): lines
         pane_id (str): pane_id
     """
-
     content: Optional[str]
     lines: Optional[int]
     pane_id: Optional[str]
-
 
 class TmuxClientInternalTypesRunCommandResponseDict(TypedDict, total=False):
     """
@@ -1077,7 +910,6 @@ class TmuxClientInternalTypesRunCommandResponseDict(TypedDict, total=False):
         stdout (str): stdout
         timed_out (bool): timed_out
     """
-
     args: Optional[List[str]]
     command: Optional[str]
     dry_run: Optional[bool]
@@ -1087,7 +919,6 @@ class TmuxClientInternalTypesRunCommandResponseDict(TypedDict, total=False):
     stdout: Optional[str]
     timed_out: Optional[bool]
 
-
 class TmuxClientInternalTypesSendKeysResponseDict(TypedDict, total=False):
     """
     Dictionary representation of TmuxClientInternalTypesSendKeysResponse.
@@ -1096,10 +927,8 @@ class TmuxClientInternalTypesSendKeysResponseDict(TypedDict, total=False):
         pane_id (str): pane_id
         sent (bool): sent
     """
-
     pane_id: Optional[str]
     sent: Optional[bool]
-
 
 class TmuxClientInternalTypesSessionInfoDict(TypedDict, total=False):
     """
@@ -1114,7 +943,6 @@ class TmuxClientInternalTypesSessionInfoDict(TypedDict, total=False):
         name (str): name
         windows (int): windows
     """
-
     attached: Optional[bool]
     created: Optional[str]
     id: Optional[str]
@@ -1122,7 +950,6 @@ class TmuxClientInternalTypesSessionInfoDict(TypedDict, total=False):
     last_pane_y: Optional[int]
     name: Optional[str]
     windows: Optional[int]
-
 
 class TmuxClientInternalTypesSwitchPaneResponseDict(TypedDict, total=False):
     """
@@ -1132,10 +959,8 @@ class TmuxClientInternalTypesSwitchPaneResponseDict(TypedDict, total=False):
         pane_id (str): pane_id
         switched (bool): switched
     """
-
     pane_id: Optional[str]
     switched: Optional[bool]
-
 
 class TmuxClientInternalTypesUpdatePlanResponseDict(TypedDict, total=False):
     """
@@ -1146,11 +971,9 @@ class TmuxClientInternalTypesUpdatePlanResponseDict(TypedDict, total=False):
         plan_id (str): plan_id
         updated (bool): updated
     """
-
     plan: Optional[TmuxClientInternalTypesPlanDict]
     plan_id: Optional[str]
     updated: Optional[bool]
-
 
 class TmuxClientInternalTypesWindowInfoDict(TypedDict, total=False):
     """
@@ -1165,7 +988,6 @@ class TmuxClientInternalTypesWindowInfoDict(TypedDict, total=False):
         session_name (str): session_name
         width (int): width
     """
-
     active: Optional[bool]
     height: Optional[int]
     index: Optional[int]
@@ -1173,7 +995,6 @@ class TmuxClientInternalTypesWindowInfoDict(TypedDict, total=False):
     panes: Optional[int]
     session_name: Optional[str]
     width: Optional[int]
-
 
 class TmuxClientInternalTypesWriteFileResponseDict(TypedDict, total=False):
     """
@@ -1185,12 +1006,10 @@ class TmuxClientInternalTypesWriteFileResponseDict(TypedDict, total=False):
         path (str): path
         written (bool): written
     """
-
     bytes_written: Optional[int]
     created: Optional[bool]
     path: Optional[str]
     written: Optional[bool]
-
 
 class VirshSandboxInternalAnsibleJobDict(TypedDict, total=False):
     """
@@ -1203,13 +1022,11 @@ class VirshSandboxInternalAnsibleJobDict(TypedDict, total=False):
         status (str): status
         vm_name (str): vm_name
     """
-
     check: Optional[bool]
     id: Optional[str]
     playbook: Optional[str]
     status: Optional[str]
     vm_name: Optional[str]
-
 
 class VirshSandboxInternalAnsibleJobResponseDict(TypedDict, total=False):
     """
@@ -1219,10 +1036,8 @@ class VirshSandboxInternalAnsibleJobResponseDict(TypedDict, total=False):
         job_id (str): job_id
         ws_url (str): ws_url
     """
-
     job_id: Optional[str]
     ws_url: Optional[str]
-
 
 class VirshSandboxInternalErrorErrorResponseDict(TypedDict, total=False):
     """
@@ -1233,11 +1048,9 @@ class VirshSandboxInternalErrorErrorResponseDict(TypedDict, total=False):
         details (str): details
         error (str): error
     """
-
     code: Optional[int]
     details: Optional[str]
     error: Optional[str]
-
 
 class VirshSandboxInternalRestAccessErrorResponseDict(TypedDict, total=False):
     """
@@ -1248,11 +1061,9 @@ class VirshSandboxInternalRestAccessErrorResponseDict(TypedDict, total=False):
         details (str): details
         error (str): error
     """
-
     code: Optional[int]
     details: Optional[str]
     error: Optional[str]
-
 
 class VirshSandboxInternalRestCaPublicKeyResponseDict(TypedDict, total=False):
     """
@@ -1262,10 +1073,8 @@ class VirshSandboxInternalRestCaPublicKeyResponseDict(TypedDict, total=False):
         public_key (str): PublicKey is the CA public key in OpenSSH format.
         usage (str): Usage explains how to use this key.
     """
-
     public_key: Optional[str]
     usage: Optional[str]
-
 
 class VirshSandboxInternalRestCertificateResponseDict(TypedDict, total=False):
     """
@@ -1286,7 +1095,6 @@ class VirshSandboxInternalRestCertificateResponseDict(TypedDict, total=False):
         valid_before (str): valid_before
         vm_id (str): vm_id
     """
-
     id: Optional[str]
     identity: Optional[str]
     is_expired: Optional[bool]
@@ -1301,7 +1109,6 @@ class VirshSandboxInternalRestCertificateResponseDict(TypedDict, total=False):
     valid_before: Optional[str]
     vm_id: Optional[str]
 
-
 class VirshSandboxInternalRestDestroySandboxResponseDict(TypedDict, total=False):
     """
     Dictionary representation of VirshSandboxInternalRestDestroySandboxResponse.
@@ -1312,12 +1119,10 @@ class VirshSandboxInternalRestDestroySandboxResponseDict(TypedDict, total=False)
         state (str): state
         ttl_seconds (int): ttl_seconds
     """
-
     base_image: Optional[str]
     sandbox_name: Optional[str]
     state: Optional[str]
     ttl_seconds: Optional[int]
-
 
 class VirshSandboxInternalRestErrorResponseDict(TypedDict, total=False):
     """
@@ -1328,11 +1133,9 @@ class VirshSandboxInternalRestErrorResponseDict(TypedDict, total=False):
         details (str): details
         error (str): error
     """
-
     code: Optional[int]
     details: Optional[str]
     error: Optional[str]
-
 
 class VirshSandboxInternalRestGenerateResponseDict(TypedDict, total=False):
     """
@@ -1342,10 +1145,8 @@ class VirshSandboxInternalRestGenerateResponseDict(TypedDict, total=False):
         message (str): message
         note (str): note
     """
-
     message: Optional[str]
     note: Optional[str]
-
 
 class VirshSandboxInternalRestListCertificatesResponseDict(TypedDict, total=False):
     """
@@ -1355,10 +1156,8 @@ class VirshSandboxInternalRestListCertificatesResponseDict(TypedDict, total=Fals
         certificates (List[VirshSandboxInternalRestCertificateResponseDict]): certificates
         total (int): total
     """
-
     certificates: Optional[List[VirshSandboxInternalRestCertificateResponseDict]]
     total: Optional[int]
-
 
 class VirshSandboxInternalRestPublishResponseDict(TypedDict, total=False):
     """
@@ -1368,10 +1167,8 @@ class VirshSandboxInternalRestPublishResponseDict(TypedDict, total=False):
         message (str): message
         note (str): note
     """
-
     message: Optional[str]
     note: Optional[str]
-
 
 class VirshSandboxInternalRestRequestAccessResponseDict(TypedDict, total=False):
     """
@@ -1388,7 +1185,6 @@ class VirshSandboxInternalRestRequestAccessResponseDict(TypedDict, total=False):
         valid_until (str): ValidUntil is when the certificate expires (RFC3339).
         vm_ip_address (str): VMIPAddress is the IP address of the sandbox VM.
     """
-
     certificate: Optional[str]
     certificate_id: Optional[str]
     connect_command: Optional[str]
@@ -1398,7 +1194,6 @@ class VirshSandboxInternalRestRequestAccessResponseDict(TypedDict, total=False):
     username: Optional[str]
     valid_until: Optional[str]
     vm_ip_address: Optional[str]
-
 
 class VirshSandboxInternalRestSandboxInfoDict(TypedDict, total=False):
     """
@@ -1417,7 +1212,6 @@ class VirshSandboxInternalRestSandboxInfoDict(TypedDict, total=False):
         ttl_seconds (int): ttl_seconds
         updated_at (str): updated_at
     """
-
     agent_id: Optional[str]
     base_image: Optional[str]
     created_at: Optional[str]
@@ -1430,7 +1224,6 @@ class VirshSandboxInternalRestSandboxInfoDict(TypedDict, total=False):
     ttl_seconds: Optional[int]
     updated_at: Optional[str]
 
-
 class VirshSandboxInternalRestListSandboxesResponseDict(TypedDict, total=False):
     """
     Dictionary representation of VirshSandboxInternalRestListSandboxesResponse.
@@ -1439,10 +1232,8 @@ class VirshSandboxInternalRestListSandboxesResponseDict(TypedDict, total=False):
         sandboxes (List[VirshSandboxInternalRestSandboxInfoDict]): sandboxes
         total (int): total
     """
-
     sandboxes: Optional[List[VirshSandboxInternalRestSandboxInfoDict]]
     total: Optional[int]
-
 
 class VirshSandboxInternalRestSessionResponseDict(TypedDict, total=False):
     """
@@ -1461,7 +1252,6 @@ class VirshSandboxInternalRestSessionResponseDict(TypedDict, total=False):
         vm_id (str): vm_id
         vm_ip_address (str): vm_ip_address
     """
-
     certificate_id: Optional[str]
     duration_seconds: Optional[int]
     ended_at: Optional[str]
@@ -1474,7 +1264,6 @@ class VirshSandboxInternalRestSessionResponseDict(TypedDict, total=False):
     vm_id: Optional[str]
     vm_ip_address: Optional[str]
 
-
 class VirshSandboxInternalRestListSessionsResponseDict(TypedDict, total=False):
     """
     Dictionary representation of VirshSandboxInternalRestListSessionsResponse.
@@ -1483,10 +1272,8 @@ class VirshSandboxInternalRestListSessionsResponseDict(TypedDict, total=False):
         sessions (List[VirshSandboxInternalRestSessionResponseDict]): sessions
         total (int): total
     """
-
     sessions: Optional[List[VirshSandboxInternalRestSessionResponseDict]]
     total: Optional[int]
-
 
 class VirshSandboxInternalRestSessionStartResponseDict(TypedDict, total=False):
     """
@@ -1495,9 +1282,7 @@ class VirshSandboxInternalRestSessionStartResponseDict(TypedDict, total=False):
     Keys:
         session_id (str): session_id
     """
-
     session_id: Optional[str]
-
 
 class VirshSandboxInternalRestStartSandboxResponseDict(TypedDict, total=False):
     """
@@ -1506,9 +1291,7 @@ class VirshSandboxInternalRestStartSandboxResponseDict(TypedDict, total=False):
     Keys:
         ip_address (str): ip_address
     """
-
     ip_address: Optional[str]
-
 
 class VirshSandboxInternalRestVmInfoDict(TypedDict, total=False):
     """
@@ -1521,13 +1304,11 @@ class VirshSandboxInternalRestVmInfoDict(TypedDict, total=False):
         state (str): state
         uuid (str): uuid
     """
-
     disk_path: Optional[str]
     name: Optional[str]
     persistent: Optional[bool]
     state: Optional[str]
     uuid: Optional[str]
-
 
 class VirshSandboxInternalRestListVMsResponseDict(TypedDict, total=False):
     """
@@ -1536,9 +1317,7 @@ class VirshSandboxInternalRestListVMsResponseDict(TypedDict, total=False):
     Keys:
         vms (List[VirshSandboxInternalRestVmInfoDict]): vms
     """
-
     vms: Optional[List[VirshSandboxInternalRestVmInfoDict]]
-
 
 class VirshSandboxInternalStoreCommandExecRecordDict(TypedDict, total=False):
     """
@@ -1550,12 +1329,10 @@ class VirshSandboxInternalStoreCommandExecRecordDict(TypedDict, total=False):
         user (str): user
         work_dir (str): work_dir
     """
-
     redacted: Optional[Dict[str, str]]
     timeout: Optional[TimeDurationDict]
     user: Optional[str]
     work_dir: Optional[str]
-
 
 class VirshSandboxInternalStoreCommandDict(TypedDict, total=False):
     """
@@ -1573,7 +1350,6 @@ class VirshSandboxInternalStoreCommandDict(TypedDict, total=False):
         stderr (str): stderr
         stdout (str): stdout
     """
-
     command: Optional[str]
     ended_at: Optional[str]
     env_json: Optional[str]
@@ -1585,7 +1361,6 @@ class VirshSandboxInternalStoreCommandDict(TypedDict, total=False):
     stderr: Optional[str]
     stdout: Optional[str]
 
-
 class InternalRestRunCommandResponseDict(TypedDict, total=False):
     """
     Dictionary representation of InternalRestRunCommandResponse.
@@ -1593,9 +1368,7 @@ class InternalRestRunCommandResponseDict(TypedDict, total=False):
     Keys:
         command (VirshSandboxInternalStoreCommandDict): command
     """
-
     command: Optional[VirshSandboxInternalStoreCommandDict]
-
 
 class VirshSandboxInternalRestRunCommandResponseDict(TypedDict, total=False):
     """
@@ -1604,9 +1377,7 @@ class VirshSandboxInternalRestRunCommandResponseDict(TypedDict, total=False):
     Keys:
         command (VirshSandboxInternalStoreCommandDict): command
     """
-
     command: Optional[VirshSandboxInternalStoreCommandDict]
-
 
 class VirshSandboxInternalStoreCommandSummaryDict(TypedDict, total=False):
     """
@@ -1617,11 +1388,9 @@ class VirshSandboxInternalStoreCommandSummaryDict(TypedDict, total=False):
         cmd (str): cmd
         exit_code (int): exit_code
     """
-
     at: Optional[str]
     cmd: Optional[str]
     exit_code: Optional[int]
-
 
 class VirshSandboxInternalStorePackageInfoDict(TypedDict, total=False):
     """
@@ -1631,10 +1400,8 @@ class VirshSandboxInternalStorePackageInfoDict(TypedDict, total=False):
         name (str): name
         version (str): version
     """
-
     name: Optional[str]
     version: Optional[str]
-
 
 class VirshSandboxInternalStoreSandboxDict(TypedDict, total=False):
     """
@@ -1645,7 +1412,7 @@ class VirshSandboxInternalStoreSandboxDict(TypedDict, total=False):
         base_image (str): base qcow2 filename
         created_at (str): Metadata
         deleted_at (str): deleted_at
-        id (str): e.g., \
+        id (str): e.g., 
         ip_address (str): discovered IP (if any)
         job_id (str): correlation id for the end-to-end change set
         network (str): libvirt network name
@@ -1654,7 +1421,6 @@ class VirshSandboxInternalStoreSandboxDict(TypedDict, total=False):
         ttl_seconds (int): optional TTL for auto GC
         updated_at (str): updated_at
     """
-
     agent_id: Optional[str]
     base_image: Optional[str]
     created_at: Optional[str]
@@ -1668,7 +1434,6 @@ class VirshSandboxInternalStoreSandboxDict(TypedDict, total=False):
     ttl_seconds: Optional[int]
     updated_at: Optional[str]
 
-
 class InternalRestCreateSandboxResponseDict(TypedDict, total=False):
     """
     Dictionary representation of InternalRestCreateSandboxResponse.
@@ -1676,9 +1441,7 @@ class InternalRestCreateSandboxResponseDict(TypedDict, total=False):
     Keys:
         sandbox (VirshSandboxInternalStoreSandboxDict): sandbox
     """
-
     sandbox: Optional[VirshSandboxInternalStoreSandboxDict]
-
 
 class VirshSandboxInternalRestCreateSandboxResponseDict(TypedDict, total=False):
     """
@@ -1688,10 +1451,8 @@ class VirshSandboxInternalRestCreateSandboxResponseDict(TypedDict, total=False):
         sandbox (VirshSandboxInternalStoreSandboxDict): sandbox
         ip_address (str): populated when auto_start and wait_for_ip are true
     """
-
     sandbox: Optional[VirshSandboxInternalStoreSandboxDict]
     ip_address: Optional[str]
-
 
 class VirshSandboxInternalStoreServiceChangeDict(TypedDict, total=False):
     """
@@ -1702,11 +1463,9 @@ class VirshSandboxInternalStoreServiceChangeDict(TypedDict, total=False):
         name (str): name
         state (str): started|stopped|restarted|reloaded
     """
-
     enabled: Optional[bool]
     name: Optional[str]
     state: Optional[str]
-
 
 class VirshSandboxInternalStoreChangeDiffDict(TypedDict, total=False):
     """
@@ -1721,7 +1480,6 @@ class VirshSandboxInternalStoreChangeDiffDict(TypedDict, total=False):
         packages_removed (List[VirshSandboxInternalStorePackageInfoDict]): packages_removed
         services_changed (List[VirshSandboxInternalStoreServiceChangeDict]): services_changed
     """
-
     commands_run: Optional[List[VirshSandboxInternalStoreCommandSummaryDict]]
     files_added: Optional[List[str]]
     files_modified: Optional[List[str]]
@@ -1729,7 +1487,6 @@ class VirshSandboxInternalStoreChangeDiffDict(TypedDict, total=False):
     packages_added: Optional[List[VirshSandboxInternalStorePackageInfoDict]]
     packages_removed: Optional[List[VirshSandboxInternalStorePackageInfoDict]]
     services_changed: Optional[List[VirshSandboxInternalStoreServiceChangeDict]]
-
 
 class VirshSandboxInternalStoreDiffDict(TypedDict, total=False):
     """
@@ -1743,14 +1500,12 @@ class VirshSandboxInternalStoreDiffDict(TypedDict, total=False):
         sandbox_id (str): sandbox_id
         to_snapshot (str): to_snapshot
     """
-
     created_at: Optional[str]
     diff_json: Optional[VirshSandboxInternalStoreChangeDiffDict]
     from_snapshot: Optional[str]
     id: Optional[str]
     sandbox_id: Optional[str]
     to_snapshot: Optional[str]
-
 
 class InternalRestDiffResponseDict(TypedDict, total=False):
     """
@@ -1759,9 +1514,7 @@ class InternalRestDiffResponseDict(TypedDict, total=False):
     Keys:
         diff (VirshSandboxInternalStoreDiffDict): diff
     """
-
     diff: Optional[VirshSandboxInternalStoreDiffDict]
-
 
 class VirshSandboxInternalRestDiffResponseDict(TypedDict, total=False):
     """
@@ -1770,9 +1523,7 @@ class VirshSandboxInternalRestDiffResponseDict(TypedDict, total=False):
     Keys:
         diff (VirshSandboxInternalStoreDiffDict): diff
     """
-
     diff: Optional[VirshSandboxInternalStoreDiffDict]
-
 
 class VirshSandboxInternalStoreSnapshotDict(TypedDict, total=False):
     """
@@ -1787,7 +1538,6 @@ class VirshSandboxInternalStoreSnapshotDict(TypedDict, total=False):
         ref (str): Ref is a backend-specific reference: for internal snapshots this could be a UUID or name, for external snapshots it could be a file path to the overlay qcow2.
         sandbox_id (str): sandbox_id
     """
-
     created_at: Optional[str]
     id: Optional[str]
     kind: Optional[str]
@@ -1796,7 +1546,6 @@ class VirshSandboxInternalStoreSnapshotDict(TypedDict, total=False):
     ref: Optional[str]
     sandbox_id: Optional[str]
 
-
 class InternalRestSnapshotResponseDict(TypedDict, total=False):
     """
     Dictionary representation of InternalRestSnapshotResponse.
@@ -1804,9 +1553,7 @@ class InternalRestSnapshotResponseDict(TypedDict, total=False):
     Keys:
         snapshot (VirshSandboxInternalStoreSnapshotDict): snapshot
     """
-
     snapshot: Optional[VirshSandboxInternalStoreSnapshotDict]
-
 
 class VirshSandboxInternalRestSnapshotResponseDict(TypedDict, total=False):
     """
@@ -1815,7 +1562,6 @@ class VirshSandboxInternalRestSnapshotResponseDict(TypedDict, total=False):
     Keys:
         snapshot (VirshSandboxInternalStoreSnapshotDict): snapshot
     """
-
     snapshot: Optional[VirshSandboxInternalStoreSnapshotDict]
 
 
@@ -1877,11 +1623,7 @@ class AccessOperations:
         request = InternalRestRevokeCertificateRequest(
             reason=reason,
         )
-        return _to_dict(
-            self._api.v1_access_certificate_cert_id_delete(
-                cert_id=cert_id, request=request
-            )
-        )
+        return _to_dict(self._api.v1_access_certificate_cert_id_delete(cert_id=cert_id, request=request))
 
     def v1_access_certificate_cert_id_get(
         self,
@@ -1934,16 +1676,7 @@ class AccessOperations:
                 - certificates (List[InternalRestCertificateResponse])
                 - total (int)
         """
-        return _to_dict(
-            self._api.v1_access_certificates_get(
-                sandbox_id=sandbox_id,
-                user_id=user_id,
-                status=status,
-                active_only=active_only,
-                limit=limit,
-                offset=offset,
-            )
-        )
+        return _to_dict(self._api.v1_access_certificates_get(sandbox_id=sandbox_id, user_id=user_id, status=status, active_only=active_only, limit=limit, offset=offset))
 
     def v1_access_request_post(
         self,
@@ -2045,16 +1778,7 @@ class AccessOperations:
                 - sessions (List[InternalRestSessionResponse])
                 - total (int)
         """
-        return _to_dict(
-            self._api.v1_access_sessions_get(
-                sandbox_id=sandbox_id,
-                certificate_id=certificate_id,
-                user_id=user_id,
-                active_only=active_only,
-                limit=limit,
-                offset=offset,
-            )
-        )
+        return _to_dict(self._api.v1_access_sessions_get(sandbox_id=sandbox_id, certificate_id=certificate_id, user_id=user_id, active_only=active_only, limit=limit, offset=offset))
 
 
 class AnsibleOperations:
@@ -2141,7 +1865,7 @@ class AuditOperations:
         since: Optional[str] = None,
         tool: Optional[str] = None,
         until: Optional[str] = None,
-    ) -> TmuxClientInternalTypesAuditQueryResponseDict:
+    ) -> AuditQueryResponse:
         """Query audit log
 
         Args:
@@ -2243,7 +1967,7 @@ class FileOperations:
         destination: Optional[str] = None,
         overwrite: Optional[bool] = None,
         source: Optional[str] = None,
-    ) -> TmuxClientInternalTypesCopyFileResponseDict:
+    ) -> CopyFileResponse:
         """Copy file
 
         Args:
@@ -2269,7 +1993,7 @@ class FileOperations:
         self,
         path: Optional[str] = None,
         recursive: Optional[bool] = None,
-    ) -> TmuxClientInternalTypesDeleteFileResponseDict:
+    ) -> DeleteFileResponse:
         """Delete file
 
         Args:
@@ -2294,7 +2018,7 @@ class FileOperations:
         new_text: Optional[str] = None,
         old_text: Optional[str] = None,
         path: Optional[str] = None,
-    ) -> TmuxClientInternalTypesEditFileResponseDict:
+    ) -> EditFileResponse:
         """Edit file
 
         Args:
@@ -2333,7 +2057,7 @@ class FileOperations:
         max_depth: Optional[int] = None,
         path: Optional[str] = None,
         recursive: Optional[bool] = None,
-    ) -> TmuxClientInternalTypesListDirResponseDict:
+    ) -> ListDirResponse:
         """List directory contents
 
         Args:
@@ -2359,7 +2083,7 @@ class FileOperations:
         max_lines: Optional[int] = None,
         path: Optional[str] = None,
         to_line: Optional[int] = None,
-    ) -> TmuxClientInternalTypesReadFileResponseDict:
+    ) -> ReadFileResponse:
         """Read file
 
         Args:
@@ -2395,13 +2119,13 @@ class FileOperations:
         mode: Optional[str] = None,
         overwrite: Optional[bool] = None,
         path: Optional[str] = None,
-    ) -> TmuxClientInternalTypesWriteFileResponseDict:
+    ) -> WriteFileResponse:
         """Write file
 
         Args:
             content: content
             create_dir: Create parent directories if needed
-            mode: e.g., \
+            mode: e.g., 
             overwrite: Must be true to overwrite existing
             path: path
 
@@ -2428,7 +2152,7 @@ class HealthOperations:
     def __init__(self, api: HealthApi):
         self._api = api
 
-    def get_health(self) -> TmuxClientInternalTypesHealthResponseDict:
+    def get_health(self) -> HealthResponse:
         """Get health status
 
         Returns:
@@ -2455,16 +2179,16 @@ class HumanOperations:
         prompt: Optional[str] = None,
         timeout_secs: Optional[int] = None,
         urgency: Optional[str] = None,
-    ) -> TmuxClientInternalTypesAskHumanResponseDict:
+    ) -> AskHumanResponse:
         """Request human approval
 
         Args:
-            action_type: Category: \
+            action_type: Category: 
             alternatives: Suggested alternative actions
             context: Additional context
             prompt: Human-readable description
             timeout_secs: Auto-reject after timeout, 0 = no timeout
-            urgency: \
+            urgency: "low
 
         Returns:
             Dict with keys:
@@ -2498,12 +2222,12 @@ class HumanOperations:
         """Request human approval asynchronously
 
         Args:
-            action_type: Category: \
+            action_type: Category: 
             alternatives: Suggested alternative actions
             context: Additional context
             prompt: Human-readable description
             timeout_secs: Auto-reject after timeout, 0 = no timeout
-            urgency: \
+            urgency: "low
 
         Returns:
             Dict with keys:
@@ -2535,7 +2259,7 @@ class HumanOperations:
     def get_pending_approval(
         self,
         request_id: str,
-    ) -> TmuxClientInternalTypesPendingApprovalDict:
+    ) -> PendingApproval:
         """Get pending approval
 
         Args:
@@ -2554,9 +2278,7 @@ class HumanOperations:
         """
         return _to_dict(self._api.get_pending_approval(request_id=request_id))
 
-    def list_pending_approvals(
-        self,
-    ) -> TmuxClientInternalTypesListApprovalsResponseDict:
+    def list_pending_approvals(self) -> ListApprovalsResponse:
         """List pending approvals
 
         Returns:
@@ -2571,7 +2293,7 @@ class HumanOperations:
         approved_by: Optional[str] = None,
         comment: Optional[str] = None,
         request_id: Optional[str] = None,
-    ) -> TmuxClientInternalTypesAskHumanResponseDict:
+    ) -> AskHumanResponse:
         """Respond to approval
 
         Args:
@@ -2642,7 +2364,7 @@ class PlanOperations:
         description: Optional[str] = None,
         name: Optional[str] = None,
         steps: Optional[List[str]] = None,
-    ) -> TmuxClientInternalTypesCreatePlanResponseDict:
+    ) -> CreatePlanResponse:
         """Create plan
 
         Args:
@@ -2679,7 +2401,7 @@ class PlanOperations:
     def get_plan(
         self,
         plan_id: str,
-    ) -> TmuxClientInternalTypesGetPlanResponseDict:
+    ) -> GetPlanResponse:
         """Get plan
 
         Args:
@@ -2691,7 +2413,7 @@ class PlanOperations:
         """
         return _to_dict(self._api.get_plan(plan_id=plan_id))
 
-    def list_plans(self) -> TmuxClientInternalTypesListPlansResponseDict:
+    def list_plans(self) -> ListPlansResponse:
         """List plans
 
         Returns:
@@ -2707,7 +2429,7 @@ class PlanOperations:
         result: Optional[str] = None,
         status: Optional[TmuxClientInternalTypesStepStatus] = None,
         step_index: Optional[int] = None,
-    ) -> TmuxClientInternalTypesUpdatePlanResponseDict:
+    ) -> UpdatePlanResponse:
         """Update plan
 
         Args:
@@ -2749,7 +2471,7 @@ class SandboxOperations:
         ttl_seconds: Optional[int] = None,
         auto_start: Optional[bool] = None,
         wait_for_ip: Optional[bool] = None,
-    ) -> VirshSandboxInternalRestCreateSandboxResponseDict:
+    ) -> CreateSandboxResponse:
         """Create a new sandbox
 
         Args:
@@ -2815,7 +2537,7 @@ class SandboxOperations:
         id: str,
         external: Optional[bool] = None,
         name: Optional[str] = None,
-    ) -> VirshSandboxInternalRestSnapshotResponseDict:
+    ) -> SnapshotResponse:
         """Create snapshot
 
         Args:
@@ -2836,7 +2558,7 @@ class SandboxOperations:
     def destroy_sandbox(
         self,
         id: str,
-    ) -> VirshSandboxInternalRestDestroySandboxResponseDict:
+    ) -> DestroySandboxResponse:
         """Destroy sandbox
 
         Args:
@@ -2856,7 +2578,7 @@ class SandboxOperations:
         id: str,
         from_snapshot: Optional[str] = None,
         to_snapshot: Optional[str] = None,
-    ) -> VirshSandboxInternalRestDiffResponseDict:
+    ) -> DiffResponse:
         """Diff snapshots
 
         Args:
@@ -2920,7 +2642,7 @@ class SandboxOperations:
         Args:
             id: str
             public_key: required
-            username: required (explicit); typical: \
+            username: required (explicit); typical: 
         """
         request = VirshSandboxInternalRestInjectSSHKeyRequest(
             public_key=public_key,
@@ -2961,7 +2683,7 @@ class SandboxOperations:
         vm_name: Optional[str] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> VirshSandboxInternalRestListSandboxesResponseDict:
+    ) -> ListSandboxesResponse:
         """List sandboxes
 
         Args:
@@ -2978,17 +2700,7 @@ class SandboxOperations:
                 - sandboxes (List[VirshSandboxInternalRestSandboxInfo])
                 - total (int)
         """
-        return _to_dict(
-            self._api.list_sandboxes(
-                agent_id=agent_id,
-                job_id=job_id,
-                base_image=base_image,
-                state=state,
-                vm_name=vm_name,
-                limit=limit,
-                offset=offset,
-            )
-        )
+        return _to_dict(self._api.list_sandboxes(agent_id=agent_id, job_id=job_id, base_image=base_image, state=state, vm_name=vm_name, limit=limit, offset=offset))
 
     def publish_changes(
         self,
@@ -3020,7 +2732,7 @@ class SandboxOperations:
         private_key_path: Optional[str] = None,
         timeout_sec: Optional[int] = None,
         username: Optional[str] = None,
-    ) -> VirshSandboxInternalRestRunCommandResponseDict:
+    ) -> RunCommandResponse:
         """Run command in sandbox
 
         Args:
@@ -3056,7 +2768,7 @@ class SandboxOperations:
         self,
         id: str,
         wait_for_ip: Optional[bool] = None,
-    ) -> VirshSandboxInternalRestStartSandboxResponseDict:
+    ) -> StartSandboxResponse:
         """Start sandbox
 
         Args:
@@ -3086,7 +2798,7 @@ class TmuxOperations:
         new_window: Optional[bool] = None,
         session_name: Optional[str] = None,
         window_name: Optional[str] = None,
-    ) -> TmuxClientInternalTypesCreatePaneResponseDict:
+    ) -> CreatePaneResponse:
         """Create tmux pane
 
         Args:
@@ -3151,7 +2863,7 @@ class TmuxOperations:
     def list_tmux_panes(
         self,
         session: Optional[str] = None,
-    ) -> TmuxClientInternalTypesListPanesResponseDict:
+    ) -> ListPanesResponse:
         """List tmux panes
 
         Args:
@@ -3163,7 +2875,7 @@ class TmuxOperations:
         """
         return _to_dict(self._api.list_tmux_panes(session=session))
 
-    def list_tmux_sessions(self) -> List[TmuxClientInternalTypesSessionInfoDict]:
+    def list_tmux_sessions(self) -> List[SessionInfo]:
         """List tmux sessions
 
         Returns:
@@ -3181,7 +2893,7 @@ class TmuxOperations:
     def list_tmux_windows(
         self,
         session: Optional[str] = None,
-    ) -> List[TmuxClientInternalTypesWindowInfoDict]:
+    ) -> List[WindowInfo]:
         """List tmux windows
 
         Args:
@@ -3203,7 +2915,7 @@ class TmuxOperations:
         self,
         last_n_lines: Optional[int] = None,
         pane_id: Optional[str] = None,
-    ) -> TmuxClientInternalTypesReadPaneResponseDict:
+    ) -> ReadPaneResponse:
         """Read tmux pane
 
         Args:
@@ -3225,7 +2937,7 @@ class TmuxOperations:
     def release_tmux_session(
         self,
         session_id: str,
-    ) -> TmuxClientInternalTypesKillSessionResponseDict:
+    ) -> KillSessionResponse:
         """Release tmux session
 
         Args:
@@ -3242,11 +2954,11 @@ class TmuxOperations:
         self,
         key: Optional[str] = None,
         pane_id: Optional[str] = None,
-    ) -> TmuxClientInternalTypesSendKeysResponseDict:
+    ) -> SendKeysResponse:
         """Send keys to tmux pane
 
         Args:
-            key: Must be from approved list: \
+            key: Must be from approved list: 
             pane_id: pane_id
 
         Returns:
@@ -3263,7 +2975,7 @@ class TmuxOperations:
     def switch_tmux_pane(
         self,
         pane_id: Optional[str] = None,
-    ) -> TmuxClientInternalTypesSwitchPaneResponseDict:
+    ) -> SwitchPaneResponse:
         """Switch tmux pane
 
         Args:
@@ -3286,7 +2998,7 @@ class VMsOperations:
     def __init__(self, api: VMsApi):
         self._api = api
 
-    def list_virtual_machines(self) -> VirshSandboxInternalRestListVMsResponseDict:
+    def list_virtual_machines(self) -> ListVMsResponse:
         """List all VMs
 
         Returns:
@@ -3294,6 +3006,7 @@ class VMsOperations:
                 - vms (List[VirshSandboxInternalRestVmInfo])
         """
         return _to_dict(self._api.list_virtual_machines())
+
 
 
 class VirshSandbox:
@@ -3475,10 +3188,10 @@ class VirshSandbox:
 
     def close(self) -> None:
         """Close the API client connections."""
-        if hasattr(self._main_api_client.rest_client, "close"):
+        if hasattr(self._main_api_client.rest_client, 'close'):
             self._main_api_client.rest_client.close()
         if self._tmux_api_client is not self._main_api_client:
-            if hasattr(self._tmux_api_client.rest_client, "close"):
+            if hasattr(self._tmux_api_client.rest_client, 'close'):
                 self._tmux_api_client.rest_client.close()
 
     def __enter__(self) -> "VirshSandbox":
@@ -3488,3 +3201,74 @@ class VirshSandbox:
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """Context manager exit."""
         self.close()
+
+
+# User-friendly type aliases for IDE autocomplete
+# These provide shorter names for the TypedDict response types
+TimeDurationDict = TimeDurationDict
+CreateSandboxSessionResponse = TmuxClientInternalApiCreateSandboxSessionResponseDict
+ListSandboxSessionsResponse = TmuxClientInternalApiListSandboxSessionsResponseDict
+SandboxSessionInfo = TmuxClientInternalApiSandboxSessionInfoDict
+APIError = TmuxClientInternalTypesAPIErrorDict
+AskHumanResponse = TmuxClientInternalTypesAskHumanResponseDict
+AuditEntry = TmuxClientInternalTypesAuditEntryDict
+AuditQueryResponse = TmuxClientInternalTypesAuditQueryResponseDict
+ComponentHealth = TmuxClientInternalTypesComponentHealthDict
+CopyFileResponse = TmuxClientInternalTypesCopyFileResponseDict
+CreatePaneResponse = TmuxClientInternalTypesCreatePaneResponseDict
+CreatePlanResponse = TmuxClientInternalTypesCreatePlanResponseDict
+DeleteFileResponse = TmuxClientInternalTypesDeleteFileResponseDict
+EditFileResponse = TmuxClientInternalTypesEditFileResponseDict
+FileInfo = TmuxClientInternalTypesFileInfoDict
+GetPlanResponse = TmuxClientInternalTypesGetPlanResponseDict
+HealthResponse = TmuxClientInternalTypesHealthResponseDict
+KillSessionResponse = TmuxClientInternalTypesKillSessionResponseDict
+ListApprovalsResponse = TmuxClientInternalTypesListApprovalsResponseDict
+ListDirResponse = TmuxClientInternalTypesListDirResponseDict
+ListPanesResponse = TmuxClientInternalTypesListPanesResponseDict
+ListPlansResponse = TmuxClientInternalTypesListPlansResponseDict
+PaneInfo = TmuxClientInternalTypesPaneInfoDict
+PendingApproval = TmuxClientInternalTypesPendingApprovalDict
+Plan = TmuxClientInternalTypesPlanDict
+PlanStep = TmuxClientInternalTypesPlanStepDict
+ReadFileResponse = TmuxClientInternalTypesReadFileResponseDict
+ReadPaneResponse = TmuxClientInternalTypesReadPaneResponseDict
+SendKeysResponse = TmuxClientInternalTypesSendKeysResponseDict
+SessionInfo = TmuxClientInternalTypesSessionInfoDict
+SwitchPaneResponse = TmuxClientInternalTypesSwitchPaneResponseDict
+UpdatePlanResponse = TmuxClientInternalTypesUpdatePlanResponseDict
+WindowInfo = TmuxClientInternalTypesWindowInfoDict
+WriteFileResponse = TmuxClientInternalTypesWriteFileResponseDict
+AnsibleJob = VirshSandboxInternalAnsibleJobDict
+AnsibleJobResponse = VirshSandboxInternalAnsibleJobResponseDict
+ErrorErrorResponse = VirshSandboxInternalErrorErrorResponseDict
+AccessErrorResponse = VirshSandboxInternalRestAccessErrorResponseDict
+CaPublicKeyResponse = VirshSandboxInternalRestCaPublicKeyResponseDict
+CertificateResponse = VirshSandboxInternalRestCertificateResponseDict
+CreateSandboxResponse = VirshSandboxInternalRestCreateSandboxResponseDict
+DestroySandboxResponse = VirshSandboxInternalRestDestroySandboxResponseDict
+DiffResponse = VirshSandboxInternalRestDiffResponseDict
+ErrorResponse = VirshSandboxInternalRestErrorResponseDict
+GenerateResponse = VirshSandboxInternalRestGenerateResponseDict
+ListCertificatesResponse = VirshSandboxInternalRestListCertificatesResponseDict
+ListSandboxesResponse = VirshSandboxInternalRestListSandboxesResponseDict
+ListSessionsResponse = VirshSandboxInternalRestListSessionsResponseDict
+ListVMsResponse = VirshSandboxInternalRestListVMsResponseDict
+PublishResponse = VirshSandboxInternalRestPublishResponseDict
+RequestAccessResponse = VirshSandboxInternalRestRequestAccessResponseDict
+RunCommandResponse = VirshSandboxInternalRestRunCommandResponseDict
+SandboxInfo = VirshSandboxInternalRestSandboxInfoDict
+SessionResponse = VirshSandboxInternalRestSessionResponseDict
+SessionStartResponse = VirshSandboxInternalRestSessionStartResponseDict
+SnapshotResponse = VirshSandboxInternalRestSnapshotResponseDict
+StartSandboxResponse = VirshSandboxInternalRestStartSandboxResponseDict
+VmInfo = VirshSandboxInternalRestVmInfoDict
+ChangeDiff = VirshSandboxInternalStoreChangeDiffDict
+Command = VirshSandboxInternalStoreCommandDict
+CommandExecRecord = VirshSandboxInternalStoreCommandExecRecordDict
+CommandSummary = VirshSandboxInternalStoreCommandSummaryDict
+Diff = VirshSandboxInternalStoreDiffDict
+PackageInfo = VirshSandboxInternalStorePackageInfoDict
+Sandbox = VirshSandboxInternalStoreSandboxDict
+ServiceChange = VirshSandboxInternalStoreServiceChangeDict
+Snapshot = VirshSandboxInternalStoreSnapshotDict

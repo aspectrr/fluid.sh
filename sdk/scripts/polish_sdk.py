@@ -17,6 +17,97 @@ def load_config() -> dict:
     return {}
 
 
+def simplify_type_name(verbose_name: str) -> str:
+    """Convert verbose TypedDict names to user-friendly aliases.
+
+    Examples:
+        VirshSandboxInternalRestCreateSandboxResponseDict -> CreateSandboxResponse
+        VirshSandboxInternalStoreSandboxDict -> Sandbox
+        TmuxClientInternalTypesRunCommandResponseDict -> RunCommandResponse
+        InternalAnsibleJobDict -> AnsibleJob
+    """
+    name = verbose_name
+
+    # Remove Dict suffix first
+    if name.endswith('Dict'):
+        name = name[:-4]
+
+    # Remove common prefixes in order of specificity
+    prefixes_to_remove = [
+        'VirshSandboxInternalRest',
+        'VirshSandboxInternalStore',
+        'VirshSandboxInternal',
+        'VirshSandbox',
+        'TmuxClientInternalTypes',
+        'TmuxClientInternalApi',
+        'TmuxClientInternal',
+        'TmuxClient',
+        'InternalRest',
+        'InternalApi',
+        'InternalStore',
+        'Internal',
+    ]
+
+    for prefix in prefixes_to_remove:
+        if name.startswith(prefix):
+            name = name[len(prefix):]
+            break
+
+    # Handle edge cases where name might be empty or start with lowercase
+    if not name or not name[0].isupper():
+        # Fall back to a reasonable extraction
+        name = verbose_name.replace('Dict', '')
+
+    return name
+
+
+def generate_simplified_aliases(models: dict) -> dict[str, str]:
+    """Generate a mapping from verbose TypedDict names to simplified aliases.
+
+    Returns:
+        Dict mapping verbose_name -> simplified_name
+        Handles collisions by preferring longer/more specific model names,
+        since those are typically the ones used in API return types.
+    """
+    # Filter to only non-request, non-query, non-enum models (same as topological_sort_models)
+    filtered_models = {
+        name: info for name, info in models.items()
+        if not name.endswith('Request')
+        and not name.endswith('Query')
+        and not is_enum_model(name, models)
+    }
+
+    # Get all model names to avoid collisions with existing exports
+    all_model_names = set(models.keys())
+
+    verbose_to_simple: dict[str, str] = {}
+    simple_to_verbose: dict[str, str] = {}  # Track collisions
+
+    # Sort by length descending, then alphabetically
+    # This ensures longer/more specific names (like VirshSandbox... or TmuxClient...)
+    # get priority over shorter duplicates
+    sorted_names = sorted(filtered_models.keys(), key=lambda x: (-len(x), x))
+
+    for verbose_name in sorted_names:
+        verbose_dict_name = f"{verbose_name}Dict"
+        simple_name = simplify_type_name(verbose_dict_name)
+
+        # Skip if simple name collides with an existing model class name
+        if simple_name in all_model_names:
+            # Collision with model class - use "Dict" suffix to disambiguate
+            simple_name = f"{simple_name}Dict"
+
+        # Handle collisions between TypedDict aliases
+        if simple_name in simple_to_verbose:
+            # Collision detected - skip the shorter duplicate
+            continue
+
+        verbose_to_simple[verbose_dict_name] = simple_name
+        simple_to_verbose[simple_name] = verbose_dict_name
+
+    return verbose_to_simple
+
+
 def is_async_enabled() -> bool:
     """Check if async mode is enabled in the config."""
     config = load_config()
@@ -488,17 +579,27 @@ def generate_typed_dict(class_name: str, fields: list, models: dict) -> str:
     return "\n".join(lines)
 
 
-def get_return_type_as_typed_dict(return_type: str, models: dict) -> str:
-    """Convert a return type to use TypedDict instead of the model class."""
+def get_return_type_as_typed_dict(return_type: str, models: dict, aliases: dict[str, str] = None) -> str:
+    """Convert a return type to use TypedDict instead of the model class.
+
+    Args:
+        return_type: The original return type from the API method
+        models: Dictionary of all discovered models
+        aliases: Optional mapping from verbose TypedDict names to simplified aliases
+    """
     if return_type == "None":
         return "None"
+
+    aliases = aliases or {}
 
     # Handle List[ModelType]
     list_match = re.match(r'List\[(\w+)\]', return_type)
     if list_match:
         inner_type = list_match.group(1)
         if inner_type in models:
-            return f"List[{inner_type}Dict]"
+            verbose_name = f"{inner_type}Dict"
+            simple_name = aliases.get(verbose_name, verbose_name)
+            return f"List[{simple_name}]"
         return f"List[Dict[str, Any]]"
 
     # Handle single model types
@@ -507,7 +608,9 @@ def get_return_type_as_typed_dict(return_type: str, models: dict) -> str:
     if type_match:
         base_type = type_match.group(1)
         if base_type in models:
-            return f"{base_type}Dict"
+            verbose_name = f"{base_type}Dict"
+            simple_name = aliases.get(verbose_name, verbose_name)
+            return simple_name
 
     # Fallback for Dict types or unknown types
     if return_type.startswith("Dict["):
@@ -516,9 +619,10 @@ def get_return_type_as_typed_dict(return_type: str, models: dict) -> str:
     return "Dict[str, Any]"
 
 
-def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = True) -> str:
+def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = True, aliases: dict[str, str] = None) -> str:
     """Generate a wrapper method with flattened parameters."""
     lines = []
+    aliases = aliases or {}
 
     # Get request fields if applicable
     request_fields = []
@@ -543,7 +647,7 @@ def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = 
     # Method signature
     # Determine the appropriate return type hint based on the original return type
     # Use named TypedDict types with docstrings for IDE hover support
-    return_type_hint = get_return_type_as_typed_dict(method.return_type, models)
+    return_type_hint = get_return_type_as_typed_dict(method.return_type, models, aliases)
     def_keyword = "async def" if use_async else "def"
     if all_params:
         params_str = ",\n        ".join(all_params)
@@ -648,6 +752,10 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     apis = discover_apis(sdk_dir)
     models = discover_models(sdk_dir)
 
+    # Generate simplified type aliases for better IDE experience
+    aliases = generate_simplified_aliases(models)
+    print(f"Generated {len(aliases)} type aliases for IDE autocomplete")
+
     # Which APIs use tmux host
     tmux_api_properties = {"command", "file", "tmux", "audit", "health", "human", "plan"}
 
@@ -713,7 +821,7 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
         lines.append("")
 
         for method in api['methods']:
-            method_code = generate_wrapper_method(method, models, use_async=use_async)
+            method_code = generate_wrapper_method(method, models, use_async=use_async, aliases=aliases)
             lines.append(method_code)
 
         wrapper_classes.append("\n".join(lines))
@@ -722,6 +830,8 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     output_lines = []
 
     output_lines.append('# coding: utf-8')
+    output_lines.append('')
+    output_lines.append('from __future__ import annotations')
     output_lines.append('')
     output_lines.append('"""')
     output_lines.append('Unified VirshSandbox Client')
@@ -948,36 +1058,84 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
         output_lines.append('        """Context manager exit."""')
         output_lines.append('        self.close()')
 
+    # Add simplified type aliases for better IDE experience
+    output_lines.append('')
+    output_lines.append('')
+    output_lines.append('# User-friendly type aliases for IDE autocomplete')
+    output_lines.append('# These provide shorter names for the TypedDict response types')
+    for verbose_name, simple_name in sorted(aliases.items()):
+        output_lines.append(f'{simple_name} = {verbose_name}')
+
     # Write the file
     client_path = sdk_dir / "client.py"
     client_path.write_text("\n".join(output_lines))
     print(f"Generated unified client: {client_path}")
 
+    # Return aliases for use in updating __init__.py
+    return aliases
 
-def update_init_file(sdk_dir: Path, package_name: str = "virsh_sandbox"):
-    """Update __init__.py to export VirshSandbox."""
+
+def update_init_file(sdk_dir: Path, package_name: str = "virsh_sandbox", aliases: dict[str, str] = None):
+    """Update __init__.py to export VirshSandbox and type aliases."""
+    aliases = aliases or {}
     init_path = sdk_dir / "__init__.py"
     content = init_path.read_text()
 
-    if f"from {package_name}.client import VirshSandbox" in content:
-        print("VirshSandbox already exported in __init__.py")
-        return
+    # Check if VirshSandbox is already exported
+    needs_virsh_sandbox = f"from {package_name}.client import VirshSandbox" not in content
 
-    content = content.replace(
-        '__all__ = [',
-        '__all__ = [\n    "VirshSandbox",'
+    # Build the list of type alias names to export
+    alias_names = sorted(set(aliases.values()))
+
+    # Check if we need to add type aliases (look for any existing alias)
+    needs_type_aliases = alias_names and not any(
+        f'"{alias}"' in content for alias in alias_names[:3]  # Check first few
     )
 
-    if "# import apis into sdk package" in content:
+    if not needs_virsh_sandbox and not needs_type_aliases:
+        print("VirshSandbox and type aliases already exported in __init__.py")
+        return
+
+    # Add type alias names to __all__ list
+    if alias_names and needs_type_aliases:
+        # Add all type alias names to __all__
+        alias_exports = ',\n    '.join(f'"{name}"' for name in alias_names)
         content = content.replace(
-            "# import apis into sdk package",
-            f"# import unified client\nfrom {package_name}.client import VirshSandbox as VirshSandbox\n\n# import apis into sdk package"
+            '__all__ = [',
+            f'__all__ = [\n    {alias_exports},'
         )
-    else:
-        content += f"\n# import unified client\nfrom {package_name}.client import VirshSandbox as VirshSandbox\n"
+
+    if needs_virsh_sandbox:
+        content = content.replace(
+            '__all__ = [',
+            '__all__ = [\n    "VirshSandbox",'
+        )
+
+    # Add imports at the appropriate location
+    import_lines = []
+    if needs_virsh_sandbox:
+        import_lines.append(f"from {package_name}.client import VirshSandbox as VirshSandbox")
+
+    if needs_type_aliases and alias_names:
+        # Import all type aliases
+        aliases_import = ", ".join(alias_names)
+        import_lines.append(f"from {package_name}.client import ({aliases_import})")
+
+    if import_lines:
+        import_block = "\n".join(import_lines)
+        if "# import apis into sdk package" in content:
+            content = content.replace(
+                "# import apis into sdk package",
+                f"# import unified client and type aliases\n{import_block}\n\n# import apis into sdk package"
+            )
+        else:
+            content += f"\n# import unified client and type aliases\n{import_block}\n"
 
     init_path.write_text(content)
-    print("Updated __init__.py to export VirshSandbox")
+    if needs_virsh_sandbox:
+        print("Updated __init__.py to export VirshSandbox")
+    if needs_type_aliases:
+        print(f"Updated __init__.py to export {len(alias_names)} type aliases")
 
 
 def remove_unused_imports(sdk_dir: Path):
@@ -1074,10 +1232,10 @@ def main():
         return
 
     print("Generating unified client with flattened parameters...")
-    generate_unified_client(sdk_dir, package_name)
+    aliases = generate_unified_client(sdk_dir, package_name)
 
     print("Updating __init__.py...")
-    update_init_file(sdk_dir, package_name)
+    update_init_file(sdk_dir, package_name, aliases=aliases)
 
     print("Patching api_client.py for config compatibility...")
     patch_api_client(sdk_dir)
