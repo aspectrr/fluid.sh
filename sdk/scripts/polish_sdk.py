@@ -579,50 +579,37 @@ def generate_typed_dict(class_name: str, fields: list, models: dict) -> str:
     return "\n".join(lines)
 
 
-def get_return_type_as_typed_dict(return_type: str, models: dict, aliases: dict[str, str] = None) -> str:
-    """Convert a return type to use TypedDict instead of the model class.
+def get_return_type_for_model(return_type: str, models: dict) -> str:
+    """Get the return type, keeping the original Pydantic model class.
 
     Args:
         return_type: The original return type from the API method
         models: Dictionary of all discovered models
-        aliases: Optional mapping from verbose TypedDict names to simplified aliases
     """
     if return_type == "None":
         return "None"
 
-    aliases = aliases or {}
-
-    # Handle List[ModelType]
+    # Handle List[ModelType] - keep as is
     list_match = re.match(r'List\[(\w+)\]', return_type)
     if list_match:
         inner_type = list_match.group(1)
         if inner_type in models:
-            verbose_name = f"{inner_type}Dict"
-            simple_name = aliases.get(verbose_name, verbose_name)
-            return f"List[{simple_name}]"
-        return f"List[Dict[str, Any]]"
+            return f"List[{inner_type}]"
+        return return_type
 
-    # Handle single model types
-    # Extract the base type name (remove Optional wrapper if present)
+    # Handle single model types - keep the model class name
     type_match = re.match(r'(?:Optional\[)?(\w+)(?:\])?', return_type)
     if type_match:
         base_type = type_match.group(1)
         if base_type in models:
-            verbose_name = f"{base_type}Dict"
-            simple_name = aliases.get(verbose_name, verbose_name)
-            return simple_name
+            return base_type
 
-    # Fallback for Dict types or unknown types
-    if return_type.startswith("Dict["):
-        return "Dict[str, Any]"
-
-    return "Dict[str, Any]"
+    return return_type
 
 
-def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = True, aliases: dict[str, str] = None) -> str:
-    """Generate a wrapper method with flattened parameters."""
+def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = True) -> str:
+    """Generate a wrapper method with flattened parameters that returns Pydantic models."""
     lines = []
-    aliases = aliases or {}
 
     # Get request fields if applicable
     request_fields = []
@@ -644,10 +631,8 @@ def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = 
         field_type = simplify_type(field.type_hint)
         all_params.append(f"{field.name}: Optional[{field_type}] = None")
 
-    # Method signature
-    # Determine the appropriate return type hint based on the original return type
-    # Use named TypedDict types with docstrings for IDE hover support
-    return_type_hint = get_return_type_as_typed_dict(method.return_type, models, aliases)
+    # Method signature - use the original Pydantic model as return type
+    return_type_hint = get_return_type_for_model(method.return_type, models)
     def_keyword = "async def" if use_async else "def"
     if all_params:
         params_str = ",\n        ".join(all_params)
@@ -669,32 +654,12 @@ def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = 
             desc = field.description or field.name
             lines.append(f"            {field.name}: {desc}")
 
-    # Add Returns section with dict keys for better hover documentation
+    # Add Returns section
     if method.return_type != "None":
         lines.append("")
         lines.append("        Returns:")
-        # Extract the model name from return type
-        list_match = re.match(r'List\[(\w+)\]', method.return_type)
-        type_match = re.match(r'(?:Optional\[)?(\w+)(?:\])?', method.return_type)
-
-        if list_match:
-            model_name = list_match.group(1)
-            lines.append(f"            List of dicts with keys:")
-        elif type_match:
-            model_name = type_match.group(1)
-            lines.append(f"            Dict with keys:")
-        else:
-            model_name = None
-
-        if model_name and model_name in models:
-            model_info = models[model_name]
-            for field in model_info.get('fields', []):
-                field_type = simplify_type(field.type_hint)
-                desc = field.description if field.description else ""
-                if desc:
-                    lines.append(f"                - {field.name} ({field_type}): {desc}")
-                else:
-                    lines.append(f"                - {field.name} ({field_type})")
+        lines.append(f"            {return_type_hint}: Pydantic model with full IDE autocomplete.")
+        lines.append("            Call .model_dump() to convert to dict if needed.")
 
     lines.append('        """')
 
@@ -720,24 +685,14 @@ def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = 
             lines.append(f"        request = {method.request_type}()")
             call_args.append("request=request")
 
-        # Don't wrap with _to_dict if method returns None
-        if method.return_type == 'None':
+        # Return the Pydantic model directly (no _to_dict conversion)
+        lines.append(f"        return {await_keyword}self._api.{method.name}({', '.join(call_args)})")
+    else:
+        # No request object needed - return model directly
+        if call_args:
             lines.append(f"        return {await_keyword}self._api.{method.name}({', '.join(call_args)})")
         else:
-            lines.append(f"        return _to_dict({await_keyword}self._api.{method.name}({', '.join(call_args)}))")
-    else:
-        # No request object needed
-        # Don't wrap with _to_dict if method returns None
-        if method.return_type == 'None':
-            if call_args:
-                lines.append(f"        return {await_keyword}self._api.{method.name}({', '.join(call_args)})")
-            else:
-                lines.append(f"        return {await_keyword}self._api.{method.name}()")
-        else:
-            if call_args:
-                lines.append(f"        return _to_dict({await_keyword}self._api.{method.name}({', '.join(call_args)}))")
-            else:
-                lines.append(f"        return _to_dict({await_keyword}self._api.{method.name}())")
+            lines.append(f"        return {await_keyword}self._api.{method.name}()")
 
     lines.append("")
     return "\n".join(lines)
@@ -751,10 +706,6 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
 
     apis = discover_apis(sdk_dir)
     models = discover_models(sdk_dir)
-
-    # Generate simplified type aliases for better IDE experience
-    aliases = generate_simplified_aliases(models)
-    print(f"Generated {len(aliases)} type aliases for IDE autocomplete")
 
     # Which APIs use tmux host
     tmux_api_properties = {"command", "file", "tmux", "audit", "health", "human", "plan"}
@@ -821,7 +772,7 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
         lines.append("")
 
         for method in api['methods']:
-            method_code = generate_wrapper_method(method, models, use_async=use_async, aliases=aliases)
+            method_code = generate_wrapper_method(method, models, use_async=use_async)
             lines.append(method_code)
 
         wrapper_classes.append("\n".join(lines))
@@ -856,9 +807,7 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
         output_lines.append('    client.command.run_command(command="ls", args=["-la"])')
     output_lines.append('"""')
     output_lines.append('')
-    output_lines.append('from typing import Any, Dict, List, Optional, Tuple, Union')
-    output_lines.append('')
-    output_lines.append('from typing_extensions import TypedDict')
+    output_lines.append('from typing import Dict, List, Optional')
     output_lines.append('')
     output_lines.append(f'from {package_name}.api_client import ApiClient')
     output_lines.append(f'from {package_name}.configuration import Configuration')
@@ -869,46 +818,6 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     for imp in sorted(model_imports):
         output_lines.append(imp)
 
-    output_lines.append('')
-    output_lines.append('')
-
-    # Generate TypedDict classes for all response models
-    # Use topological sort so dependencies are defined before dependents
-    # This allows IDEs to show field information on hover without forward references
-    output_lines.append('# TypedDict definitions for response types')
-    sorted_model_names = topological_sort_models(models)
-    for model_name in sorted_model_names:
-        model_info = models[model_name]
-        typed_dict_code = generate_typed_dict(model_name, model_info['fields'], models)
-        output_lines.append(typed_dict_code)
-        output_lines.append('')
-
-    output_lines.append('')
-
-    # Add _to_dict helper function
-    output_lines.append('def _to_dict(obj: Any) -> Any:')
-    output_lines.append('    """Convert a response object to a dictionary.')
-    output_lines.append('')
-    output_lines.append('    This helper function handles the conversion of API response objects')
-    output_lines.append('    to dictionaries for easier consumption.')
-    output_lines.append('')
-    output_lines.append('    Args:')
-    output_lines.append('        obj: The object to convert. Can be None, a dict, a list,')
-    output_lines.append('             a response object with to_dict() method, or a primitive.')
-    output_lines.append('')
-    output_lines.append('    Returns:')
-    output_lines.append('        The converted dictionary, list of dictionaries, or the original')
-    output_lines.append('        value if it\'s already a dict/primitive.')
-    output_lines.append('    """')
-    output_lines.append('    if obj is None:')
-    output_lines.append('        return None')
-    output_lines.append('    if isinstance(obj, dict):')
-    output_lines.append('        return obj')
-    output_lines.append('    if isinstance(obj, list):')
-    output_lines.append('        return [_to_dict(item) for item in obj]')
-    output_lines.append('    if hasattr(obj, "to_dict"):')
-    output_lines.append('        return obj.to_dict()')
-    output_lines.append('    return obj')
     output_lines.append('')
     output_lines.append('')
 
@@ -1058,84 +967,36 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
         output_lines.append('        """Context manager exit."""')
         output_lines.append('        self.close()')
 
-    # Add simplified type aliases for better IDE experience
-    output_lines.append('')
-    output_lines.append('')
-    output_lines.append('# User-friendly type aliases for IDE autocomplete')
-    output_lines.append('# These provide shorter names for the TypedDict response types')
-    for verbose_name, simple_name in sorted(aliases.items()):
-        output_lines.append(f'{simple_name} = {verbose_name}')
-
     # Write the file
     client_path = sdk_dir / "client.py"
     client_path.write_text("\n".join(output_lines))
     print(f"Generated unified client: {client_path}")
 
-    # Return aliases for use in updating __init__.py
-    return aliases
 
-
-def update_init_file(sdk_dir: Path, package_name: str = "virsh_sandbox", aliases: dict[str, str] = None):
-    """Update __init__.py to export VirshSandbox and type aliases."""
-    aliases = aliases or {}
+def update_init_file(sdk_dir: Path, package_name: str = "virsh_sandbox"):
+    """Update __init__.py to export VirshSandbox."""
     init_path = sdk_dir / "__init__.py"
     content = init_path.read_text()
 
-    # Check if VirshSandbox is already exported
-    needs_virsh_sandbox = f"from {package_name}.client import VirshSandbox" not in content
-
-    # Build the list of type alias names to export
-    alias_names = sorted(set(aliases.values()))
-
-    # Check if we need to add type aliases (look for any existing alias)
-    needs_type_aliases = alias_names and not any(
-        f'"{alias}"' in content for alias in alias_names[:3]  # Check first few
-    )
-
-    if not needs_virsh_sandbox and not needs_type_aliases:
-        print("VirshSandbox and type aliases already exported in __init__.py")
+    if f"from {package_name}.client import VirshSandbox" in content:
+        print("VirshSandbox already exported in __init__.py")
         return
 
-    # Add type alias names to __all__ list
-    if alias_names and needs_type_aliases:
-        # Add all type alias names to __all__
-        alias_exports = ',\n    '.join(f'"{name}"' for name in alias_names)
+    content = content.replace(
+        '__all__ = [',
+        '__all__ = [\n    "VirshSandbox",'
+    )
+
+    if "# import apis into sdk package" in content:
         content = content.replace(
-            '__all__ = [',
-            f'__all__ = [\n    {alias_exports},'
+            "# import apis into sdk package",
+            f"# import unified client\nfrom {package_name}.client import VirshSandbox as VirshSandbox\n\n# import apis into sdk package"
         )
-
-    if needs_virsh_sandbox:
-        content = content.replace(
-            '__all__ = [',
-            '__all__ = [\n    "VirshSandbox",'
-        )
-
-    # Add imports at the appropriate location
-    import_lines = []
-    if needs_virsh_sandbox:
-        import_lines.append(f"from {package_name}.client import VirshSandbox as VirshSandbox")
-
-    if needs_type_aliases and alias_names:
-        # Import all type aliases
-        aliases_import = ", ".join(alias_names)
-        import_lines.append(f"from {package_name}.client import ({aliases_import})")
-
-    if import_lines:
-        import_block = "\n".join(import_lines)
-        if "# import apis into sdk package" in content:
-            content = content.replace(
-                "# import apis into sdk package",
-                f"# import unified client and type aliases\n{import_block}\n\n# import apis into sdk package"
-            )
-        else:
-            content += f"\n# import unified client and type aliases\n{import_block}\n"
+    else:
+        content += f"\n# import unified client\nfrom {package_name}.client import VirshSandbox as VirshSandbox\n"
 
     init_path.write_text(content)
-    if needs_virsh_sandbox:
-        print("Updated __init__.py to export VirshSandbox")
-    if needs_type_aliases:
-        print(f"Updated __init__.py to export {len(alias_names)} type aliases")
+    print("Updated __init__.py to export VirshSandbox")
 
 
 def remove_unused_imports(sdk_dir: Path):
@@ -1232,10 +1093,10 @@ def main():
         return
 
     print("Generating unified client with flattened parameters...")
-    aliases = generate_unified_client(sdk_dir, package_name)
+    generate_unified_client(sdk_dir, package_name)
 
     print("Updating __init__.py...")
-    update_init_file(sdk_dir, package_name, aliases=aliases)
+    update_init_file(sdk_dir, package_name)
 
     print("Patching api_client.py for config compatibility...")
     patch_api_client(sdk_dir)
