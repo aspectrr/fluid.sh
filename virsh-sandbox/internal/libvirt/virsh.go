@@ -733,7 +733,13 @@ func renderDomainXML(p domainXMLParams) (string, error) {
     <pae/>
 {{- end }}
   </features>
+{{- if and (eq .Arch "aarch64") (eq .DomainType "qemu") }}
+  <cpu mode="custom" match="exact"ls -la /var/lib/libvirt/images/>
+    <model fallback="allow">cortex-a72</model>
+  </cpu>
+{{- else }}
   <cpu mode="host-passthrough"/>
+{{- end }}
   <devices>
     <disk type="file" device="disk">
       <driver name="qemu" type="qcow2" cache="none"/>

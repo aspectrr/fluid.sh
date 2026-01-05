@@ -4,9 +4,6 @@ AI Agent for working on sys-admin tasks using the virsh-sandbox API.
 This agent uses OpenAI's function calling to interact with the
 virsh-sandbox API through a set of defined tools.
 """
-import re
-import uuid
-
 import json
 import time
 from uuid import uuid4
@@ -15,7 +12,6 @@ from virsh_sandbox import VirshSandbox, ApiException
 from openai import OpenAI
 from dotenv import load_dotenv
 from pprint import pprint
-import configuration
 from uuid import uuid4
 from tools import TOOLS
 
@@ -219,22 +215,23 @@ def main():
     print("=" * 50)
 
     sandbox = None
-    session = None
     agent_id = str(uuid4())
     try:
 
-        sandbox = client.sandbox.create_sandbox(source_vm_name="test-vm", agent_id=agent_id)
+        sandbox = client.sandbox.create_sandbox(source_vm_name="test-vm", agent_id=agent_id, auto_start=True).sandbox
+        print("Sandbox Created:")
         pprint(sandbox)
 
-        run_agent(
-            "Run the command 'ls -l' on the sandbox.", sandbox["sandbox"]["id"]
-        )
+        if(sandbox):
+            run_agent(
+                "Run the command 'ls -l'", sandbox.id
+            )
     except Exception as e:
         print(f"Error: {e}")
     finally:
-        if(sandbox):
+        if(sandbox and sandbox.id):
             print("Cleaning up sandbox...")
-            client.sandbox.destroy_sandbox(id=sandbox["sandbox"]["id"])
+            client.sandbox.destroy_sandbox(id=sandbox.id)
 
 
 # ---------------------------
