@@ -20,6 +20,8 @@ Example:
 
 from typing import Dict, List, Optional
 
+from virsh_sandbox.api_client import ApiClient
+from virsh_sandbox.configuration import Configuration
 from virsh_sandbox.api.access_api import AccessApi
 from virsh_sandbox.api.ansible_api import AnsibleApi
 from virsh_sandbox.api.audit_api import AuditApi
@@ -757,7 +759,7 @@ class FileOperations:
         Args:
             content: content
             create_dir: Create parent directories if needed
-            mode: e.g., \
+            mode: e.g., 
             overwrite: Must be true to overwrite existing
             path: path
 
@@ -809,12 +811,12 @@ class HumanOperations:
         """Request human approval
 
         Args:
-            action_type: Category: \
+            action_type: Category: 
             alternatives: Suggested alternative actions
             context: Additional context
             prompt: Human-readable description
             timeout_secs: Auto-reject after timeout, 0 = no timeout
-            urgency: \
+            urgency: "low
 
         Returns:
             TmuxClientInternalTypesAskHumanResponse: Pydantic model with full IDE autocomplete.
@@ -842,12 +844,12 @@ class HumanOperations:
         """Request human approval asynchronously
 
         Args:
-            action_type: Category: \
+            action_type: Category: 
             alternatives: Suggested alternative actions
             context: Additional context
             prompt: Human-readable description
             timeout_secs: Auto-reject after timeout, 0 = no timeout
-            urgency: \
+            urgency: "low
 
         Returns:
             Dict[str, str]: Pydantic model with full IDE autocomplete.
@@ -1250,7 +1252,7 @@ class SandboxOperations:
         Args:
             id: str
             public_key: required
-            username: required (explicit); typical: \
+            username: required (explicit); typical: 
         """
         request = InternalRestInjectSSHKeyRequest(
             public_key=public_key,
@@ -1589,7 +1591,7 @@ class TmuxOperations:
         """Send keys to tmux pane
 
         Args:
-            key: Must be from approved list: \
+            key: Must be from approved list: 
             pane_id: pane_id
 
         Returns:
@@ -1635,6 +1637,7 @@ class VMsOperations:
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.list_virtual_machines()
+
 
 
 class VirshSandbox:
@@ -1816,10 +1819,10 @@ class VirshSandbox:
 
     def close(self) -> None:
         """Close the API client connections."""
-        if hasattr(self._main_api_client.rest_client, "close"):
+        if hasattr(self._main_api_client.rest_client, 'close'):
             self._main_api_client.rest_client.close()
         if self._tmux_api_client is not self._main_api_client:
-            if hasattr(self._tmux_api_client.rest_client, "close"):
+            if hasattr(self._tmux_api_client.rest_client, 'close'):
                 self._tmux_api_client.rest_client.close()
 
     def __enter__(self) -> "VirshSandbox":
@@ -1829,3 +1832,74 @@ class VirshSandbox:
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """Context manager exit."""
         self.close()
+
+
+# User-friendly type aliases for IDE autocomplete
+# These provide shorter names for the TypedDict response types
+TimeDurationDict = TimeDurationDict
+CreateSandboxSessionResponse = TmuxClientInternalApiCreateSandboxSessionResponseDict
+ListSandboxSessionsResponse = TmuxClientInternalApiListSandboxSessionsResponseDict
+SandboxSessionInfo = TmuxClientInternalApiSandboxSessionInfoDict
+APIError = TmuxClientInternalTypesAPIErrorDict
+AskHumanResponse = TmuxClientInternalTypesAskHumanResponseDict
+AuditEntry = TmuxClientInternalTypesAuditEntryDict
+AuditQueryResponse = TmuxClientInternalTypesAuditQueryResponseDict
+ComponentHealth = TmuxClientInternalTypesComponentHealthDict
+CopyFileResponse = TmuxClientInternalTypesCopyFileResponseDict
+CreatePaneResponse = TmuxClientInternalTypesCreatePaneResponseDict
+CreatePlanResponse = TmuxClientInternalTypesCreatePlanResponseDict
+DeleteFileResponse = TmuxClientInternalTypesDeleteFileResponseDict
+EditFileResponse = TmuxClientInternalTypesEditFileResponseDict
+FileInfo = TmuxClientInternalTypesFileInfoDict
+GetPlanResponse = TmuxClientInternalTypesGetPlanResponseDict
+HealthResponse = TmuxClientInternalTypesHealthResponseDict
+KillSessionResponse = TmuxClientInternalTypesKillSessionResponseDict
+ListApprovalsResponse = TmuxClientInternalTypesListApprovalsResponseDict
+ListDirResponse = TmuxClientInternalTypesListDirResponseDict
+ListPanesResponse = TmuxClientInternalTypesListPanesResponseDict
+ListPlansResponse = TmuxClientInternalTypesListPlansResponseDict
+PaneInfo = TmuxClientInternalTypesPaneInfoDict
+PendingApproval = TmuxClientInternalTypesPendingApprovalDict
+Plan = TmuxClientInternalTypesPlanDict
+PlanStep = TmuxClientInternalTypesPlanStepDict
+ReadFileResponse = TmuxClientInternalTypesReadFileResponseDict
+ReadPaneResponse = TmuxClientInternalTypesReadPaneResponseDict
+SendKeysResponse = TmuxClientInternalTypesSendKeysResponseDict
+SessionInfo = TmuxClientInternalTypesSessionInfoDict
+SwitchPaneResponse = TmuxClientInternalTypesSwitchPaneResponseDict
+UpdatePlanResponse = TmuxClientInternalTypesUpdatePlanResponseDict
+WindowInfo = TmuxClientInternalTypesWindowInfoDict
+WriteFileResponse = TmuxClientInternalTypesWriteFileResponseDict
+AnsibleJob = VirshSandboxInternalAnsibleJobDict
+AnsibleJobResponse = VirshSandboxInternalAnsibleJobResponseDict
+ErrorErrorResponse = VirshSandboxInternalErrorErrorResponseDict
+AccessErrorResponse = VirshSandboxInternalRestAccessErrorResponseDict
+CaPublicKeyResponse = VirshSandboxInternalRestCaPublicKeyResponseDict
+CertificateResponse = VirshSandboxInternalRestCertificateResponseDict
+CreateSandboxResponse = VirshSandboxInternalRestCreateSandboxResponseDict
+DestroySandboxResponse = VirshSandboxInternalRestDestroySandboxResponseDict
+DiffResponse = VirshSandboxInternalRestDiffResponseDict
+ErrorResponse = VirshSandboxInternalRestErrorResponseDict
+GenerateResponse = VirshSandboxInternalRestGenerateResponseDict
+ListCertificatesResponse = VirshSandboxInternalRestListCertificatesResponseDict
+ListSandboxesResponse = VirshSandboxInternalRestListSandboxesResponseDict
+ListSessionsResponse = VirshSandboxInternalRestListSessionsResponseDict
+ListVMsResponse = VirshSandboxInternalRestListVMsResponseDict
+PublishResponse = VirshSandboxInternalRestPublishResponseDict
+RequestAccessResponse = VirshSandboxInternalRestRequestAccessResponseDict
+RunCommandResponse = VirshSandboxInternalRestRunCommandResponseDict
+SandboxInfo = VirshSandboxInternalRestSandboxInfoDict
+SessionResponse = VirshSandboxInternalRestSessionResponseDict
+SessionStartResponse = VirshSandboxInternalRestSessionStartResponseDict
+SnapshotResponse = VirshSandboxInternalRestSnapshotResponseDict
+StartSandboxResponse = VirshSandboxInternalRestStartSandboxResponseDict
+VmInfo = VirshSandboxInternalRestVmInfoDict
+ChangeDiff = VirshSandboxInternalStoreChangeDiffDict
+Command = VirshSandboxInternalStoreCommandDict
+CommandExecRecord = VirshSandboxInternalStoreCommandExecRecordDict
+CommandSummary = VirshSandboxInternalStoreCommandSummaryDict
+Diff = VirshSandboxInternalStoreDiffDict
+PackageInfo = VirshSandboxInternalStorePackageInfoDict
+Sandbox = VirshSandboxInternalStoreSandboxDict
+ServiceChange = VirshSandboxInternalStoreServiceChangeDict
+Snapshot = VirshSandboxInternalStoreSnapshotDict

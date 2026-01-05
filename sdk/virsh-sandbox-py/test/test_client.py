@@ -486,5 +486,54 @@ class TestIntegrationStyleFieldAccess(unittest.TestCase):
         self.assertEqual(item_dict["name"], "session-1")
 
 
+class TestTypeAliasExports(unittest.TestCase):
+    """Test that simplified type aliases are exported and usable."""
+
+    def test_type_aliases_importable_from_client(self) -> None:
+        """Test that type aliases can be imported from client module."""
+        from virsh_sandbox.client import (
+            CreateSandboxResponse,
+            Sandbox,
+            RunCommandResponse,
+            ListSandboxesResponse,
+            HealthResponse,
+        )
+        # Verify they are TypedDict types (or type aliases)
+        self.assertTrue(hasattr(CreateSandboxResponse, '__annotations__') or
+                       hasattr(CreateSandboxResponse, '__supertype__'))
+
+    def test_type_aliases_importable_from_package(self) -> None:
+        """Test that type aliases can be imported from main package."""
+        from virsh_sandbox import (
+            CreateSandboxResponse,
+            Sandbox,
+            RunCommandResponse,
+            ListSandboxesResponse,
+            HealthResponse,
+        )
+        # Verify they exist
+        self.assertIsNotNone(CreateSandboxResponse)
+        self.assertIsNotNone(Sandbox)
+
+    def test_sandbox_type_has_expected_keys(self) -> None:
+        """Test that Sandbox TypedDict has expected keys."""
+        from virsh_sandbox.client import Sandbox
+        # TypedDict should have __annotations__ with the expected keys
+        annotations = getattr(Sandbox, '__annotations__', {})
+        expected_keys = ['id', 'agent_id', 'state', 'ip_address']
+        for key in expected_keys:
+            self.assertIn(key, annotations,
+                         f"Sandbox should have '{key}' key for autocomplete")
+
+    def test_create_sandbox_response_has_expected_keys(self) -> None:
+        """Test that CreateSandboxResponse TypedDict has expected keys."""
+        from virsh_sandbox.client import CreateSandboxResponse
+        annotations = getattr(CreateSandboxResponse, '__annotations__', {})
+        expected_keys = ['sandbox', 'ip_address']
+        for key in expected_keys:
+            self.assertIn(key, annotations,
+                         f"CreateSandboxResponse should have '{key}' key")
+
+
 if __name__ == "__main__":
     unittest.main()
