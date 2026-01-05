@@ -8,24 +8,15 @@ instead of response objects.
 """
 
 import unittest
-from unittest.mock import MagicMock, patch
 from typing import Any, Dict, List
+from unittest.mock import MagicMock, patch
 
-from virsh_sandbox.client import (
-    VirshSandbox,
-    AccessOperations,
-    AnsibleOperations,
-    AuditOperations,
-    CommandOperations,
-    FileOperations,
-    HealthOperations,
-    HumanOperations,
-    PlanOperations,
-    SandboxOperations,
-    TmuxOperations,
-    VMsOperations,
-    _to_dict,
-)
+from virsh_sandbox.client import (AccessOperations, AnsibleOperations,
+                                  AuditOperations, CommandOperations,
+                                  FileOperations, HealthOperations,
+                                  HumanOperations, PlanOperations,
+                                  SandboxOperations, TmuxOperations,
+                                  VirshSandbox, VMsOperations, _to_dict)
 
 
 class MockResponse:
@@ -391,9 +382,7 @@ class TestPlanOperations(unittest.TestCase):
 
     def test_advance_plan_step_returns_dict(self) -> None:
         """Test advance_plan_step returns dict."""
-        self.mock_api.advance_plan_step.return_value = MockResponse(
-            {"current_step": 2}
-        )
+        self.mock_api.advance_plan_step.return_value = MockResponse({"current_step": 2})
         result = self.ops.advance_plan_step(plan_id="plan-123")
         self.assertIsInstance(result, dict)
 
@@ -450,9 +439,7 @@ class TestSandboxOperations(unittest.TestCase):
                 }
             }
         )
-        result = self.ops.create_sandbox(
-            agent_id="agent-123", source_vm_name="base-vm"
-        )
+        result = self.ops.create_sandbox(agent_id="agent-123", source_vm_name="base-vm")
         self.assertIsInstance(result, dict)
         self.assertIn("sandbox", result)
         self.assertIsInstance(result["sandbox"], dict)

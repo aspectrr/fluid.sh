@@ -315,7 +315,8 @@ def discover_models(sdk_dir: Path) -> dict[str, dict]:
         class_match = re.search(r'class (\w+)\(BaseModel\):', content)
         if class_match:
             class_name = class_match.group(1)
-            fields = parse_model_fields(model_file) if 'Request' in class_name else []
+            # Parse fields for ALL models (not just Request types) to generate TypedDicts
+            fields = parse_model_fields(model_file)
             models[class_name] = {
                 'fields': fields,
                 'module': model_file.stem,
@@ -332,6 +333,187 @@ def discover_models(sdk_dir: Path) -> dict[str, dict]:
             }
 
     return models
+
+
+def get_model_dependencies(model_name: str, models: dict) -> set:
+    """Get the set of model names that a model depends on (references in its fields)."""
+    if model_name not in models:
+        return set()
+
+    deps = set()
+    model_info = models[model_name]
+    for field in model_info.get('fields', []):
+        # Extract type names from the field type hint
+        type_names = re.findall(r'([A-Z][a-zA-Z0-9_]+)', field.type_hint)
+        for type_name in type_names:
+            if type_name in models and type_name != model_name:
+                # Skip enum types as they become str
+                if not is_enum_model(type_name, models):
+                    deps.add(type_name)
+    return deps
+
+
+def topological_sort_models(models: dict) -> list:
+    """Sort models so that dependencies come before dependents."""
+    # Build dependency graph
+    # Filter to only include non-request, non-query, non-enum models
+    filtered_models = {
+        name: info for name, info in models.items()
+        if not name.endswith('Request')
+        and not name.endswith('Query')
+        and not is_enum_model(name, models)
+    }
+
+    # Calculate dependencies for each model
+    deps = {name: get_model_dependencies(name, models) for name in filtered_models}
+
+    # Kahn's algorithm for topological sort
+    result = []
+    # Count incoming edges (how many models depend on each model)
+    in_degree = {name: 0 for name in filtered_models}
+
+    for name in filtered_models:
+        for dep in deps[name]:
+            if dep in in_degree:
+                in_degree[name] += 1
+
+    # Start with models that have no dependencies
+    queue = [name for name, degree in in_degree.items() if degree == 0]
+    queue.sort()  # Sort alphabetically for deterministic output
+
+    while queue:
+        current = queue.pop(0)
+        result.append(current)
+
+        # For each model that depends on current, decrease its in-degree
+        for name in filtered_models:
+            if current in deps[name]:
+                in_degree[name] -= 1
+                if in_degree[name] == 0:
+                    # Insert in sorted order to maintain determinism
+                    queue.append(name)
+                    queue.sort()
+
+    # If there are cycles, add remaining models (shouldn't happen in practice)
+    remaining = [name for name in filtered_models if name not in result]
+    remaining.sort()
+    result.extend(remaining)
+
+    return result
+
+
+def is_enum_model(model_name: str, models: dict) -> bool:
+    """Check if a model is an enum (has no fields and name ends with Status, Kind, State, etc.)."""
+    if model_name not in models:
+        return False
+    model_info = models[model_name]
+    # Enums typically have no fields or are explicitly marked
+    # Common enum suffixes in this codebase
+    enum_suffixes = ('Status', 'Kind', 'State', 'Type')
+    return len(model_info.get('fields', [])) == 0 and any(model_name.endswith(s) for s in enum_suffixes)
+
+
+def convert_type_to_dict_type(type_hint: str, models: dict) -> str:
+    """Convert a Pydantic model type hint to its TypedDict equivalent."""
+    # Handle Optional types
+    optional_match = re.match(r'Optional\[(.+)\]', type_hint)
+    if optional_match:
+        inner = convert_type_to_dict_type(optional_match.group(1), models)
+        return f"Optional[{inner}]"
+
+    # Handle List types
+    list_match = re.match(r'List\[(.+)\]', type_hint)
+    if list_match:
+        inner = convert_type_to_dict_type(list_match.group(1), models)
+        return f"List[{inner}]"
+
+    # Handle Dict types
+    dict_match = re.match(r'Dict\[(.+),\s*(.+)\]', type_hint)
+    if dict_match:
+        key_type = convert_type_to_dict_type(dict_match.group(1), models)
+        val_type = convert_type_to_dict_type(dict_match.group(2), models)
+        return f"Dict[{key_type}, {val_type}]"
+
+    # Convert Pydantic strict types to Python types
+    type_mapping = {
+        'StrictStr': 'str',
+        'StrictInt': 'int',
+        'StrictFloat': 'float',
+        'StrictBool': 'bool',
+        'StrictBytes': 'bytes',
+    }
+    if type_hint in type_mapping:
+        return type_mapping[type_hint]
+
+    # If this is an enum model, convert to str (enums serialize to strings)
+    if is_enum_model(type_hint, models):
+        return 'str'
+
+    # If this is a model type, convert to its TypedDict version
+    # No forward reference needed since we topologically sort the TypedDicts
+    if type_hint in models:
+        return f"{type_hint}Dict"
+
+    return type_hint
+
+
+def generate_typed_dict(class_name: str, fields: list, models: dict) -> str:
+    """Generate a TypedDict class definition for a model with docstring."""
+    lines = []
+    dict_name = f"{class_name}Dict"
+    lines.append(f"class {dict_name}(TypedDict, total=False):")
+
+    # Add docstring with field descriptions for better IDE hover
+    if fields:
+        lines.append('    """')
+        lines.append(f'    Dictionary representation of {class_name}.')
+        lines.append('')
+        lines.append('    Keys:')
+        for field in fields:
+            field_type = convert_type_to_dict_type(field.type_hint, models)
+            desc = field.description if field.description else field.name
+            lines.append(f'        {field.name} ({field_type}): {desc}')
+        lines.append('    """')
+
+    if not fields:
+        lines.append("    pass")
+    else:
+        for field in fields:
+            field_type = convert_type_to_dict_type(field.type_hint, models)
+            # Make all fields optional since to_dict() excludes None values
+            if not field_type.startswith("Optional["):
+                field_type = f"Optional[{field_type}]"
+            lines.append(f"    {field.name}: {field_type}")
+
+    return "\n".join(lines)
+
+
+def get_return_type_as_typed_dict(return_type: str, models: dict) -> str:
+    """Convert a return type to use TypedDict instead of the model class."""
+    if return_type == "None":
+        return "None"
+
+    # Handle List[ModelType]
+    list_match = re.match(r'List\[(\w+)\]', return_type)
+    if list_match:
+        inner_type = list_match.group(1)
+        if inner_type in models:
+            return f"List[{inner_type}Dict]"
+        return f"List[Dict[str, Any]]"
+
+    # Handle single model types
+    # Extract the base type name (remove Optional wrapper if present)
+    type_match = re.match(r'(?:Optional\[)?(\w+)(?:\])?', return_type)
+    if type_match:
+        base_type = type_match.group(1)
+        if base_type in models:
+            return f"{base_type}Dict"
+
+    # Fallback for Dict types or unknown types
+    if return_type.startswith("Dict["):
+        return "Dict[str, Any]"
+
+    return "Dict[str, Any]"
 
 
 def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = True) -> str:
@@ -359,15 +541,18 @@ def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = 
         all_params.append(f"{field.name}: Optional[{field_type}] = None")
 
     # Method signature
+    # Determine the appropriate return type hint based on the original return type
+    # Use named TypedDict types with docstrings for IDE hover support
+    return_type_hint = get_return_type_as_typed_dict(method.return_type, models)
     def_keyword = "async def" if use_async else "def"
     if all_params:
         params_str = ",\n        ".join(all_params)
         lines.append(f"    {def_keyword} {method.name}(")
         lines.append(f"        self,")
         lines.append(f"        {params_str},")
-        lines.append(f"    ) -> {method.return_type}:")
+        lines.append(f"    ) -> {return_type_hint}:")
     else:
-        lines.append(f"    {def_keyword} {method.name}(self) -> {method.return_type}:")
+        lines.append(f"    {def_keyword} {method.name}(self) -> {return_type_hint}:")
 
     # Docstring
     lines.append(f'        """{method.docstring}')
@@ -379,6 +564,34 @@ def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = 
         for field in request_fields:
             desc = field.description or field.name
             lines.append(f"            {field.name}: {desc}")
+
+    # Add Returns section with dict keys for better hover documentation
+    if method.return_type != "None":
+        lines.append("")
+        lines.append("        Returns:")
+        # Extract the model name from return type
+        list_match = re.match(r'List\[(\w+)\]', method.return_type)
+        type_match = re.match(r'(?:Optional\[)?(\w+)(?:\])?', method.return_type)
+
+        if list_match:
+            model_name = list_match.group(1)
+            lines.append(f"            List of dicts with keys:")
+        elif type_match:
+            model_name = type_match.group(1)
+            lines.append(f"            Dict with keys:")
+        else:
+            model_name = None
+
+        if model_name and model_name in models:
+            model_info = models[model_name]
+            for field in model_info.get('fields', []):
+                field_type = simplify_type(field.type_hint)
+                desc = field.description if field.description else ""
+                if desc:
+                    lines.append(f"                - {field.name} ({field_type}): {desc}")
+                else:
+                    lines.append(f"                - {field.name} ({field_type})")
+
     lines.append('        """')
 
     # Method body - determine if we need to pass a request object
@@ -403,13 +616,24 @@ def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = 
             lines.append(f"        request = {method.request_type}()")
             call_args.append("request=request")
 
-        lines.append(f"        return {await_keyword}self._api.{method.name}({', '.join(call_args)})")
-    else:
-        # No request object needed
-        if call_args:
+        # Don't wrap with _to_dict if method returns None
+        if method.return_type == 'None':
             lines.append(f"        return {await_keyword}self._api.{method.name}({', '.join(call_args)})")
         else:
-            lines.append(f"        return {await_keyword}self._api.{method.name}()")
+            lines.append(f"        return _to_dict({await_keyword}self._api.{method.name}({', '.join(call_args)}))")
+    else:
+        # No request object needed
+        # Don't wrap with _to_dict if method returns None
+        if method.return_type == 'None':
+            if call_args:
+                lines.append(f"        return {await_keyword}self._api.{method.name}({', '.join(call_args)})")
+            else:
+                lines.append(f"        return {await_keyword}self._api.{method.name}()")
+        else:
+            if call_args:
+                lines.append(f"        return _to_dict({await_keyword}self._api.{method.name}({', '.join(call_args)}))")
+            else:
+                lines.append(f"        return _to_dict({await_keyword}self._api.{method.name}())")
 
     lines.append("")
     return "\n".join(lines)
@@ -524,6 +748,8 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     output_lines.append('')
     output_lines.append('from typing import Any, Dict, List, Optional, Tuple, Union')
     output_lines.append('')
+    output_lines.append('from typing_extensions import TypedDict')
+    output_lines.append('')
     output_lines.append(f'from {package_name}.api_client import ApiClient')
     output_lines.append(f'from {package_name}.configuration import Configuration')
 
@@ -533,6 +759,46 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     for imp in sorted(model_imports):
         output_lines.append(imp)
 
+    output_lines.append('')
+    output_lines.append('')
+
+    # Generate TypedDict classes for all response models
+    # Use topological sort so dependencies are defined before dependents
+    # This allows IDEs to show field information on hover without forward references
+    output_lines.append('# TypedDict definitions for response types')
+    sorted_model_names = topological_sort_models(models)
+    for model_name in sorted_model_names:
+        model_info = models[model_name]
+        typed_dict_code = generate_typed_dict(model_name, model_info['fields'], models)
+        output_lines.append(typed_dict_code)
+        output_lines.append('')
+
+    output_lines.append('')
+
+    # Add _to_dict helper function
+    output_lines.append('def _to_dict(obj: Any) -> Any:')
+    output_lines.append('    """Convert a response object to a dictionary.')
+    output_lines.append('')
+    output_lines.append('    This helper function handles the conversion of API response objects')
+    output_lines.append('    to dictionaries for easier consumption.')
+    output_lines.append('')
+    output_lines.append('    Args:')
+    output_lines.append('        obj: The object to convert. Can be None, a dict, a list,')
+    output_lines.append('             a response object with to_dict() method, or a primitive.')
+    output_lines.append('')
+    output_lines.append('    Returns:')
+    output_lines.append('        The converted dictionary, list of dictionaries, or the original')
+    output_lines.append('        value if it\'s already a dict/primitive.')
+    output_lines.append('    """')
+    output_lines.append('    if obj is None:')
+    output_lines.append('        return None')
+    output_lines.append('    if isinstance(obj, dict):')
+    output_lines.append('        return obj')
+    output_lines.append('    if isinstance(obj, list):')
+    output_lines.append('        return [_to_dict(item) for item in obj]')
+    output_lines.append('    if hasattr(obj, "to_dict"):')
+    output_lines.append('        return obj.to_dict()')
+    output_lines.append('    return obj')
     output_lines.append('')
     output_lines.append('')
 
