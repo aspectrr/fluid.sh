@@ -90,6 +90,7 @@ func (s *Server) routes() {
 		r.Get("/vms", s.handleListVMs)
 
 		// Sandbox lifecycle
+		r.Get("/sandboxes", s.handleListSandboxes)
 		r.Route("/sandbox", func(r chi.Router) {
 			r.Post("/create", s.handleCreateSandbox)
 
@@ -203,6 +204,25 @@ type vmInfo struct {
 
 type listVMsResponse struct {
 	VMs []vmInfo `json:"vms"`
+}
+
+type sandboxInfo struct {
+	ID          string  `json:"id"`
+	JobID       string  `json:"job_id"`
+	AgentID     string  `json:"agent_id"`
+	SandboxName string  `json:"sandbox_name"`
+	BaseImage   string  `json:"base_image"`
+	Network     string  `json:"network"`
+	IPAddress   *string `json:"ip_address,omitempty"`
+	State       string  `json:"state"`
+	TTLSeconds  *int    `json:"ttl_seconds,omitempty"`
+	CreatedAt   string  `json:"created_at"`
+	UpdatedAt   string  `json:"updated_at"`
+}
+
+type listSandboxesResponse struct {
+	Sandboxes []sandboxInfo `json:"sandboxes"`
+	Total     int           `json:"total"`
 }
 
 // --- Handlers ---
@@ -493,6 +513,92 @@ func (s *Server) handleListVMs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_ = serverJSON.RespondJSON(w, http.StatusOK, listVMsResponse{VMs: vms})
+}
+
+// @Summary List sandboxes
+// @Description Lists all sandboxes with optional filtering by agent_id, job_id, base_image, state, or vm_name
+// @Tags Sandbox
+// @Accept json
+// @Produce json
+// @Param agent_id query string false "Filter by agent ID"
+// @Param job_id query string false "Filter by job ID"
+// @Param base_image query string false "Filter by base image"
+// @Param state query string false "Filter by state (CREATED, STARTING, RUNNING, STOPPED, DESTROYED, ERROR)"
+// @Param vm_name query string false "Filter by VM name"
+// @Param limit query int false "Max results to return"
+// @Param offset query int false "Number of results to skip"
+// @Success 200 {object} listSandboxesResponse
+// @Failure 500 {object} ErrorResponse
+// @Id listSandboxes
+// @Router /v1/sandboxes [get]
+func (s *Server) handleListSandboxes(w http.ResponseWriter, r *http.Request) {
+	// Build filter from query params
+	filter := store.SandboxFilter{}
+
+	if agentID := r.URL.Query().Get("agent_id"); agentID != "" {
+		filter.AgentID = &agentID
+	}
+	if jobID := r.URL.Query().Get("job_id"); jobID != "" {
+		filter.JobID = &jobID
+	}
+	if baseImage := r.URL.Query().Get("base_image"); baseImage != "" {
+		filter.BaseImage = &baseImage
+	}
+	if stateStr := r.URL.Query().Get("state"); stateStr != "" {
+		state := store.SandboxState(stateStr)
+		filter.State = &state
+	}
+	if vmName := r.URL.Query().Get("vm_name"); vmName != "" {
+		filter.VMName = &vmName
+	}
+
+	// Build list options from query params
+	var opts *store.ListOptions
+	limitStr := r.URL.Query().Get("limit")
+	offsetStr := r.URL.Query().Get("offset")
+	if limitStr != "" || offsetStr != "" {
+		opts = &store.ListOptions{}
+		if limitStr != "" {
+			if _, err := fmt.Sscanf(limitStr, "%d", &opts.Limit); err != nil {
+				serverError.RespondError(w, http.StatusBadRequest, fmt.Errorf("invalid limit: %w", err))
+				return
+			}
+		}
+		if offsetStr != "" {
+			if _, err := fmt.Sscanf(offsetStr, "%d", &opts.Offset); err != nil {
+				serverError.RespondError(w, http.StatusBadRequest, fmt.Errorf("invalid offset: %w", err))
+				return
+			}
+		}
+	}
+
+	sandboxes, err := s.vmSvc.GetSandboxes(r.Context(), filter, opts)
+	if err != nil {
+		serverError.RespondError(w, http.StatusInternalServerError, fmt.Errorf("list sandboxes: %w", err))
+		return
+	}
+
+	result := make([]sandboxInfo, 0, len(sandboxes))
+	for _, sb := range sandboxes {
+		result = append(result, sandboxInfo{
+			ID:          sb.ID,
+			JobID:       sb.JobID,
+			AgentID:     sb.AgentID,
+			SandboxName: sb.SandboxName,
+			BaseImage:   sb.BaseImage,
+			Network:     sb.Network,
+			IPAddress:   sb.IPAddress,
+			State:       string(sb.State),
+			TTLSeconds:  sb.TTLSeconds,
+			CreatedAt:   sb.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
+			UpdatedAt:   sb.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		})
+	}
+
+	_ = serverJSON.RespondJSON(w, http.StatusOK, listSandboxesResponse{
+		Sandboxes: result,
+		Total:     len(result),
+	})
 }
 
 // @Summary Destroy sandbox

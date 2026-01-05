@@ -38,14 +38,10 @@ from virsh_sandbox.models.internal_ansible_job_request import \
     InternalAnsibleJobRequest
 from virsh_sandbox.models.internal_ansible_job_response import \
     InternalAnsibleJobResponse
-from virsh_sandbox.models.internal_api_create_sandbox_session_request import \
-    InternalApiCreateSandboxSessionRequest
-from virsh_sandbox.models.internal_api_create_sandbox_session_response import \
-    InternalApiCreateSandboxSessionResponse
-from virsh_sandbox.models.internal_api_list_sandbox_sessions_response import \
-    InternalApiListSandboxSessionsResponse
-from virsh_sandbox.models.internal_api_sandbox_session_info import \
-    InternalApiSandboxSessionInfo
+from virsh_sandbox.models.internal_rest_ca_public_key_response import \
+    InternalRestCaPublicKeyResponse
+from virsh_sandbox.models.internal_rest_certificate_response import \
+    InternalRestCertificateResponse
 from virsh_sandbox.models.internal_rest_create_sandbox_request import \
     InternalRestCreateSandboxRequest
 from virsh_sandbox.models.internal_rest_create_sandbox_response import \
@@ -56,14 +52,32 @@ from virsh_sandbox.models.internal_rest_diff_response import \
     InternalRestDiffResponse
 from virsh_sandbox.models.internal_rest_inject_ssh_key_request import \
     InternalRestInjectSSHKeyRequest
+from virsh_sandbox.models.internal_rest_list_certificates_response import \
+    InternalRestListCertificatesResponse
+from virsh_sandbox.models.internal_rest_list_sandboxes_response import \
+    InternalRestListSandboxesResponse
+from virsh_sandbox.models.internal_rest_list_sessions_response import \
+    InternalRestListSessionsResponse
 from virsh_sandbox.models.internal_rest_list_vms_response import \
     InternalRestListVMsResponse
 from virsh_sandbox.models.internal_rest_publish_request import \
     InternalRestPublishRequest
+from virsh_sandbox.models.internal_rest_request_access_request import \
+    InternalRestRequestAccessRequest
+from virsh_sandbox.models.internal_rest_request_access_response import \
+    InternalRestRequestAccessResponse
+from virsh_sandbox.models.internal_rest_revoke_certificate_request import \
+    InternalRestRevokeCertificateRequest
 from virsh_sandbox.models.internal_rest_run_command_request import \
     InternalRestRunCommandRequest
 from virsh_sandbox.models.internal_rest_run_command_response import \
     InternalRestRunCommandResponse
+from virsh_sandbox.models.internal_rest_session_end_request import \
+    InternalRestSessionEndRequest
+from virsh_sandbox.models.internal_rest_session_start_request import \
+    InternalRestSessionStartRequest
+from virsh_sandbox.models.internal_rest_session_start_response import \
+    InternalRestSessionStartResponse
 from virsh_sandbox.models.internal_rest_snapshot_request import \
     InternalRestSnapshotRequest
 from virsh_sandbox.models.internal_rest_snapshot_response import \
@@ -72,6 +86,14 @@ from virsh_sandbox.models.internal_rest_start_sandbox_request import \
     InternalRestStartSandboxRequest
 from virsh_sandbox.models.internal_rest_start_sandbox_response import \
     InternalRestStartSandboxResponse
+from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_request import \
+    TmuxClientInternalApiCreateSandboxSessionRequest
+from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_response import \
+    TmuxClientInternalApiCreateSandboxSessionResponse
+from virsh_sandbox.models.tmux_client_internal_api_list_sandbox_sessions_response import \
+    TmuxClientInternalApiListSandboxSessionsResponse
+from virsh_sandbox.models.tmux_client_internal_api_sandbox_session_info import \
+    TmuxClientInternalApiSandboxSessionInfo
 from virsh_sandbox.models.tmux_client_internal_types_approve_request import \
     TmuxClientInternalTypesApproveRequest
 from virsh_sandbox.models.tmux_client_internal_types_ask_human_request import \
@@ -154,26 +176,6 @@ from virsh_sandbox.models.tmux_client_internal_types_write_file_request import \
     TmuxClientInternalTypesWriteFileRequest
 from virsh_sandbox.models.tmux_client_internal_types_write_file_response import \
     TmuxClientInternalTypesWriteFileResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_ca_public_key_response import \
-    VirshSandboxInternalRestCaPublicKeyResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_certificate_response import \
-    VirshSandboxInternalRestCertificateResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_list_certificates_response import \
-    VirshSandboxInternalRestListCertificatesResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sessions_response import \
-    VirshSandboxInternalRestListSessionsResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_request_access_request import \
-    VirshSandboxInternalRestRequestAccessRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_request_access_response import \
-    VirshSandboxInternalRestRequestAccessResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_revoke_certificate_request import \
-    VirshSandboxInternalRestRevokeCertificateRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_session_end_request import \
-    VirshSandboxInternalRestSessionEndRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_session_start_request import \
-    VirshSandboxInternalRestSessionStartRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_session_start_response import \
-    VirshSandboxInternalRestSessionStartResponse
 
 
 # TypedDict definitions for response types
@@ -272,6 +274,34 @@ class InternalApiListSandboxSessionsResponseDict(TypedDict, total=False):
     total: Optional[int]
 
 
+class InternalRestAccessErrorResponseDict(TypedDict, total=False):
+    """
+    Dictionary representation of InternalRestAccessErrorResponse.
+
+    Keys:
+        code (int): code
+        details (str): details
+        error (str): error
+    """
+
+    code: Optional[int]
+    details: Optional[str]
+    error: Optional[str]
+
+
+class InternalRestCaPublicKeyResponseDict(TypedDict, total=False):
+    """
+    Dictionary representation of InternalRestCaPublicKeyResponse.
+
+    Keys:
+        public_key (str): PublicKey is the CA public key in OpenSSH format.
+        usage (str): Usage explains how to use this key.
+    """
+
+    public_key: Optional[str]
+    usage: Optional[str]
+
+
 class InternalRestCertificateResponseDict(TypedDict, total=False):
     """
     Dictionary representation of InternalRestCertificateResponse.
@@ -335,6 +365,19 @@ class InternalRestGenerateResponseDict(TypedDict, total=False):
     note: Optional[str]
 
 
+class InternalRestListCertificatesResponseDict(TypedDict, total=False):
+    """
+    Dictionary representation of InternalRestListCertificatesResponse.
+
+    Keys:
+        certificates (List[InternalRestCertificateResponseDict]): certificates
+        total (int): total
+    """
+
+    certificates: Optional[List[InternalRestCertificateResponseDict]]
+    total: Optional[int]
+
+
 class InternalRestPublishResponseDict(TypedDict, total=False):
     """
     Dictionary representation of InternalRestPublishResponse.
@@ -346,6 +389,77 @@ class InternalRestPublishResponseDict(TypedDict, total=False):
 
     message: Optional[str]
     note: Optional[str]
+
+
+class InternalRestRequestAccessResponseDict(TypedDict, total=False):
+    """
+    Dictionary representation of InternalRestRequestAccessResponse.
+
+    Keys:
+        certificate (str): Certificate is the SSH certificate content (save as key-cert.pub).
+        certificate_id (str): CertificateID is the ID of the issued certificate.
+        connect_command (str): ConnectCommand is an example SSH command for connecting.
+        instructions (str): Instructions provides usage instructions.
+        ssh_port (int): SSHPort is the SSH port (usually 22).
+        ttl_seconds (int): TTLSeconds is the remaining validity in seconds.
+        username (str): Username is the SSH username to use.
+        valid_until (str): ValidUntil is when the certificate expires (RFC3339).
+        vm_ip_address (str): VMIPAddress is the IP address of the sandbox VM.
+    """
+
+    certificate: Optional[str]
+    certificate_id: Optional[str]
+    connect_command: Optional[str]
+    instructions: Optional[str]
+    ssh_port: Optional[int]
+    ttl_seconds: Optional[int]
+    username: Optional[str]
+    valid_until: Optional[str]
+    vm_ip_address: Optional[str]
+
+
+class InternalRestSandboxInfoDict(TypedDict, total=False):
+    """
+    Dictionary representation of InternalRestSandboxInfo.
+
+    Keys:
+        agent_id (str): agent_id
+        base_image (str): base_image
+        created_at (str): created_at
+        id (str): id
+        ip_address (str): ip_address
+        job_id (str): job_id
+        network (str): network
+        sandbox_name (str): sandbox_name
+        state (str): state
+        ttl_seconds (int): ttl_seconds
+        updated_at (str): updated_at
+    """
+
+    agent_id: Optional[str]
+    base_image: Optional[str]
+    created_at: Optional[str]
+    id: Optional[str]
+    ip_address: Optional[str]
+    job_id: Optional[str]
+    network: Optional[str]
+    sandbox_name: Optional[str]
+    state: Optional[str]
+    ttl_seconds: Optional[int]
+    updated_at: Optional[str]
+
+
+class InternalRestListSandboxesResponseDict(TypedDict, total=False):
+    """
+    Dictionary representation of InternalRestListSandboxesResponse.
+
+    Keys:
+        sandboxes (List[InternalRestSandboxInfoDict]): sandboxes
+        total (int): total
+    """
+
+    sandboxes: Optional[List[InternalRestSandboxInfoDict]]
+    total: Optional[int]
 
 
 class InternalRestSessionResponseDict(TypedDict, total=False):
@@ -377,6 +491,30 @@ class InternalRestSessionResponseDict(TypedDict, total=False):
     user_id: Optional[str]
     vm_id: Optional[str]
     vm_ip_address: Optional[str]
+
+
+class InternalRestListSessionsResponseDict(TypedDict, total=False):
+    """
+    Dictionary representation of InternalRestListSessionsResponse.
+
+    Keys:
+        sessions (List[InternalRestSessionResponseDict]): sessions
+        total (int): total
+    """
+
+    sessions: Optional[List[InternalRestSessionResponseDict]]
+    total: Optional[int]
+
+
+class InternalRestSessionStartResponseDict(TypedDict, total=False):
+    """
+    Dictionary representation of InternalRestSessionStartResponse.
+
+    Keys:
+        session_id (str): session_id
+    """
+
+    session_id: Optional[str]
 
 
 class InternalRestStartSandboxResponseDict(TypedDict, total=False):
@@ -424,6 +562,31 @@ class TimeDurationDict(TypedDict, total=False):
     pass
 
 
+class TmuxClientInternalApiCreateSandboxSessionResponseDict(TypedDict, total=False):
+    """
+    Dictionary representation of TmuxClientInternalApiCreateSandboxSessionResponse.
+
+    Keys:
+        message (str): Message provides additional information
+        sandbox_id (str): SandboxID is the sandbox being accessed
+        session_id (str): SessionID is the tmux session ID
+        session_name (str): SessionName is the tmux session name
+        ttl_seconds (int): TTLSeconds is the remaining certificate validity in seconds
+        username (str): Username is the SSH username
+        valid_until (str): ValidUntil is when the certificate expires (RFC3339)
+        vm_ip_address (str): VMIPAddress is the IP of the sandbox VM
+    """
+
+    message: Optional[str]
+    sandbox_id: Optional[str]
+    session_id: Optional[str]
+    session_name: Optional[str]
+    ttl_seconds: Optional[int]
+    username: Optional[str]
+    valid_until: Optional[str]
+    vm_ip_address: Optional[str]
+
+
 class TmuxClientInternalApiSandboxSessionInfoDict(TypedDict, total=False):
     """
     Dictionary representation of TmuxClientInternalApiSandboxSessionInfo.
@@ -447,6 +610,19 @@ class TmuxClientInternalApiSandboxSessionInfoDict(TypedDict, total=False):
     username: Optional[str]
     valid_until: Optional[str]
     vm_ip_address: Optional[str]
+
+
+class TmuxClientInternalApiListSandboxSessionsResponseDict(TypedDict, total=False):
+    """
+    Dictionary representation of TmuxClientInternalApiListSandboxSessionsResponse.
+
+    Keys:
+        sessions (List[TmuxClientInternalApiSandboxSessionInfoDict]): sessions
+        total (int): total
+    """
+
+    sessions: Optional[List[TmuxClientInternalApiSandboxSessionInfoDict]]
+    total: Optional[int]
 
 
 class TmuxClientInternalTypesAPIErrorDict(TypedDict, total=False):
@@ -1205,6 +1381,37 @@ class VirshSandboxInternalRestRequestAccessResponseDict(TypedDict, total=False):
     vm_ip_address: Optional[str]
 
 
+class VirshSandboxInternalRestSandboxInfoDict(TypedDict, total=False):
+    """
+    Dictionary representation of VirshSandboxInternalRestSandboxInfo.
+
+    Keys:
+        agent_id (str): agent_id
+        base_image (str): base_image
+        created_at (str): created_at
+        id (str): id
+        ip_address (str): ip_address
+        job_id (str): job_id
+        network (str): network
+        sandbox_name (str): sandbox_name
+        state (str): state
+        ttl_seconds (int): ttl_seconds
+        updated_at (str): updated_at
+    """
+
+    agent_id: Optional[str]
+    base_image: Optional[str]
+    created_at: Optional[str]
+    id: Optional[str]
+    ip_address: Optional[str]
+    job_id: Optional[str]
+    network: Optional[str]
+    sandbox_name: Optional[str]
+    state: Optional[str]
+    ttl_seconds: Optional[int]
+    updated_at: Optional[str]
+
+
 class VirshSandboxInternalRestSessionResponseDict(TypedDict, total=False):
     """
     Dictionary representation of VirshSandboxInternalRestSessionResponse.
@@ -1609,9 +1816,7 @@ class AccessOperations:
     def __init__(self, api: AccessApi):
         self._api = api
 
-    def v1_access_ca_pubkey_get(
-        self,
-    ) -> VirshSandboxInternalRestCaPublicKeyResponseDict:
+    def v1_access_ca_pubkey_get(self) -> InternalRestCaPublicKeyResponseDict:
         """Get the SSH CA public key
 
         Returns:
@@ -1635,7 +1840,7 @@ class AccessOperations:
         Returns:
             Dict with keys:
         """
-        request = VirshSandboxInternalRestRevokeCertificateRequest(
+        request = InternalRestRevokeCertificateRequest(
             reason=reason,
         )
         return _to_dict(
@@ -1647,7 +1852,7 @@ class AccessOperations:
     def v1_access_certificate_cert_id_get(
         self,
         cert_id: str,
-    ) -> VirshSandboxInternalRestCertificateResponseDict:
+    ) -> InternalRestCertificateResponseDict:
         """Get certificate details
 
         Args:
@@ -1679,7 +1884,7 @@ class AccessOperations:
         active_only: Optional[bool] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> VirshSandboxInternalRestListCertificatesResponseDict:
+    ) -> InternalRestListCertificatesResponseDict:
         """List certificates
 
         Args:
@@ -1692,7 +1897,7 @@ class AccessOperations:
 
         Returns:
             Dict with keys:
-                - certificates (List[VirshSandboxInternalRestCertificateResponse])
+                - certificates (List[InternalRestCertificateResponse])
                 - total (int)
         """
         return _to_dict(
@@ -1712,7 +1917,7 @@ class AccessOperations:
         sandbox_id: Optional[str] = None,
         ttl_minutes: Optional[int] = None,
         user_id: Optional[str] = None,
-    ) -> VirshSandboxInternalRestRequestAccessResponseDict:
+    ) -> InternalRestRequestAccessResponseDict:
         """Request SSH access to a sandbox
 
         Args:
@@ -1733,7 +1938,7 @@ class AccessOperations:
                 - valid_until (str): ValidUntil is when the certificate expires (RFC3339).
                 - vm_ip_address (str): VMIPAddress is the IP address of the sandbox VM.
         """
-        request = VirshSandboxInternalRestRequestAccessRequest(
+        request = InternalRestRequestAccessRequest(
             public_key=public_key,
             sandbox_id=sandbox_id,
             ttl_minutes=ttl_minutes,
@@ -1755,7 +1960,7 @@ class AccessOperations:
         Returns:
             Dict with keys:
         """
-        request = VirshSandboxInternalRestSessionEndRequest(
+        request = InternalRestSessionEndRequest(
             reason=reason,
             session_id=session_id,
         )
@@ -1765,7 +1970,7 @@ class AccessOperations:
         self,
         certificate_id: Optional[str] = None,
         source_ip: Optional[str] = None,
-    ) -> VirshSandboxInternalRestSessionStartResponseDict:
+    ) -> InternalRestSessionStartResponseDict:
         """Record session start
 
         Args:
@@ -1776,7 +1981,7 @@ class AccessOperations:
             Dict with keys:
                 - session_id (str)
         """
-        request = VirshSandboxInternalRestSessionStartRequest(
+        request = InternalRestSessionStartRequest(
             certificate_id=certificate_id,
             source_ip=source_ip,
         )
@@ -1790,7 +1995,7 @@ class AccessOperations:
         active_only: Optional[bool] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> VirshSandboxInternalRestListSessionsResponseDict:
+    ) -> InternalRestListSessionsResponseDict:
         """List sessions
 
         Args:
@@ -1803,7 +2008,7 @@ class AccessOperations:
 
         Returns:
             Dict with keys:
-                - sessions (List[VirshSandboxInternalRestSessionResponse])
+                - sessions (List[InternalRestSessionResponse])
                 - total (int)
         """
         return _to_dict(
@@ -2535,7 +2740,7 @@ class SandboxOperations:
         sandbox_id: Optional[str] = None,
         session_name: Optional[str] = None,
         ttl_minutes: Optional[int] = None,
-    ) -> InternalApiCreateSandboxSessionResponseDict:
+    ) -> TmuxClientInternalApiCreateSandboxSessionResponseDict:
         """Create sandbox session
 
         Args:
@@ -2554,7 +2759,7 @@ class SandboxOperations:
                 - valid_until (str): ValidUntil is when the certificate expires (RFC3339)
                 - vm_ip_address (str): VMIPAddress is the IP of the sandbox VM
         """
-        request = InternalApiCreateSandboxSessionRequest(
+        request = TmuxClientInternalApiCreateSandboxSessionRequest(
             sandbox_id=sandbox_id,
             session_name=session_name,
             ttl_minutes=ttl_minutes,
@@ -2634,7 +2839,7 @@ class SandboxOperations:
     def get_sandbox_session(
         self,
         session_name: str,
-    ) -> InternalApiSandboxSessionInfoDict:
+    ) -> TmuxClientInternalApiSandboxSessionInfoDict:
         """Get sandbox session
 
         Args:
@@ -2686,15 +2891,55 @@ class SandboxOperations:
         """
         return _to_dict(self._api.kill_sandbox_session(session_name=session_name))
 
-    def list_sandbox_sessions(self) -> InternalApiListSandboxSessionsResponseDict:
+    def list_sandbox_sessions(
+        self,
+    ) -> TmuxClientInternalApiListSandboxSessionsResponseDict:
         """List sandbox sessions
 
         Returns:
             Dict with keys:
-                - sessions (List[InternalApiSandboxSessionInfo])
+                - sessions (List[TmuxClientInternalApiSandboxSessionInfo])
                 - total (int)
         """
         return _to_dict(self._api.list_sandbox_sessions())
+
+    def list_sandboxes(
+        self,
+        agent_id: Optional[str] = None,
+        job_id: Optional[str] = None,
+        base_image: Optional[str] = None,
+        state: Optional[str] = None,
+        vm_name: Optional[str] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> InternalRestListSandboxesResponseDict:
+        """List sandboxes
+
+        Args:
+            agent_id: Optional[str]
+            job_id: Optional[str]
+            base_image: Optional[str]
+            state: Optional[str]
+            vm_name: Optional[str]
+            limit: Optional[int]
+            offset: Optional[int]
+
+        Returns:
+            Dict with keys:
+                - sandboxes (List[InternalRestSandboxInfo])
+                - total (int)
+        """
+        return _to_dict(
+            self._api.list_sandboxes(
+                agent_id=agent_id,
+                job_id=job_id,
+                base_image=base_image,
+                state=state,
+                vm_name=vm_name,
+                limit=limit,
+                offset=offset,
+            )
+        )
 
     def publish_changes(
         self,

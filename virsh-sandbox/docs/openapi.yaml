@@ -25,13 +25,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.caPublicKeyResponse"
+                $ref: "#/components/schemas/internal_rest.caPublicKeyResponse"
           description: OK
         "500":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Internal Server Error
       summary: Get the SSH CA public key
       tags:
@@ -50,7 +50,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/virsh-sandbox_internal_rest.revokeCertificateRequest"
+              $ref: "#/components/schemas/internal_rest.revokeCertificateRequest"
         description: Revocation reason
         required: false
       responses:
@@ -66,19 +66,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Bad Request
         "404":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Not Found
         "500":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Internal Server Error
       summary: Revoke a certificate
       tags:
@@ -98,19 +98,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.certificateResponse"
+                $ref: "#/components/schemas/internal_rest.certificateResponse"
           description: OK
         "404":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Not Found
         "500":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Internal Server Error
       summary: Get certificate details
       tags:
@@ -154,13 +154,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.listCertificatesResponse"
+                $ref: "#/components/schemas/internal_rest.listCertificatesResponse"
           description: OK
         "500":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Internal Server Error
       summary: List certificates
       tags:
@@ -173,7 +173,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/virsh-sandbox_internal_rest.requestAccessRequest"
+              $ref: "#/components/schemas/internal_rest.requestAccessRequest"
         description: Access request
         required: true
       responses:
@@ -181,25 +181,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.requestAccessResponse"
+                $ref: "#/components/schemas/internal_rest.requestAccessResponse"
           description: OK
         "400":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Bad Request
         "404":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Not Found
         "500":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Internal Server Error
       summary: Request SSH access to a sandbox
       tags:
@@ -212,7 +212,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/virsh-sandbox_internal_rest.sessionEndRequest"
+              $ref: "#/components/schemas/internal_rest.sessionEndRequest"
         description: Session end request
         required: true
       responses:
@@ -228,13 +228,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Bad Request
         "500":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Internal Server Error
       summary: Record session end
       tags:
@@ -247,7 +247,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/virsh-sandbox_internal_rest.sessionStartRequest"
+              $ref: "#/components/schemas/internal_rest.sessionStartRequest"
         description: Session start request
         required: true
       responses:
@@ -255,19 +255,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.sessionStartResponse"
+                $ref: "#/components/schemas/internal_rest.sessionStartResponse"
           description: OK
         "400":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Bad Request
         "500":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Internal Server Error
       summary: Record session start
       tags:
@@ -312,13 +312,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.listSessionsResponse"
+                $ref: "#/components/schemas/internal_rest.listSessionsResponse"
           description: OK
         "500":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_rest.accessErrorResponse"
+                $ref: "#/components/schemas/internal_rest.accessErrorResponse"
           description: Internal Server Error
       summary: List sessions
       tags:
@@ -761,6 +761,64 @@ paths:
       tags:
       - Sandbox
       x-codegen-request-body-name: request
+  /v1/sandboxes:
+    get:
+      description: "Lists all sandboxes with optional filtering by agent_id, job_id,\
+        \ base_image, state, or vm_name"
+      operationId: listSandboxes
+      parameters:
+      - description: Filter by agent ID
+        in: query
+        name: agent_id
+        schema:
+          type: string
+      - description: Filter by job ID
+        in: query
+        name: job_id
+        schema:
+          type: string
+      - description: Filter by base image
+        in: query
+        name: base_image
+        schema:
+          type: string
+      - description: "Filter by state (CREATED, STARTING, RUNNING, STOPPED, DESTROYED,\
+          \ ERROR)"
+        in: query
+        name: state
+        schema:
+          type: string
+      - description: Filter by VM name
+        in: query
+        name: vm_name
+        schema:
+          type: string
+      - description: Max results to return
+        in: query
+        name: limit
+        schema:
+          type: integer
+      - description: Number of results to skip
+        in: query
+        name: offset
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/internal_rest.listSandboxesResponse"
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/internal_rest.ErrorResponse"
+          description: Internal Server Error
+      summary: List sandboxes
+      tags:
+      - Sandbox
   /v1/vms:
     get:
       description: Returns a list of all virtual machines from the libvirt instance
@@ -847,6 +905,10 @@ components:
           type: string
       type: object
     internal_rest.accessErrorResponse:
+      example:
+        code: 0
+        details: details
+        error: error
       properties:
         code:
           type: integer
@@ -856,6 +918,9 @@ components:
           type: string
       type: object
     internal_rest.caPublicKeyResponse:
+      example:
+        public_key: public_key
+        usage: usage
       properties:
         public_key:
           description: PublicKey is the CA public key in OpenSSH format.
@@ -865,6 +930,22 @@ components:
           type: string
       type: object
     internal_rest.certificateResponse:
+      example:
+        ttl_seconds: 6
+        principals:
+        - principals
+        - principals
+        serial_number: 0
+        issued_at: issued_at
+        valid_after: valid_after
+        vm_id: vm_id
+        is_expired: true
+        valid_before: valid_before
+        user_id: user_id
+        identity: identity
+        sandbox_id: sandbox_id
+        id: id
+        status: status
       properties:
         id:
           type: string
@@ -974,6 +1055,39 @@ components:
           type: string
       type: object
     internal_rest.listCertificatesResponse:
+      example:
+        total: 0
+        certificates:
+        - ttl_seconds: 6
+          principals:
+          - principals
+          - principals
+          serial_number: 0
+          issued_at: issued_at
+          valid_after: valid_after
+          vm_id: vm_id
+          is_expired: true
+          valid_before: valid_before
+          user_id: user_id
+          identity: identity
+          sandbox_id: sandbox_id
+          id: id
+          status: status
+        - ttl_seconds: 6
+          principals:
+          - principals
+          - principals
+          serial_number: 0
+          issued_at: issued_at
+          valid_after: valid_after
+          vm_id: vm_id
+          is_expired: true
+          valid_before: valid_before
+          user_id: user_id
+          identity: identity
+          sandbox_id: sandbox_id
+          id: id
+          status: status
       properties:
         certificates:
           items:
@@ -982,7 +1096,66 @@ components:
         total:
           type: integer
       type: object
+    internal_rest.listSandboxesResponse:
+      example:
+        total: 6
+        sandboxes:
+        - base_image: base_image
+          agent_id: agent_id
+          updated_at: updated_at
+          job_id: job_id
+          ttl_seconds: 0
+          created_at: created_at
+          sandbox_name: sandbox_name
+          id: id
+          ip_address: ip_address
+          state: state
+          network: network
+        - base_image: base_image
+          agent_id: agent_id
+          updated_at: updated_at
+          job_id: job_id
+          ttl_seconds: 0
+          created_at: created_at
+          sandbox_name: sandbox_name
+          id: id
+          ip_address: ip_address
+          state: state
+          network: network
+      properties:
+        sandboxes:
+          items:
+            $ref: "#/components/schemas/internal_rest.sandboxInfo"
+          type: array
+        total:
+          type: integer
+      type: object
     internal_rest.listSessionsResponse:
+      example:
+        sessions:
+        - certificate_id: certificate_id
+          duration_seconds: 0
+          vm_id: vm_id
+          user_id: user_id
+          sandbox_id: sandbox_id
+          started_at: started_at
+          vm_ip_address: vm_ip_address
+          id: id
+          ended_at: ended_at
+          source_ip: source_ip
+          status: status
+        - certificate_id: certificate_id
+          duration_seconds: 0
+          vm_id: vm_id
+          user_id: user_id
+          sandbox_id: sandbox_id
+          started_at: started_at
+          vm_ip_address: vm_ip_address
+          id: id
+          ended_at: ended_at
+          source_ip: source_ip
+          status: status
+        total: 6
       properties:
         sessions:
           items:
@@ -1050,6 +1223,16 @@ components:
           type: string
       type: object
     internal_rest.requestAccessResponse:
+      example:
+        certificate_id: certificate_id
+        instructions: instructions
+        ssh_port: 0
+        valid_until: valid_until
+        certificate: certificate
+        ttl_seconds: 6
+        connect_command: connect_command
+        vm_ip_address: vm_ip_address
+        username: username
       properties:
         certificate:
           description: Certificate is the SSH certificate content (save as key-cert.pub).
@@ -1126,6 +1309,43 @@ components:
         command:
           $ref: "#/components/schemas/virsh-sandbox_internal_store.Command"
       type: object
+    internal_rest.sandboxInfo:
+      example:
+        base_image: base_image
+        agent_id: agent_id
+        updated_at: updated_at
+        job_id: job_id
+        ttl_seconds: 0
+        created_at: created_at
+        sandbox_name: sandbox_name
+        id: id
+        ip_address: ip_address
+        state: state
+        network: network
+      properties:
+        agent_id:
+          type: string
+        base_image:
+          type: string
+        created_at:
+          type: string
+        id:
+          type: string
+        ip_address:
+          type: string
+        job_id:
+          type: string
+        network:
+          type: string
+        sandbox_name:
+          type: string
+        state:
+          type: string
+        ttl_seconds:
+          type: integer
+        updated_at:
+          type: string
+      type: object
     internal_rest.sessionEndRequest:
       properties:
         reason:
@@ -1134,6 +1354,18 @@ components:
           type: string
       type: object
     internal_rest.sessionResponse:
+      example:
+        certificate_id: certificate_id
+        duration_seconds: 0
+        vm_id: vm_id
+        user_id: user_id
+        sandbox_id: sandbox_id
+        started_at: started_at
+        vm_ip_address: vm_ip_address
+        id: id
+        ended_at: ended_at
+        source_ip: source_ip
+        status: status
       properties:
         certificate_id:
           type: string
@@ -1166,6 +1398,8 @@ components:
           type: string
       type: object
     internal_rest.sessionStartResponse:
+      example:
+        session_id: session_id
       properties:
         session_id:
           type: string
@@ -1310,10 +1544,6 @@ components:
           type: string
       type: object
     virsh-sandbox_internal_rest.accessErrorResponse:
-      example:
-        code: 0
-        details: details
-        error: error
       properties:
         code:
           type: integer
@@ -1323,9 +1553,6 @@ components:
           type: string
       type: object
     virsh-sandbox_internal_rest.caPublicKeyResponse:
-      example:
-        public_key: public_key
-        usage: usage
       properties:
         public_key:
           description: PublicKey is the CA public key in OpenSSH format.
@@ -1335,22 +1562,6 @@ components:
           type: string
       type: object
     virsh-sandbox_internal_rest.certificateResponse:
-      example:
-        ttl_seconds: 6
-        principals:
-        - principals
-        - principals
-        serial_number: 0
-        issued_at: issued_at
-        valid_after: valid_after
-        vm_id: vm_id
-        is_expired: true
-        valid_before: valid_before
-        user_id: user_id
-        identity: identity
-        sandbox_id: sandbox_id
-        id: id
-        status: status
       properties:
         id:
           type: string
@@ -1435,39 +1646,6 @@ components:
           type: string
       type: object
     virsh-sandbox_internal_rest.listCertificatesResponse:
-      example:
-        total: 0
-        certificates:
-        - ttl_seconds: 6
-          principals:
-          - principals
-          - principals
-          serial_number: 0
-          issued_at: issued_at
-          valid_after: valid_after
-          vm_id: vm_id
-          is_expired: true
-          valid_before: valid_before
-          user_id: user_id
-          identity: identity
-          sandbox_id: sandbox_id
-          id: id
-          status: status
-        - ttl_seconds: 6
-          principals:
-          - principals
-          - principals
-          serial_number: 0
-          issued_at: issued_at
-          valid_after: valid_after
-          vm_id: vm_id
-          is_expired: true
-          valid_before: valid_before
-          user_id: user_id
-          identity: identity
-          sandbox_id: sandbox_id
-          id: id
-          status: status
       properties:
         certificates:
           items:
@@ -1476,32 +1654,16 @@ components:
         total:
           type: integer
       type: object
+    virsh-sandbox_internal_rest.listSandboxesResponse:
+      properties:
+        sandboxes:
+          items:
+            $ref: "#/components/schemas/virsh-sandbox_internal_rest.sandboxInfo"
+          type: array
+        total:
+          type: integer
+      type: object
     virsh-sandbox_internal_rest.listSessionsResponse:
-      example:
-        sessions:
-        - certificate_id: certificate_id
-          duration_seconds: 0
-          vm_id: vm_id
-          user_id: user_id
-          sandbox_id: sandbox_id
-          started_at: started_at
-          vm_ip_address: vm_ip_address
-          id: id
-          ended_at: ended_at
-          source_ip: source_ip
-          status: status
-        - certificate_id: certificate_id
-          duration_seconds: 0
-          vm_id: vm_id
-          user_id: user_id
-          sandbox_id: sandbox_id
-          started_at: started_at
-          vm_ip_address: vm_ip_address
-          id: id
-          ended_at: ended_at
-          source_ip: source_ip
-          status: status
-        total: 6
       properties:
         sessions:
           items:
@@ -1554,16 +1716,6 @@ components:
           type: string
       type: object
     virsh-sandbox_internal_rest.requestAccessResponse:
-      example:
-        certificate_id: certificate_id
-        instructions: instructions
-        ssh_port: 0
-        valid_until: valid_until
-        certificate: certificate
-        ttl_seconds: 6
-        connect_command: connect_command
-        vm_ip_address: vm_ip_address
-        username: username
       properties:
         certificate:
           description: Certificate is the SSH certificate content (save as key-cert.pub).
@@ -1623,6 +1775,31 @@ components:
         command:
           $ref: "#/components/schemas/virsh-sandbox_internal_store.Command"
       type: object
+    virsh-sandbox_internal_rest.sandboxInfo:
+      properties:
+        agent_id:
+          type: string
+        base_image:
+          type: string
+        created_at:
+          type: string
+        id:
+          type: string
+        ip_address:
+          type: string
+        job_id:
+          type: string
+        network:
+          type: string
+        sandbox_name:
+          type: string
+        state:
+          type: string
+        ttl_seconds:
+          type: integer
+        updated_at:
+          type: string
+      type: object
     virsh-sandbox_internal_rest.sessionEndRequest:
       properties:
         reason:
@@ -1631,18 +1808,6 @@ components:
           type: string
       type: object
     virsh-sandbox_internal_rest.sessionResponse:
-      example:
-        certificate_id: certificate_id
-        duration_seconds: 0
-        vm_id: vm_id
-        user_id: user_id
-        sandbox_id: sandbox_id
-        started_at: started_at
-        vm_ip_address: vm_ip_address
-        id: id
-        ended_at: ended_at
-        source_ip: source_ip
-        status: status
       properties:
         certificate_id:
           type: string
@@ -1675,8 +1840,6 @@ components:
           type: string
       type: object
     virsh-sandbox_internal_rest.sessionStartResponse:
-      example:
-        session_id: session_id
       properties:
         session_id:
           type: string

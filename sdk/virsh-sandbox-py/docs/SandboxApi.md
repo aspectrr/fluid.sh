@@ -14,6 +14,7 @@ Method | HTTP request | Description
 [**inject_ssh_key**](SandboxApi.md#inject_ssh_key) | **POST** /v1/sandbox/{id}/sshkey | Inject SSH key into sandbox
 [**kill_sandbox_session**](SandboxApi.md#kill_sandbox_session) | **DELETE** /v1/sandbox/sessions/{sessionName} | Kill sandbox session
 [**list_sandbox_sessions**](SandboxApi.md#list_sandbox_sessions) | **GET** /v1/sandbox/sessions | List sandbox sessions
+[**list_sandboxes**](SandboxApi.md#list_sandboxes) | **GET** /v1/sandboxes | List sandboxes
 [**publish_changes**](SandboxApi.md#publish_changes) | **POST** /v1/sandbox/{id}/publish | Publish changes
 [**run_sandbox_command**](SandboxApi.md#run_sandbox_command) | **POST** /v1/sandbox/{id}/run | Run command in sandbox
 [**sandbox_api_health**](SandboxApi.md#sandbox_api_health) | **GET** /v1/sandbox/health | Check sandbox API health
@@ -92,7 +93,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **create_sandbox_session**
-> InternalApiCreateSandboxSessionResponse create_sandbox_session(request)
+> TmuxClientInternalApiCreateSandboxSessionResponse create_sandbox_session(request)
 
 Create sandbox session
 
@@ -103,8 +104,8 @@ Creates a new tmux session connected to a sandbox VM via SSH certificate
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.internal_api_create_sandbox_session_request import InternalApiCreateSandboxSessionRequest
-from virsh_sandbox.models.internal_api_create_sandbox_session_response import InternalApiCreateSandboxSessionResponse
+from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_request import TmuxClientInternalApiCreateSandboxSessionRequest
+from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_response import TmuxClientInternalApiCreateSandboxSessionResponse
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -119,7 +120,7 @@ configuration = virsh_sandbox.Configuration(
 with virsh_sandbox.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = virsh_sandbox.SandboxApi(api_client)
-    request = virsh_sandbox.InternalApiCreateSandboxSessionRequest() # InternalApiCreateSandboxSessionRequest | Create sandbox session request
+    request = virsh_sandbox.TmuxClientInternalApiCreateSandboxSessionRequest() # TmuxClientInternalApiCreateSandboxSessionRequest | Create sandbox session request
 
     try:
         # Create sandbox session
@@ -137,11 +138,11 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **request** | [**InternalApiCreateSandboxSessionRequest**](InternalApiCreateSandboxSessionRequest.md)| Create sandbox session request | 
+ **request** | [**TmuxClientInternalApiCreateSandboxSessionRequest**](TmuxClientInternalApiCreateSandboxSessionRequest.md)| Create sandbox session request | 
 
 ### Return type
 
-[**InternalApiCreateSandboxSessionResponse**](InternalApiCreateSandboxSessionResponse.md)
+[**TmuxClientInternalApiCreateSandboxSessionResponse**](TmuxClientInternalApiCreateSandboxSessionResponse.md)
 
 ### Authorization
 
@@ -444,7 +445,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_sandbox_session**
-> InternalApiSandboxSessionInfo get_sandbox_session(session_name)
+> TmuxClientInternalApiSandboxSessionInfo get_sandbox_session(session_name)
 
 Get sandbox session
 
@@ -455,7 +456,7 @@ Gets details of a specific sandbox session
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.internal_api_sandbox_session_info import InternalApiSandboxSessionInfo
+from virsh_sandbox.models.tmux_client_internal_api_sandbox_session_info import TmuxClientInternalApiSandboxSessionInfo
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -492,7 +493,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InternalApiSandboxSessionInfo**](InternalApiSandboxSessionInfo.md)
+[**TmuxClientInternalApiSandboxSessionInfo**](TmuxClientInternalApiSandboxSessionInfo.md)
 
 ### Authorization
 
@@ -653,7 +654,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_sandbox_sessions**
-> InternalApiListSandboxSessionsResponse list_sandbox_sessions()
+> TmuxClientInternalApiListSandboxSessionsResponse list_sandbox_sessions()
 
 List sandbox sessions
 
@@ -664,7 +665,7 @@ Lists all active sandbox sessions
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.internal_api_list_sandbox_sessions_response import InternalApiListSandboxSessionsResponse
+from virsh_sandbox.models.tmux_client_internal_api_list_sandbox_sessions_response import TmuxClientInternalApiListSandboxSessionsResponse
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -697,7 +698,88 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**InternalApiListSandboxSessionsResponse**](InternalApiListSandboxSessionsResponse.md)
+[**TmuxClientInternalApiListSandboxSessionsResponse**](TmuxClientInternalApiListSandboxSessionsResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | OK |  -  |
+**500** | Internal Server Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_sandboxes**
+> InternalRestListSandboxesResponse list_sandboxes(agent_id=agent_id, job_id=job_id, base_image=base_image, state=state, vm_name=vm_name, limit=limit, offset=offset)
+
+List sandboxes
+
+Lists all sandboxes with optional filtering by agent_id, job_id, base_image, state, or vm_name
+
+### Example
+
+
+```python
+import virsh_sandbox
+from virsh_sandbox.models.internal_rest_list_sandboxes_response import InternalRestListSandboxesResponse
+from virsh_sandbox.rest import ApiException
+from pprint import pprint
+
+# Defining the host is optional and defaults to http://localhost
+# See configuration.py for a list of all supported configuration parameters.
+configuration = virsh_sandbox.Configuration(
+    host = "http://localhost"
+)
+
+
+# Enter a context with an instance of the API client
+with virsh_sandbox.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = virsh_sandbox.SandboxApi(api_client)
+    agent_id = 'agent_id_example' # str | Filter by agent ID (optional)
+    job_id = 'job_id_example' # str | Filter by job ID (optional)
+    base_image = 'base_image_example' # str | Filter by base image (optional)
+    state = 'state_example' # str | Filter by state (CREATED, STARTING, RUNNING, STOPPED, DESTROYED, ERROR) (optional)
+    vm_name = 'vm_name_example' # str | Filter by VM name (optional)
+    limit = 56 # int | Max results to return (optional)
+    offset = 56 # int | Number of results to skip (optional)
+
+    try:
+        # List sandboxes
+        api_response = api_instance.list_sandboxes(agent_id=agent_id, job_id=job_id, base_image=base_image, state=state, vm_name=vm_name, limit=limit, offset=offset)
+        print("The response of SandboxApi->list_sandboxes:\n")
+        pprint(api_response)
+    except Exception as e:
+        print("Exception when calling SandboxApi->list_sandboxes: %s\n" % e)
+```
+
+
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **agent_id** | **str**| Filter by agent ID | [optional] 
+ **job_id** | **str**| Filter by job ID | [optional] 
+ **base_image** | **str**| Filter by base image | [optional] 
+ **state** | **str**| Filter by state (CREATED, STARTING, RUNNING, STOPPED, DESTROYED, ERROR) | [optional] 
+ **vm_name** | **str**| Filter by VM name | [optional] 
+ **limit** | **int**| Max results to return | [optional] 
+ **offset** | **int**| Number of results to skip | [optional] 
+
+### Return type
+
+[**InternalRestListSandboxesResponse**](InternalRestListSandboxesResponse.md)
 
 ### Authorization
 

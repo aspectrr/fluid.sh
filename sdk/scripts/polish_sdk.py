@@ -980,6 +980,43 @@ def update_init_file(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     print("Updated __init__.py to export VirshSandbox")
 
 
+def patch_api_client(sdk_dir: Path):
+    """Patch api_client.py to use getattr with defaults for potentially missing config attributes.
+
+    This fixes issues where the generated api_client.py references config attributes
+    that may not exist in configuration.py (e.g., safe_chars_for_path_param, ignore_operation_servers).
+    """
+    api_client_path = sdk_dir / "api_client.py"
+    if not api_client_path.exists():
+        print(f"Warning: api_client.py not found at {api_client_path}")
+        return
+
+    content = api_client_path.read_text()
+    modified = False
+
+    # Fix safe_chars_for_path_param - replace direct attribute access with getattr
+    old_safe_chars = 'quote(str(v), safe=config.safe_chars_for_path_param)'
+    new_safe_chars = "quote(str(v), safe=getattr(config, 'safe_chars_for_path_param', ''))"
+    if old_safe_chars in content:
+        content = content.replace(old_safe_chars, new_safe_chars)
+        modified = True
+        print("  - Patched safe_chars_for_path_param to use getattr with default")
+
+    # Fix ignore_operation_servers - replace direct attribute access with getattr
+    old_ignore_servers = 'self.configuration.ignore_operation_servers'
+    new_ignore_servers = "getattr(self.configuration, 'ignore_operation_servers', False)"
+    if old_ignore_servers in content:
+        content = content.replace(old_ignore_servers, new_ignore_servers)
+        modified = True
+        print("  - Patched ignore_operation_servers to use getattr with default")
+
+    if modified:
+        api_client_path.write_text(content)
+        print("Patched api_client.py for missing config attributes")
+    else:
+        print("api_client.py already patched or no changes needed")
+
+
 def main():
     sdk_dir = Path("virsh-sandbox-py/virsh_sandbox")
     package_name = "virsh_sandbox"
@@ -994,6 +1031,9 @@ def main():
 
     print("Updating __init__.py...")
     update_init_file(sdk_dir, package_name)
+
+    print("Patching api_client.py for config compatibility...")
+    patch_api_client(sdk_dir)
 
     print("SDK polished!")
 

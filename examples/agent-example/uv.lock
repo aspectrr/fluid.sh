@@ -436,7 +436,7 @@ wheels = [
 
 [[package]]
 name = "virsh-sandbox"
-version = "0.0.9b0"
+version = "0.0.12b0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
@@ -444,9 +444,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4f/45/cbfcfc5ccee061a7ace9b41f688fa197de03957bdd2030355132f3fe7fba/virsh_sandbox-0.0.9b0.tar.gz", hash = "sha256:1404645a2e57bd8606e09fe930c789826d261c3e8c4d53c99cb15d1f412809c2", size = 97499, upload-time = "2026-01-03T02:53:51.234Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ef/ad/a3918451955cbcc57519f17f8a034128cd73c30563ddaa36951c5c2a3e59/virsh_sandbox-0.0.12b0.tar.gz", hash = "sha256:de55faa40ca292d72b5f10a9a610cadd8370dd11473784aa5156cde82b9a574e", size = 114705, upload-time = "2026-01-05T13:06:16.618Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b2/bb/14d1f14f520b5762644ca8e58ebe9a58a3c9dfe69332443fbb101cf0e94b/virsh_sandbox-0.0.9b0-py3-none-any.whl", hash = "sha256:d25ee0e94f85906cab6b8a0fc01c9b47c88ecc5f6a32d96320b93f1478098861", size = 344666, upload-time = "2026-01-03T02:53:48.325Z" },
+    { url = "https://files.pythonhosted.org/packages/49/11/38e20de94d14c9ff85a623ba35778eb905524235028ea02bac7b3c7d500f/virsh_sandbox-0.0.12b0-py3-none-any.whl", hash = "sha256:759019e8c7d6c0f526f33d84809f938ad3d95ebc60484c011a673fdb38e86b18", size = 392345, upload-time = "2026-01-05T13:06:13.693Z" },
 ]
 
 [[package]]
@@ -473,5 +473,5 @@ requires-dist = [
     { name = "requests", specifier = ">=2.32.5" },
     { name = "typing-extensions", specifier = ">=4.7.1" },
     { name = "urllib3", specifier = ">=2.1.0,<3.0.0" },
-    { name = "virsh-sandbox", specifier = ">=0.0.9b0" },
+    { name = "virsh-sandbox", specifier = ">=0.0.12b0" },
 ]

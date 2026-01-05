@@ -14,7 +14,7 @@
 """  # noqa: E501
 
 
-__version__ = "0.0.10-beta"
+__version__ = "0.0.12-beta"
 
 # Define package exports
 __all__ = [
@@ -43,10 +43,9 @@ __all__ = [
     "InternalAnsibleJobRequest",
     "InternalAnsibleJobResponse",
     "InternalAnsibleJobStatus",
-    "InternalApiCreateSandboxSessionRequest",
-    "InternalApiCreateSandboxSessionResponse",
-    "InternalApiListSandboxSessionsResponse",
     "InternalApiSandboxSessionInfo",
+    "InternalRestAccessErrorResponse",
+    "InternalRestCaPublicKeyResponse",
     "InternalRestCertificateResponse",
     "InternalRestCreateSandboxRequest",
     "InternalRestCreateSandboxResponse",
@@ -55,18 +54,31 @@ __all__ = [
     "InternalRestErrorResponse",
     "InternalRestGenerateResponse",
     "InternalRestInjectSSHKeyRequest",
+    "InternalRestListCertificatesResponse",
+    "InternalRestListSandboxesResponse",
+    "InternalRestListSessionsResponse",
     "InternalRestListVMsResponse",
     "InternalRestPublishRequest",
     "InternalRestPublishResponse",
+    "InternalRestRequestAccessRequest",
+    "InternalRestRequestAccessResponse",
+    "InternalRestRevokeCertificateRequest",
     "InternalRestRunCommandRequest",
     "InternalRestRunCommandResponse",
+    "InternalRestSandboxInfo",
+    "InternalRestSessionEndRequest",
     "InternalRestSessionResponse",
+    "InternalRestSessionStartRequest",
+    "InternalRestSessionStartResponse",
     "InternalRestSnapshotRequest",
     "InternalRestSnapshotResponse",
     "InternalRestStartSandboxRequest",
     "InternalRestStartSandboxResponse",
     "InternalRestVmInfo",
     "TimeDuration",
+    "TmuxClientInternalApiCreateSandboxSessionRequest",
+    "TmuxClientInternalApiCreateSandboxSessionResponse",
+    "TmuxClientInternalApiListSandboxSessionsResponse",
     "TmuxClientInternalApiSandboxSessionInfo",
     "TmuxClientInternalTypesAPIError",
     "TmuxClientInternalTypesApprovalStatus",
@@ -121,18 +133,9 @@ __all__ = [
     "TmuxClientInternalTypesWriteFileResponse",
     "VirshSandboxInternalAnsibleJobStatus",
     "VirshSandboxInternalErrorErrorResponse",
-    "VirshSandboxInternalRestAccessErrorResponse",
-    "VirshSandboxInternalRestCaPublicKeyResponse",
     "VirshSandboxInternalRestCertificateResponse",
-    "VirshSandboxInternalRestListCertificatesResponse",
-    "VirshSandboxInternalRestListSessionsResponse",
-    "VirshSandboxInternalRestRequestAccessRequest",
-    "VirshSandboxInternalRestRequestAccessResponse",
-    "VirshSandboxInternalRestRevokeCertificateRequest",
-    "VirshSandboxInternalRestSessionEndRequest",
+    "VirshSandboxInternalRestSandboxInfo",
     "VirshSandboxInternalRestSessionResponse",
-    "VirshSandboxInternalRestSessionStartRequest",
-    "VirshSandboxInternalRestSessionStartResponse",
     "VirshSandboxInternalRestVmInfo",
     "VirshSandboxInternalStoreChangeDiff",
     "VirshSandboxInternalStoreCommand",
@@ -180,17 +183,12 @@ from virsh_sandbox.models.internal_ansible_job_response import \
     InternalAnsibleJobResponse as InternalAnsibleJobResponse
 from virsh_sandbox.models.internal_ansible_job_status import \
     InternalAnsibleJobStatus as InternalAnsibleJobStatus
-from virsh_sandbox.models.internal_api_create_sandbox_session_request import \
-    InternalApiCreateSandboxSessionRequest as \
-    InternalApiCreateSandboxSessionRequest
-from virsh_sandbox.models.internal_api_create_sandbox_session_response import \
-    InternalApiCreateSandboxSessionResponse as \
-    InternalApiCreateSandboxSessionResponse
-from virsh_sandbox.models.internal_api_list_sandbox_sessions_response import \
-    InternalApiListSandboxSessionsResponse as \
-    InternalApiListSandboxSessionsResponse
 from virsh_sandbox.models.internal_api_sandbox_session_info import \
     InternalApiSandboxSessionInfo as InternalApiSandboxSessionInfo
+from virsh_sandbox.models.internal_rest_access_error_response import \
+    InternalRestAccessErrorResponse as InternalRestAccessErrorResponse
+from virsh_sandbox.models.internal_rest_ca_public_key_response import \
+    InternalRestCaPublicKeyResponse as InternalRestCaPublicKeyResponse
 from virsh_sandbox.models.internal_rest_certificate_response import \
     InternalRestCertificateResponse as InternalRestCertificateResponse
 from virsh_sandbox.models.internal_rest_create_sandbox_request import \
@@ -207,18 +205,40 @@ from virsh_sandbox.models.internal_rest_generate_response import \
     InternalRestGenerateResponse as InternalRestGenerateResponse
 from virsh_sandbox.models.internal_rest_inject_ssh_key_request import \
     InternalRestInjectSSHKeyRequest as InternalRestInjectSSHKeyRequest
+from virsh_sandbox.models.internal_rest_list_certificates_response import \
+    InternalRestListCertificatesResponse as \
+    InternalRestListCertificatesResponse
+from virsh_sandbox.models.internal_rest_list_sandboxes_response import \
+    InternalRestListSandboxesResponse as InternalRestListSandboxesResponse
+from virsh_sandbox.models.internal_rest_list_sessions_response import \
+    InternalRestListSessionsResponse as InternalRestListSessionsResponse
 from virsh_sandbox.models.internal_rest_list_vms_response import \
     InternalRestListVMsResponse as InternalRestListVMsResponse
 from virsh_sandbox.models.internal_rest_publish_request import \
     InternalRestPublishRequest as InternalRestPublishRequest
 from virsh_sandbox.models.internal_rest_publish_response import \
     InternalRestPublishResponse as InternalRestPublishResponse
+from virsh_sandbox.models.internal_rest_request_access_request import \
+    InternalRestRequestAccessRequest as InternalRestRequestAccessRequest
+from virsh_sandbox.models.internal_rest_request_access_response import \
+    InternalRestRequestAccessResponse as InternalRestRequestAccessResponse
+from virsh_sandbox.models.internal_rest_revoke_certificate_request import \
+    InternalRestRevokeCertificateRequest as \
+    InternalRestRevokeCertificateRequest
 from virsh_sandbox.models.internal_rest_run_command_request import \
     InternalRestRunCommandRequest as InternalRestRunCommandRequest
 from virsh_sandbox.models.internal_rest_run_command_response import \
     InternalRestRunCommandResponse as InternalRestRunCommandResponse
+from virsh_sandbox.models.internal_rest_sandbox_info import \
+    InternalRestSandboxInfo as InternalRestSandboxInfo
+from virsh_sandbox.models.internal_rest_session_end_request import \
+    InternalRestSessionEndRequest as InternalRestSessionEndRequest
 from virsh_sandbox.models.internal_rest_session_response import \
     InternalRestSessionResponse as InternalRestSessionResponse
+from virsh_sandbox.models.internal_rest_session_start_request import \
+    InternalRestSessionStartRequest as InternalRestSessionStartRequest
+from virsh_sandbox.models.internal_rest_session_start_response import \
+    InternalRestSessionStartResponse as InternalRestSessionStartResponse
 from virsh_sandbox.models.internal_rest_snapshot_request import \
     InternalRestSnapshotRequest as InternalRestSnapshotRequest
 from virsh_sandbox.models.internal_rest_snapshot_response import \
@@ -230,6 +250,15 @@ from virsh_sandbox.models.internal_rest_start_sandbox_response import \
 from virsh_sandbox.models.internal_rest_vm_info import \
     InternalRestVmInfo as InternalRestVmInfo
 from virsh_sandbox.models.time_duration import TimeDuration as TimeDuration
+from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_request import \
+    TmuxClientInternalApiCreateSandboxSessionRequest as \
+    TmuxClientInternalApiCreateSandboxSessionRequest
+from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_response import \
+    TmuxClientInternalApiCreateSandboxSessionResponse as \
+    TmuxClientInternalApiCreateSandboxSessionResponse
+from virsh_sandbox.models.tmux_client_internal_api_list_sandbox_sessions_response import \
+    TmuxClientInternalApiListSandboxSessionsResponse as \
+    TmuxClientInternalApiListSandboxSessionsResponse
 from virsh_sandbox.models.tmux_client_internal_api_sandbox_session_info import \
     TmuxClientInternalApiSandboxSessionInfo as \
     TmuxClientInternalApiSandboxSessionInfo
@@ -380,42 +409,14 @@ from virsh_sandbox.models.virsh_sandbox_internal_ansible_job_status import \
 from virsh_sandbox.models.virsh_sandbox_internal_error_error_response import \
     VirshSandboxInternalErrorErrorResponse as \
     VirshSandboxInternalErrorErrorResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_access_error_response import \
-    VirshSandboxInternalRestAccessErrorResponse as \
-    VirshSandboxInternalRestAccessErrorResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_ca_public_key_response import \
-    VirshSandboxInternalRestCaPublicKeyResponse as \
-    VirshSandboxInternalRestCaPublicKeyResponse
 from virsh_sandbox.models.virsh_sandbox_internal_rest_certificate_response import \
     VirshSandboxInternalRestCertificateResponse as \
     VirshSandboxInternalRestCertificateResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_list_certificates_response import \
-    VirshSandboxInternalRestListCertificatesResponse as \
-    VirshSandboxInternalRestListCertificatesResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sessions_response import \
-    VirshSandboxInternalRestListSessionsResponse as \
-    VirshSandboxInternalRestListSessionsResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_request_access_request import \
-    VirshSandboxInternalRestRequestAccessRequest as \
-    VirshSandboxInternalRestRequestAccessRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_request_access_response import \
-    VirshSandboxInternalRestRequestAccessResponse as \
-    VirshSandboxInternalRestRequestAccessResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_revoke_certificate_request import \
-    VirshSandboxInternalRestRevokeCertificateRequest as \
-    VirshSandboxInternalRestRevokeCertificateRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_session_end_request import \
-    VirshSandboxInternalRestSessionEndRequest as \
-    VirshSandboxInternalRestSessionEndRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_sandbox_info import \
+    VirshSandboxInternalRestSandboxInfo as VirshSandboxInternalRestSandboxInfo
 from virsh_sandbox.models.virsh_sandbox_internal_rest_session_response import \
     VirshSandboxInternalRestSessionResponse as \
     VirshSandboxInternalRestSessionResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_session_start_request import \
-    VirshSandboxInternalRestSessionStartRequest as \
-    VirshSandboxInternalRestSessionStartRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_session_start_response import \
-    VirshSandboxInternalRestSessionStartResponse as \
-    VirshSandboxInternalRestSessionStartResponse
 from virsh_sandbox.models.virsh_sandbox_internal_rest_vm_info import \
     VirshSandboxInternalRestVmInfo as VirshSandboxInternalRestVmInfo
 from virsh_sandbox.models.virsh_sandbox_internal_store_change_diff import \
