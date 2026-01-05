@@ -734,7 +734,7 @@ func renderDomainXML(p domainXMLParams) (string, error) {
 {{- end }}
   </features>
 {{- if and (eq .Arch "aarch64") (eq .DomainType "qemu") }}
-  <cpu mode="custom" match="exact"ls -la /var/lib/libvirt/images/>
+  <cpu mode="custom" match="exact">
     <model fallback="allow">cortex-a72</model>
   </cpu>
 {{- else }}
