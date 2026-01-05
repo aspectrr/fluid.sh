@@ -90,9 +90,9 @@ func (s *Server) routes() {
 		r.Get("/vms", s.handleListVMs)
 
 		// Sandbox lifecycle
-		r.Get("/sandboxes", s.handleListSandboxes)
-		r.Route("/sandbox", func(r chi.Router) {
-			r.Post("/create", s.handleCreateSandbox)
+		r.Route("/sandboxes", func(r chi.Router) {
+			r.Get("/", s.handleListSandboxes)
+			r.Post("/", s.handleCreateSandbox)
 
 			r.Route("/{id}", func(r chi.Router) {
 				r.Post("/sshkey", s.handleInjectSSHKey)
@@ -118,15 +118,19 @@ func (s *Server) routes() {
 // --- Request/Response DTOs ---
 
 type createSandboxRequest struct {
-	SourceVMName string `json:"source_vm_name"`      // required; name of existing VM in libvirt to clone from
-	AgentID      string `json:"agent_id"`            // required
-	VMName       string `json:"vm_name,omitempty"`   // optional; generated if empty
-	CPU          int    `json:"cpu,omitempty"`       // optional; default from service config if <=0
-	MemoryMB     int    `json:"memory_mb,omitempty"` // optional; default from service config if <=0
+	SourceVMName string `json:"source_vm_name"`         // required; name of existing VM in libvirt to clone from
+	AgentID      string `json:"agent_id"`               // required
+	VMName       string `json:"vm_name,omitempty"`      // optional; generated if empty
+	CPU          int    `json:"cpu,omitempty"`          // optional; default from service config if <=0
+	MemoryMB     int    `json:"memory_mb,omitempty"`    // optional; default from service config if <=0
+	TTLSeconds   *int   `json:"ttl_seconds,omitempty"`  // optional; TTL for auto garbage collection
+	AutoStart    bool   `json:"auto_start,omitempty"`   // optional; if true, start the VM immediately after creation
+	WaitForIP    bool   `json:"wait_for_ip,omitempty"`  // optional; if true and auto_start, wait for IP discovery
 }
 
 type createSandboxResponse struct {
-	Sandbox *store.Sandbox `json:"sandbox"`
+	Sandbox   *store.Sandbox `json:"sandbox"`
+	IPAddress string         `json:"ip_address,omitempty"` // populated when auto_start and wait_for_ip are true
 }
 
 type injectSSHKeyRequest struct {
@@ -250,7 +254,7 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Id createSandbox
-// @Router /v1/sandbox/create [post]
+// @Router /v1/sandboxes [post]
 func (s *Server) handleCreateSandbox(w http.ResponseWriter, r *http.Request) {
 	var req createSandboxRequest
 	if err := serverJSON.DecodeJSON(r.Context(), r, &req); err != nil {
@@ -262,12 +266,12 @@ func (s *Server) handleCreateSandbox(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sb, err := s.vmSvc.CreateSandbox(r.Context(), req.SourceVMName, req.AgentID, req.VMName, req.CPU, req.MemoryMB)
+	sb, ip, err := s.vmSvc.CreateSandbox(r.Context(), req.SourceVMName, req.AgentID, req.VMName, req.CPU, req.MemoryMB, req.TTLSeconds, req.AutoStart, req.WaitForIP)
 	if err != nil {
 		serverError.RespondError(w, http.StatusInternalServerError, fmt.Errorf("create sandbox: %w", err))
 		return
 	}
-	_ = serverJSON.RespondJSON(w, http.StatusCreated, createSandboxResponse{Sandbox: sb})
+	_ = serverJSON.RespondJSON(w, http.StatusCreated, createSandboxResponse{Sandbox: sb, IPAddress: ip})
 }
 
 // @Summary Inject SSH key into sandbox
@@ -281,7 +285,7 @@ func (s *Server) handleCreateSandbox(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Id injectSshKey
-// @Router /v1/sandbox/{id}/sshkey [post]
+// @Router /v1/sandboxes/{id}/sshkey [post]
 func (s *Server) handleInjectSSHKey(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var req injectSSHKeyRequest
@@ -312,7 +316,7 @@ func (s *Server) handleInjectSSHKey(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Id startSandbox
-// @Router /v1/sandbox/{id}/start [post]
+// @Router /v1/sandboxes/{id}/start [post]
 func (s *Server) handleStartSandbox(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
@@ -344,7 +348,7 @@ func (s *Server) handleStartSandbox(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Id runSandboxCommand
-// @Router /v1/sandbox/{id}/run [post]
+// @Router /v1/sandboxes/{id}/run [post]
 func (s *Server) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var req runCommandRequest
@@ -376,7 +380,7 @@ func (s *Server) handleRunCommand(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Id createSnapshot
-// @Router /v1/sandbox/{id}/snapshot [post]
+// @Router /v1/sandboxes/{id}/snapshot [post]
 func (s *Server) handleCreateSnapshot(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var req snapshotRequest
@@ -407,7 +411,7 @@ func (s *Server) handleCreateSnapshot(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Id diffSnapshots
-// @Router /v1/sandbox/{id}/diff [post]
+// @Router /v1/sandboxes/{id}/diff [post]
 func (s *Server) handleDiffSnapshots(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var req diffRequest
@@ -437,7 +441,7 @@ func (s *Server) handleDiffSnapshots(w http.ResponseWriter, r *http.Request) {
 // @Success 501 {object} generateResponse
 // @Failure 400 {object} ErrorResponse
 // @Id generateConfiguration
-// @Router /v1/sandbox/{id}/generate/{tool} [post]
+// @Router /v1/sandboxes/{id}/generate/{tool} [post]
 func (s *Server) handleGenerate(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	tool := chi.URLParam(r, "tool")
@@ -467,7 +471,7 @@ func (s *Server) handleGenerate(w http.ResponseWriter, r *http.Request) {
 // @Success 501 {object} publishResponse
 // @Failure 400 {object} ErrorResponse
 // @Id publishChanges
-// @Router /v1/sandbox/{id}/publish [post]
+// @Router /v1/sandboxes/{id}/publish [post]
 func (s *Server) handlePublish(w http.ResponseWriter, r *http.Request) {
 	var req publishRequest
 	if err := serverJSON.DecodeJSON(r.Context(), r, &req); err != nil {
@@ -601,26 +605,44 @@ func (s *Server) handleListSandboxes(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+type destroySandboxResponse struct {
+	State       store.SandboxState `json:"state"`
+	BaseImage   string             `json:"base_image"`
+	SandboxName string             `json:"sandbox_name"`
+	TTLSeconds  *int               `json:"ttl_seconds,omitempty"`
+}
+
 // @Summary Destroy sandbox
 // @Description Destroys the sandbox and cleans up resources
 // @Tags Sandbox
 // @Accept json
 // @Produce json
 // @Param id path string true "Sandbox ID"
-// @Success 204
+// @Success 200 {object} destroySandboxResponse
 // @Failure 400 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Id destroySandbox
-// @Router /v1/sandbox/{id} [delete]
+// @Router /v1/sandboxes/{id} [delete]
 func (s *Server) handleDestroySandbox(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {
 		serverError.RespondError(w, http.StatusBadRequest, errors.New("sandbox id is required"))
 		return
 	}
-	if err := s.vmSvc.DestroySandbox(r.Context(), id); err != nil {
+	sb, err := s.vmSvc.DestroySandbox(r.Context(), id)
+	if err != nil {
+		if errors.Is(err, store.ErrNotFound) {
+			serverError.RespondError(w, http.StatusNotFound, fmt.Errorf("sandbox not found: %s", id))
+			return
+		}
 		serverError.RespondError(w, http.StatusInternalServerError, fmt.Errorf("destroy sandbox: %w", err))
 		return
 	}
-	w.WriteHeader(http.StatusNoContent)
+	serverJSON.RespondJSON(w, http.StatusOK, destroySandboxResponse{
+		State:       sb.State,
+		BaseImage:   sb.BaseImage,
+		SandboxName: sb.SandboxName,
+		TTLSeconds:  sb.TTLSeconds,
+	})
 }

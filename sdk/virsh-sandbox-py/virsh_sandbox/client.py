@@ -38,62 +38,34 @@ from virsh_sandbox.models.internal_ansible_job_request import \
     InternalAnsibleJobRequest
 from virsh_sandbox.models.internal_ansible_job_response import \
     InternalAnsibleJobResponse
+from virsh_sandbox.models.internal_api_create_sandbox_session_request import \
+    InternalApiCreateSandboxSessionRequest
+from virsh_sandbox.models.internal_api_create_sandbox_session_response import \
+    InternalApiCreateSandboxSessionResponse
+from virsh_sandbox.models.internal_api_list_sandbox_sessions_response import \
+    InternalApiListSandboxSessionsResponse
+from virsh_sandbox.models.internal_api_sandbox_session_info import \
+    InternalApiSandboxSessionInfo
 from virsh_sandbox.models.internal_rest_ca_public_key_response import \
     InternalRestCaPublicKeyResponse
 from virsh_sandbox.models.internal_rest_certificate_response import \
     InternalRestCertificateResponse
-from virsh_sandbox.models.internal_rest_create_sandbox_request import \
-    InternalRestCreateSandboxRequest
-from virsh_sandbox.models.internal_rest_create_sandbox_response import \
-    InternalRestCreateSandboxResponse
-from virsh_sandbox.models.internal_rest_diff_request import \
-    InternalRestDiffRequest
-from virsh_sandbox.models.internal_rest_diff_response import \
-    InternalRestDiffResponse
-from virsh_sandbox.models.internal_rest_inject_ssh_key_request import \
-    InternalRestInjectSSHKeyRequest
 from virsh_sandbox.models.internal_rest_list_certificates_response import \
     InternalRestListCertificatesResponse
-from virsh_sandbox.models.internal_rest_list_sandboxes_response import \
-    InternalRestListSandboxesResponse
 from virsh_sandbox.models.internal_rest_list_sessions_response import \
     InternalRestListSessionsResponse
-from virsh_sandbox.models.internal_rest_list_vms_response import \
-    InternalRestListVMsResponse
-from virsh_sandbox.models.internal_rest_publish_request import \
-    InternalRestPublishRequest
 from virsh_sandbox.models.internal_rest_request_access_request import \
     InternalRestRequestAccessRequest
 from virsh_sandbox.models.internal_rest_request_access_response import \
     InternalRestRequestAccessResponse
 from virsh_sandbox.models.internal_rest_revoke_certificate_request import \
     InternalRestRevokeCertificateRequest
-from virsh_sandbox.models.internal_rest_run_command_request import \
-    InternalRestRunCommandRequest
-from virsh_sandbox.models.internal_rest_run_command_response import \
-    InternalRestRunCommandResponse
 from virsh_sandbox.models.internal_rest_session_end_request import \
     InternalRestSessionEndRequest
 from virsh_sandbox.models.internal_rest_session_start_request import \
     InternalRestSessionStartRequest
 from virsh_sandbox.models.internal_rest_session_start_response import \
     InternalRestSessionStartResponse
-from virsh_sandbox.models.internal_rest_snapshot_request import \
-    InternalRestSnapshotRequest
-from virsh_sandbox.models.internal_rest_snapshot_response import \
-    InternalRestSnapshotResponse
-from virsh_sandbox.models.internal_rest_start_sandbox_request import \
-    InternalRestStartSandboxRequest
-from virsh_sandbox.models.internal_rest_start_sandbox_response import \
-    InternalRestStartSandboxResponse
-from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_request import \
-    TmuxClientInternalApiCreateSandboxSessionRequest
-from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_response import \
-    TmuxClientInternalApiCreateSandboxSessionResponse
-from virsh_sandbox.models.tmux_client_internal_api_list_sandbox_sessions_response import \
-    TmuxClientInternalApiListSandboxSessionsResponse
-from virsh_sandbox.models.tmux_client_internal_api_sandbox_session_info import \
-    TmuxClientInternalApiSandboxSessionInfo
 from virsh_sandbox.models.tmux_client_internal_types_approve_request import \
     TmuxClientInternalTypesApproveRequest
 from virsh_sandbox.models.tmux_client_internal_types_ask_human_request import \
@@ -176,6 +148,36 @@ from virsh_sandbox.models.tmux_client_internal_types_write_file_request import \
     TmuxClientInternalTypesWriteFileRequest
 from virsh_sandbox.models.tmux_client_internal_types_write_file_response import \
     TmuxClientInternalTypesWriteFileResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_request import \
+    VirshSandboxInternalRestCreateSandboxRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_response import \
+    VirshSandboxInternalRestCreateSandboxResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_destroy_sandbox_response import \
+    VirshSandboxInternalRestDestroySandboxResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_request import \
+    VirshSandboxInternalRestDiffRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_response import \
+    VirshSandboxInternalRestDiffResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_inject_ssh_key_request import \
+    VirshSandboxInternalRestInjectSSHKeyRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sandboxes_response import \
+    VirshSandboxInternalRestListSandboxesResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_list_vms_response import \
+    VirshSandboxInternalRestListVMsResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_publish_request import \
+    VirshSandboxInternalRestPublishRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_request import \
+    VirshSandboxInternalRestRunCommandRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_response import \
+    VirshSandboxInternalRestRunCommandResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_request import \
+    VirshSandboxInternalRestSnapshotRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_response import \
+    VirshSandboxInternalRestSnapshotResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_request import \
+    VirshSandboxInternalRestStartSandboxRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_response import \
+    VirshSandboxInternalRestStartSandboxResponse
 
 
 # TypedDict definitions for response types
@@ -1300,6 +1302,23 @@ class VirshSandboxInternalRestCertificateResponseDict(TypedDict, total=False):
     vm_id: Optional[str]
 
 
+class VirshSandboxInternalRestDestroySandboxResponseDict(TypedDict, total=False):
+    """
+    Dictionary representation of VirshSandboxInternalRestDestroySandboxResponse.
+
+    Keys:
+        base_image (str): base_image
+        sandbox_name (str): sandbox_name
+        state (str): state
+        ttl_seconds (int): ttl_seconds
+    """
+
+    base_image: Optional[str]
+    sandbox_name: Optional[str]
+    state: Optional[str]
+    ttl_seconds: Optional[int]
+
+
 class VirshSandboxInternalRestErrorResponseDict(TypedDict, total=False):
     """
     Dictionary representation of VirshSandboxInternalRestErrorResponse.
@@ -1410,6 +1429,19 @@ class VirshSandboxInternalRestSandboxInfoDict(TypedDict, total=False):
     state: Optional[str]
     ttl_seconds: Optional[int]
     updated_at: Optional[str]
+
+
+class VirshSandboxInternalRestListSandboxesResponseDict(TypedDict, total=False):
+    """
+    Dictionary representation of VirshSandboxInternalRestListSandboxesResponse.
+
+    Keys:
+        sandboxes (List[VirshSandboxInternalRestSandboxInfoDict]): sandboxes
+        total (int): total
+    """
+
+    sandboxes: Optional[List[VirshSandboxInternalRestSandboxInfoDict]]
+    total: Optional[int]
 
 
 class VirshSandboxInternalRestSessionResponseDict(TypedDict, total=False):
@@ -1654,9 +1686,11 @@ class VirshSandboxInternalRestCreateSandboxResponseDict(TypedDict, total=False):
 
     Keys:
         sandbox (VirshSandboxInternalStoreSandboxDict): sandbox
+        ip_address (str): populated when auto_start and wait_for_ip are true
     """
 
     sandbox: Optional[VirshSandboxInternalStoreSandboxDict]
+    ip_address: Optional[str]
 
 
 class VirshSandboxInternalStoreServiceChangeDict(TypedDict, total=False):
@@ -2712,7 +2746,10 @@ class SandboxOperations:
         memory_mb: Optional[int] = None,
         source_vm_name: Optional[str] = None,
         vm_name: Optional[str] = None,
-    ) -> InternalRestCreateSandboxResponseDict:
+        ttl_seconds: Optional[int] = None,
+        auto_start: Optional[bool] = None,
+        wait_for_ip: Optional[bool] = None,
+    ) -> VirshSandboxInternalRestCreateSandboxResponseDict:
         """Create a new sandbox
 
         Args:
@@ -2721,17 +2758,24 @@ class SandboxOperations:
             memory_mb: optional; default from service config if <=0
             source_vm_name: required; name of existing VM in libvirt to clone from
             vm_name: optional; generated if empty
+            ttl_seconds: optional; TTL for auto garbage collection
+            auto_start: optional; if true, start the VM immediately after creation
+            wait_for_ip: optional; if true and auto_start, wait for IP discovery
 
         Returns:
             Dict with keys:
                 - sandbox (VirshSandboxInternalStoreSandbox)
+                - ip_address (str): populated when auto_start and wait_for_ip are true
         """
-        request = InternalRestCreateSandboxRequest(
+        request = VirshSandboxInternalRestCreateSandboxRequest(
             agent_id=agent_id,
             cpu=cpu,
             memory_mb=memory_mb,
             source_vm_name=source_vm_name,
             vm_name=vm_name,
+            ttl_seconds=ttl_seconds,
+            auto_start=auto_start,
+            wait_for_ip=wait_for_ip,
         )
         return _to_dict(self._api.create_sandbox(request=request))
 
@@ -2740,7 +2784,7 @@ class SandboxOperations:
         sandbox_id: Optional[str] = None,
         session_name: Optional[str] = None,
         ttl_minutes: Optional[int] = None,
-    ) -> TmuxClientInternalApiCreateSandboxSessionResponseDict:
+    ) -> InternalApiCreateSandboxSessionResponseDict:
         """Create sandbox session
 
         Args:
@@ -2759,7 +2803,7 @@ class SandboxOperations:
                 - valid_until (str): ValidUntil is when the certificate expires (RFC3339)
                 - vm_ip_address (str): VMIPAddress is the IP of the sandbox VM
         """
-        request = TmuxClientInternalApiCreateSandboxSessionRequest(
+        request = InternalApiCreateSandboxSessionRequest(
             sandbox_id=sandbox_id,
             session_name=session_name,
             ttl_minutes=ttl_minutes,
@@ -2771,7 +2815,7 @@ class SandboxOperations:
         id: str,
         external: Optional[bool] = None,
         name: Optional[str] = None,
-    ) -> InternalRestSnapshotResponseDict:
+    ) -> VirshSandboxInternalRestSnapshotResponseDict:
         """Create snapshot
 
         Args:
@@ -2783,7 +2827,7 @@ class SandboxOperations:
             Dict with keys:
                 - snapshot (VirshSandboxInternalStoreSnapshot)
         """
-        request = InternalRestSnapshotRequest(
+        request = VirshSandboxInternalRestSnapshotRequest(
             external=external,
             name=name,
         )
@@ -2792,20 +2836,27 @@ class SandboxOperations:
     def destroy_sandbox(
         self,
         id: str,
-    ) -> None:
+    ) -> VirshSandboxInternalRestDestroySandboxResponseDict:
         """Destroy sandbox
 
         Args:
             id: str
+
+        Returns:
+            Dict with keys:
+                - base_image (str)
+                - sandbox_name (str)
+                - state (VirshSandboxInternalStoreSandboxState)
+                - ttl_seconds (int)
         """
-        return self._api.destroy_sandbox(id=id)
+        return _to_dict(self._api.destroy_sandbox(id=id))
 
     def diff_snapshots(
         self,
         id: str,
         from_snapshot: Optional[str] = None,
         to_snapshot: Optional[str] = None,
-    ) -> InternalRestDiffResponseDict:
+    ) -> VirshSandboxInternalRestDiffResponseDict:
         """Diff snapshots
 
         Args:
@@ -2817,7 +2868,7 @@ class SandboxOperations:
             Dict with keys:
                 - diff (VirshSandboxInternalStoreDiff)
         """
-        request = InternalRestDiffRequest(
+        request = VirshSandboxInternalRestDiffRequest(
             from_snapshot=from_snapshot,
             to_snapshot=to_snapshot,
         )
@@ -2839,7 +2890,7 @@ class SandboxOperations:
     def get_sandbox_session(
         self,
         session_name: str,
-    ) -> TmuxClientInternalApiSandboxSessionInfoDict:
+    ) -> InternalApiSandboxSessionInfoDict:
         """Get sandbox session
 
         Args:
@@ -2871,7 +2922,7 @@ class SandboxOperations:
             public_key: required
             username: required (explicit); typical: \
         """
-        request = InternalRestInjectSSHKeyRequest(
+        request = VirshSandboxInternalRestInjectSSHKeyRequest(
             public_key=public_key,
             username=username,
         )
@@ -2891,14 +2942,12 @@ class SandboxOperations:
         """
         return _to_dict(self._api.kill_sandbox_session(session_name=session_name))
 
-    def list_sandbox_sessions(
-        self,
-    ) -> TmuxClientInternalApiListSandboxSessionsResponseDict:
+    def list_sandbox_sessions(self) -> InternalApiListSandboxSessionsResponseDict:
         """List sandbox sessions
 
         Returns:
             Dict with keys:
-                - sessions (List[TmuxClientInternalApiSandboxSessionInfo])
+                - sessions (List[InternalApiSandboxSessionInfo])
                 - total (int)
         """
         return _to_dict(self._api.list_sandbox_sessions())
@@ -2912,7 +2961,7 @@ class SandboxOperations:
         vm_name: Optional[str] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> InternalRestListSandboxesResponseDict:
+    ) -> VirshSandboxInternalRestListSandboxesResponseDict:
         """List sandboxes
 
         Args:
@@ -2926,7 +2975,7 @@ class SandboxOperations:
 
         Returns:
             Dict with keys:
-                - sandboxes (List[InternalRestSandboxInfo])
+                - sandboxes (List[VirshSandboxInternalRestSandboxInfo])
                 - total (int)
         """
         return _to_dict(
@@ -2956,7 +3005,7 @@ class SandboxOperations:
             message: optional commit/PR message
             reviewers: optional
         """
-        request = InternalRestPublishRequest(
+        request = VirshSandboxInternalRestPublishRequest(
             job_id=job_id,
             message=message,
             reviewers=reviewers,
@@ -2971,7 +3020,7 @@ class SandboxOperations:
         private_key_path: Optional[str] = None,
         timeout_sec: Optional[int] = None,
         username: Optional[str] = None,
-    ) -> InternalRestRunCommandResponseDict:
+    ) -> VirshSandboxInternalRestRunCommandResponseDict:
         """Run command in sandbox
 
         Args:
@@ -2986,7 +3035,7 @@ class SandboxOperations:
             Dict with keys:
                 - command (VirshSandboxInternalStoreCommand)
         """
-        request = InternalRestRunCommandRequest(
+        request = VirshSandboxInternalRestRunCommandRequest(
             command=command,
             env=env,
             private_key_path=private_key_path,
@@ -3007,7 +3056,7 @@ class SandboxOperations:
         self,
         id: str,
         wait_for_ip: Optional[bool] = None,
-    ) -> InternalRestStartSandboxResponseDict:
+    ) -> VirshSandboxInternalRestStartSandboxResponseDict:
         """Start sandbox
 
         Args:
@@ -3018,7 +3067,7 @@ class SandboxOperations:
             Dict with keys:
                 - ip_address (str)
         """
-        request = InternalRestStartSandboxRequest(
+        request = VirshSandboxInternalRestStartSandboxRequest(
             wait_for_ip=wait_for_ip,
         )
         return _to_dict(self._api.start_sandbox(id=id, request=request))
@@ -3237,12 +3286,12 @@ class VMsOperations:
     def __init__(self, api: VMsApi):
         self._api = api
 
-    def list_virtual_machines(self) -> InternalRestListVMsResponseDict:
+    def list_virtual_machines(self) -> VirshSandboxInternalRestListVMsResponseDict:
         """List all VMs
 
         Returns:
             Dict with keys:
-                - vms (List[InternalRestVmInfo])
+                - vms (List[VirshSandboxInternalRestVmInfo])
         """
         return _to_dict(self._api.list_virtual_machines())
 

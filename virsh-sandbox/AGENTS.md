@@ -2,6 +2,40 @@
 
 This is the main virsh-sandbox Go API service that orchestrates KVM/libvirt virtual machines.
 
+## Important Development Notes
+
+### Mandatory Testing
+
+After every code change, tests MUST be created or updated to verify the new behavior:
+- Add unit tests in `internal/<package>/*_test.go` files
+- Run `make test` to verify all tests pass before considering work complete
+
+### Strict JSON Decoding
+
+The API uses strict JSON decoding (`DisallowUnknownFields()`). This means:
+- Adding new fields to request structs requires rebuilding the API
+- The running API will reject requests with fields it doesn't recognize
+- Always rebuild and restart after modifying request/response DTOs
+
+### Rebuilding After Changes
+
+When modifying the API, you must rebuild for changes to take effect:
+
+```bash
+# From repo root - rebuild and restart via docker-compose
+docker-compose down && docker-compose up --build -d
+
+# Or rebuild locally
+cd virsh-sandbox && make build
+```
+
+### ARM Mac (Apple Silicon) Limitations
+
+On ARM Macs using Lima for libvirt:
+- VMs may fail to start with "CPU mode 'host-passthrough' not supported" errors
+- This is a hypervisor limitation, not a code issue
+- The VM will be created but remain in "shut off" state
+
 ## Prerequisites
 
 - Go 1.21+

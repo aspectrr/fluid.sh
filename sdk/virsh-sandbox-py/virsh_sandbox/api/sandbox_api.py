@@ -13,40 +13,42 @@ from typing_extensions import Annotated
 from virsh_sandbox.api_client import ApiClient, RequestSerialized
 from virsh_sandbox.api_response import ApiResponse
 from virsh_sandbox.exceptions import ApiException
-from virsh_sandbox.models.internal_rest_create_sandbox_request import \
-    InternalRestCreateSandboxRequest
-from virsh_sandbox.models.internal_rest_create_sandbox_response import \
-    InternalRestCreateSandboxResponse
-from virsh_sandbox.models.internal_rest_diff_request import \
-    InternalRestDiffRequest
-from virsh_sandbox.models.internal_rest_diff_response import \
-    InternalRestDiffResponse
-from virsh_sandbox.models.internal_rest_inject_ssh_key_request import \
-    InternalRestInjectSSHKeyRequest
-from virsh_sandbox.models.internal_rest_list_sandboxes_response import \
-    InternalRestListSandboxesResponse
-from virsh_sandbox.models.internal_rest_publish_request import \
-    InternalRestPublishRequest
-from virsh_sandbox.models.internal_rest_run_command_request import \
-    InternalRestRunCommandRequest
-from virsh_sandbox.models.internal_rest_run_command_response import \
-    InternalRestRunCommandResponse
-from virsh_sandbox.models.internal_rest_snapshot_request import \
-    InternalRestSnapshotRequest
-from virsh_sandbox.models.internal_rest_snapshot_response import \
-    InternalRestSnapshotResponse
-from virsh_sandbox.models.internal_rest_start_sandbox_request import \
-    InternalRestStartSandboxRequest
-from virsh_sandbox.models.internal_rest_start_sandbox_response import \
-    InternalRestStartSandboxResponse
-from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_request import \
-    TmuxClientInternalApiCreateSandboxSessionRequest
-from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_response import \
-    TmuxClientInternalApiCreateSandboxSessionResponse
-from virsh_sandbox.models.tmux_client_internal_api_list_sandbox_sessions_response import \
-    TmuxClientInternalApiListSandboxSessionsResponse
-from virsh_sandbox.models.tmux_client_internal_api_sandbox_session_info import \
-    TmuxClientInternalApiSandboxSessionInfo
+from virsh_sandbox.models.internal_api_create_sandbox_session_request import \
+    InternalApiCreateSandboxSessionRequest
+from virsh_sandbox.models.internal_api_create_sandbox_session_response import \
+    InternalApiCreateSandboxSessionResponse
+from virsh_sandbox.models.internal_api_list_sandbox_sessions_response import \
+    InternalApiListSandboxSessionsResponse
+from virsh_sandbox.models.internal_api_sandbox_session_info import \
+    InternalApiSandboxSessionInfo
+from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_request import \
+    VirshSandboxInternalRestCreateSandboxRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_response import \
+    VirshSandboxInternalRestCreateSandboxResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_destroy_sandbox_response import \
+    VirshSandboxInternalRestDestroySandboxResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_request import \
+    VirshSandboxInternalRestDiffRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_response import \
+    VirshSandboxInternalRestDiffResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_inject_ssh_key_request import \
+    VirshSandboxInternalRestInjectSSHKeyRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sandboxes_response import \
+    VirshSandboxInternalRestListSandboxesResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_publish_request import \
+    VirshSandboxInternalRestPublishRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_request import \
+    VirshSandboxInternalRestRunCommandRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_response import \
+    VirshSandboxInternalRestRunCommandResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_request import \
+    VirshSandboxInternalRestSnapshotRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_response import \
+    VirshSandboxInternalRestSnapshotResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_request import \
+    VirshSandboxInternalRestStartSandboxRequest
+from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_response import \
+    VirshSandboxInternalRestStartSandboxResponse
 
 
 class SandboxApi:
@@ -59,19 +61,19 @@ class SandboxApi:
 
     def create_sandbox(
         self,
-        request: InternalRestCreateSandboxRequest,
+        request: VirshSandboxInternalRestCreateSandboxRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> InternalRestCreateSandboxResponse:
+    ) -> VirshSandboxInternalRestCreateSandboxResponse:
         """Create a new sandbox
 
         Creates a new virtual machine sandbox by cloning from an existing VM
 
         :param request: Sandbox creation parameters (required)
-        :type request: InternalRestCreateSandboxRequest
+        :type request: VirshSandboxInternalRestCreateSandboxRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -97,9 +99,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "201": "InternalRestCreateSandboxResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "201": "VirshSandboxInternalRestCreateSandboxResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -112,19 +114,19 @@ class SandboxApi:
 
     def create_sandbox_with_http_info(
         self,
-        request: InternalRestCreateSandboxRequest,
+        request: VirshSandboxInternalRestCreateSandboxRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[InternalRestCreateSandboxResponse]:
+    ) -> ApiResponse[VirshSandboxInternalRestCreateSandboxResponse]:
         """Create a new sandbox
 
         Creates a new virtual machine sandbox by cloning from an existing VM
 
         :param request: Sandbox creation parameters (required)
-        :type request: InternalRestCreateSandboxRequest
+        :type request: VirshSandboxInternalRestCreateSandboxRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -150,9 +152,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "201": "InternalRestCreateSandboxResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "201": "VirshSandboxInternalRestCreateSandboxResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -165,7 +167,7 @@ class SandboxApi:
 
     def create_sandbox_without_preload_content(
         self,
-        request: InternalRestCreateSandboxRequest,
+        request: VirshSandboxInternalRestCreateSandboxRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -177,7 +179,7 @@ class SandboxApi:
         Creates a new virtual machine sandbox by cloning from an existing VM
 
         :param request: Sandbox creation parameters (required)
-        :type request: InternalRestCreateSandboxRequest
+        :type request: VirshSandboxInternalRestCreateSandboxRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -203,9 +205,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "201": "InternalRestCreateSandboxResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "201": "VirshSandboxInternalRestCreateSandboxResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -214,7 +216,7 @@ class SandboxApi:
 
     def _create_sandbox_serialize(
         self,
-        request: InternalRestCreateSandboxRequest,
+        request: VirshSandboxInternalRestCreateSandboxRequest,
         _request_auth: Optional[Dict[str, Any]],
         _content_type: Optional[str],
         _headers: Optional[Dict[str, Any]],
@@ -262,7 +264,7 @@ class SandboxApi:
 
         return self.api_client.param_serialize(
             method="POST",
-            resource_path="/v1/sandbox/create",
+            resource_path="/v1/sandboxes",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -277,19 +279,19 @@ class SandboxApi:
 
     def create_sandbox_session(
         self,
-        request: TmuxClientInternalApiCreateSandboxSessionRequest,
+        request: InternalApiCreateSandboxSessionRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> TmuxClientInternalApiCreateSandboxSessionResponse:
+    ) -> InternalApiCreateSandboxSessionResponse:
         """Create sandbox session
 
         Creates a new tmux session connected to a sandbox VM via SSH certificate
 
         :param request: Create sandbox session request (required)
-        :type request: TmuxClientInternalApiCreateSandboxSessionRequest
+        :type request: InternalApiCreateSandboxSessionRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -315,7 +317,7 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "TmuxClientInternalApiCreateSandboxSessionResponse",
+            "200": "InternalApiCreateSandboxSessionResponse",
             "400": "TmuxClientInternalTypesAPIError",
             "500": "TmuxClientInternalTypesAPIError",
         }
@@ -330,19 +332,19 @@ class SandboxApi:
 
     def create_sandbox_session_with_http_info(
         self,
-        request: TmuxClientInternalApiCreateSandboxSessionRequest,
+        request: InternalApiCreateSandboxSessionRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[TmuxClientInternalApiCreateSandboxSessionResponse]:
+    ) -> ApiResponse[InternalApiCreateSandboxSessionResponse]:
         """Create sandbox session
 
         Creates a new tmux session connected to a sandbox VM via SSH certificate
 
         :param request: Create sandbox session request (required)
-        :type request: TmuxClientInternalApiCreateSandboxSessionRequest
+        :type request: InternalApiCreateSandboxSessionRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -368,7 +370,7 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "TmuxClientInternalApiCreateSandboxSessionResponse",
+            "200": "InternalApiCreateSandboxSessionResponse",
             "400": "TmuxClientInternalTypesAPIError",
             "500": "TmuxClientInternalTypesAPIError",
         }
@@ -383,7 +385,7 @@ class SandboxApi:
 
     def create_sandbox_session_without_preload_content(
         self,
-        request: TmuxClientInternalApiCreateSandboxSessionRequest,
+        request: InternalApiCreateSandboxSessionRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -395,7 +397,7 @@ class SandboxApi:
         Creates a new tmux session connected to a sandbox VM via SSH certificate
 
         :param request: Create sandbox session request (required)
-        :type request: TmuxClientInternalApiCreateSandboxSessionRequest
+        :type request: InternalApiCreateSandboxSessionRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -421,7 +423,7 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "TmuxClientInternalApiCreateSandboxSessionResponse",
+            "200": "InternalApiCreateSandboxSessionResponse",
             "400": "TmuxClientInternalTypesAPIError",
             "500": "TmuxClientInternalTypesAPIError",
         }
@@ -432,7 +434,7 @@ class SandboxApi:
 
     def _create_sandbox_session_serialize(
         self,
-        request: TmuxClientInternalApiCreateSandboxSessionRequest,
+        request: InternalApiCreateSandboxSessionRequest,
         _request_auth: Optional[Dict[str, Any]],
         _content_type: Optional[str],
         _headers: Optional[Dict[str, Any]],
@@ -496,13 +498,13 @@ class SandboxApi:
     def create_snapshot(
         self,
         id: str,
-        request: InternalRestSnapshotRequest,
+        request: VirshSandboxInternalRestSnapshotRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> InternalRestSnapshotResponse:
+    ) -> VirshSandboxInternalRestSnapshotResponse:
         """Create snapshot
 
         Creates a snapshot of the sandbox
@@ -510,7 +512,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Snapshot parameters (required)
-        :type request: InternalRestSnapshotRequest
+        :type request: VirshSandboxInternalRestSnapshotRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -537,9 +539,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "201": "InternalRestSnapshotResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "201": "VirshSandboxInternalRestSnapshotResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -553,13 +555,13 @@ class SandboxApi:
     def create_snapshot_with_http_info(
         self,
         id: str,
-        request: InternalRestSnapshotRequest,
+        request: VirshSandboxInternalRestSnapshotRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[InternalRestSnapshotResponse]:
+    ) -> ApiResponse[VirshSandboxInternalRestSnapshotResponse]:
         """Create snapshot
 
         Creates a snapshot of the sandbox
@@ -567,7 +569,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Snapshot parameters (required)
-        :type request: InternalRestSnapshotRequest
+        :type request: VirshSandboxInternalRestSnapshotRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -594,9 +596,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "201": "InternalRestSnapshotResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "201": "VirshSandboxInternalRestSnapshotResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -610,7 +612,7 @@ class SandboxApi:
     def create_snapshot_without_preload_content(
         self,
         id: str,
-        request: InternalRestSnapshotRequest,
+        request: VirshSandboxInternalRestSnapshotRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -624,7 +626,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Snapshot parameters (required)
-        :type request: InternalRestSnapshotRequest
+        :type request: VirshSandboxInternalRestSnapshotRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -651,9 +653,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "201": "InternalRestSnapshotResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "201": "VirshSandboxInternalRestSnapshotResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -663,7 +665,7 @@ class SandboxApi:
     def _create_snapshot_serialize(
         self,
         id: str,
-        request: InternalRestSnapshotRequest,
+        request: VirshSandboxInternalRestSnapshotRequest,
         _request_auth: Optional[Dict[str, Any]],
         _content_type: Optional[str],
         _headers: Optional[Dict[str, Any]],
@@ -713,7 +715,7 @@ class SandboxApi:
 
         return self.api_client.param_serialize(
             method="POST",
-            resource_path="/v1/sandbox/{id}/snapshot",
+            resource_path="/v1/sandboxes/{id}/snapshot",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -734,7 +736,7 @@ class SandboxApi:
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> None:
+    ) -> VirshSandboxInternalRestDestroySandboxResponse:
         """Destroy sandbox
 
         Destroys the sandbox and cleans up resources
@@ -766,9 +768,10 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "204": None,
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestDestroySandboxResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "404": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -787,7 +790,7 @@ class SandboxApi:
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[None]:
+    ) -> ApiResponse[VirshSandboxInternalRestDestroySandboxResponse]:
         """Destroy sandbox
 
         Destroys the sandbox and cleans up resources
@@ -819,9 +822,10 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "204": None,
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestDestroySandboxResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "404": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -872,9 +876,10 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "204": None,
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestDestroySandboxResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "404": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -923,7 +928,7 @@ class SandboxApi:
 
         return self.api_client.param_serialize(
             method="DELETE",
-            resource_path="/v1/sandbox/{id}",
+            resource_path="/v1/sandboxes/{id}",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -939,13 +944,13 @@ class SandboxApi:
     def diff_snapshots(
         self,
         id: str,
-        request: InternalRestDiffRequest,
+        request: VirshSandboxInternalRestDiffRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> InternalRestDiffResponse:
+    ) -> VirshSandboxInternalRestDiffResponse:
         """Diff snapshots
 
         Computes differences between two snapshots
@@ -953,7 +958,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Diff parameters (required)
-        :type request: InternalRestDiffRequest
+        :type request: VirshSandboxInternalRestDiffRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -980,9 +985,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "InternalRestDiffResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestDiffResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -996,13 +1001,13 @@ class SandboxApi:
     def diff_snapshots_with_http_info(
         self,
         id: str,
-        request: InternalRestDiffRequest,
+        request: VirshSandboxInternalRestDiffRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[InternalRestDiffResponse]:
+    ) -> ApiResponse[VirshSandboxInternalRestDiffResponse]:
         """Diff snapshots
 
         Computes differences between two snapshots
@@ -1010,7 +1015,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Diff parameters (required)
-        :type request: InternalRestDiffRequest
+        :type request: VirshSandboxInternalRestDiffRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -1037,9 +1042,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "InternalRestDiffResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestDiffResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -1053,7 +1058,7 @@ class SandboxApi:
     def diff_snapshots_without_preload_content(
         self,
         id: str,
-        request: InternalRestDiffRequest,
+        request: VirshSandboxInternalRestDiffRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -1067,7 +1072,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Diff parameters (required)
-        :type request: InternalRestDiffRequest
+        :type request: VirshSandboxInternalRestDiffRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -1094,9 +1099,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "InternalRestDiffResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestDiffResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -1106,7 +1111,7 @@ class SandboxApi:
     def _diff_snapshots_serialize(
         self,
         id: str,
-        request: InternalRestDiffRequest,
+        request: VirshSandboxInternalRestDiffRequest,
         _request_auth: Optional[Dict[str, Any]],
         _content_type: Optional[str],
         _headers: Optional[Dict[str, Any]],
@@ -1156,7 +1161,7 @@ class SandboxApi:
 
         return self.api_client.param_serialize(
             method="POST",
-            resource_path="/v1/sandbox/{id}/diff",
+            resource_path="/v1/sandboxes/{id}/diff",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -1213,8 +1218,8 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "400": "InternalRestErrorResponse",
-            "501": "InternalRestGenerateResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "501": "VirshSandboxInternalRestGenerateResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -1269,8 +1274,8 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "400": "InternalRestErrorResponse",
-            "501": "InternalRestGenerateResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "501": "VirshSandboxInternalRestGenerateResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -1325,8 +1330,8 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "400": "InternalRestErrorResponse",
-            "501": "InternalRestGenerateResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "501": "VirshSandboxInternalRestGenerateResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -1378,7 +1383,7 @@ class SandboxApi:
 
         return self.api_client.param_serialize(
             method="POST",
-            resource_path="/v1/sandbox/{id}/generate/{tool}",
+            resource_path="/v1/sandboxes/{id}/generate/{tool}",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -1399,7 +1404,7 @@ class SandboxApi:
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> TmuxClientInternalApiSandboxSessionInfo:
+    ) -> InternalApiSandboxSessionInfo:
         """Get sandbox session
 
         Gets details of a specific sandbox session
@@ -1431,7 +1436,7 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "TmuxClientInternalApiSandboxSessionInfo",
+            "200": "InternalApiSandboxSessionInfo",
             "404": "TmuxClientInternalTypesAPIError",
         }
         response_data = self.api_client.call_api(
@@ -1451,7 +1456,7 @@ class SandboxApi:
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[TmuxClientInternalApiSandboxSessionInfo]:
+    ) -> ApiResponse[InternalApiSandboxSessionInfo]:
         """Get sandbox session
 
         Gets details of a specific sandbox session
@@ -1483,7 +1488,7 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "TmuxClientInternalApiSandboxSessionInfo",
+            "200": "InternalApiSandboxSessionInfo",
             "404": "TmuxClientInternalTypesAPIError",
         }
         response_data = self.api_client.call_api(
@@ -1535,7 +1540,7 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "TmuxClientInternalApiSandboxSessionInfo",
+            "200": "InternalApiSandboxSessionInfo",
             "404": "TmuxClientInternalTypesAPIError",
         }
         response_data = self.api_client.call_api(
@@ -1601,7 +1606,7 @@ class SandboxApi:
     def inject_ssh_key(
         self,
         id: str,
-        request: InternalRestInjectSSHKeyRequest,
+        request: VirshSandboxInternalRestInjectSSHKeyRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -1615,7 +1620,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: SSH key injection parameters (required)
-        :type request: InternalRestInjectSSHKeyRequest
+        :type request: VirshSandboxInternalRestInjectSSHKeyRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -1643,8 +1648,8 @@ class SandboxApi:
 
         _response_types_map: Dict[str, Optional[str]] = {
             "204": None,
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -1658,7 +1663,7 @@ class SandboxApi:
     def inject_ssh_key_with_http_info(
         self,
         id: str,
-        request: InternalRestInjectSSHKeyRequest,
+        request: VirshSandboxInternalRestInjectSSHKeyRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -1672,7 +1677,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: SSH key injection parameters (required)
-        :type request: InternalRestInjectSSHKeyRequest
+        :type request: VirshSandboxInternalRestInjectSSHKeyRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -1700,8 +1705,8 @@ class SandboxApi:
 
         _response_types_map: Dict[str, Optional[str]] = {
             "204": None,
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -1715,7 +1720,7 @@ class SandboxApi:
     def inject_ssh_key_without_preload_content(
         self,
         id: str,
-        request: InternalRestInjectSSHKeyRequest,
+        request: VirshSandboxInternalRestInjectSSHKeyRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -1729,7 +1734,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: SSH key injection parameters (required)
-        :type request: InternalRestInjectSSHKeyRequest
+        :type request: VirshSandboxInternalRestInjectSSHKeyRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -1757,8 +1762,8 @@ class SandboxApi:
 
         _response_types_map: Dict[str, Optional[str]] = {
             "204": None,
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -1768,7 +1773,7 @@ class SandboxApi:
     def _inject_ssh_key_serialize(
         self,
         id: str,
-        request: InternalRestInjectSSHKeyRequest,
+        request: VirshSandboxInternalRestInjectSSHKeyRequest,
         _request_auth: Optional[Dict[str, Any]],
         _content_type: Optional[str],
         _headers: Optional[Dict[str, Any]],
@@ -1818,7 +1823,7 @@ class SandboxApi:
 
         return self.api_client.param_serialize(
             method="POST",
-            resource_path="/v1/sandbox/{id}/sshkey",
+            resource_path="/v1/sandboxes/{id}/sshkey",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -2051,7 +2056,7 @@ class SandboxApi:
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> TmuxClientInternalApiListSandboxSessionsResponse:
+    ) -> InternalApiListSandboxSessionsResponse:
         """List sandbox sessions
 
         Lists all active sandbox sessions
@@ -2080,7 +2085,7 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "TmuxClientInternalApiListSandboxSessionsResponse",
+            "200": "InternalApiListSandboxSessionsResponse",
             "500": "TmuxClientInternalTypesAPIError",
         }
         response_data = self.api_client.call_api(
@@ -2099,7 +2104,7 @@ class SandboxApi:
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[TmuxClientInternalApiListSandboxSessionsResponse]:
+    ) -> ApiResponse[InternalApiListSandboxSessionsResponse]:
         """List sandbox sessions
 
         Lists all active sandbox sessions
@@ -2128,7 +2133,7 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "TmuxClientInternalApiListSandboxSessionsResponse",
+            "200": "InternalApiListSandboxSessionsResponse",
             "500": "TmuxClientInternalTypesAPIError",
         }
         response_data = self.api_client.call_api(
@@ -2176,7 +2181,7 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "TmuxClientInternalApiListSandboxSessionsResponse",
+            "200": "InternalApiListSandboxSessionsResponse",
             "500": "TmuxClientInternalTypesAPIError",
         }
         response_data = self.api_client.call_api(
@@ -2250,7 +2255,7 @@ class SandboxApi:
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> InternalRestListSandboxesResponse:
+    ) -> VirshSandboxInternalRestListSandboxesResponse:
         """List sandboxes
 
         Lists all sandboxes with optional filtering by agent_id, job_id, base_image, state, or vm_name
@@ -2300,8 +2305,8 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "InternalRestListSandboxesResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestListSandboxesResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -2326,7 +2331,7 @@ class SandboxApi:
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[InternalRestListSandboxesResponse]:
+    ) -> ApiResponse[VirshSandboxInternalRestListSandboxesResponse]:
         """List sandboxes
 
         Lists all sandboxes with optional filtering by agent_id, job_id, base_image, state, or vm_name
@@ -2376,8 +2381,8 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "InternalRestListSandboxesResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestListSandboxesResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -2452,8 +2457,8 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "InternalRestListSandboxesResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestListSandboxesResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -2543,7 +2548,7 @@ class SandboxApi:
     def publish_changes(
         self,
         id: str,
-        request: InternalRestPublishRequest,
+        request: VirshSandboxInternalRestPublishRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -2557,7 +2562,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Publish parameters (required)
-        :type request: InternalRestPublishRequest
+        :type request: VirshSandboxInternalRestPublishRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -2584,8 +2589,8 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "400": "InternalRestErrorResponse",
-            "501": "InternalRestPublishResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "501": "VirshSandboxInternalRestPublishResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -2599,7 +2604,7 @@ class SandboxApi:
     def publish_changes_with_http_info(
         self,
         id: str,
-        request: InternalRestPublishRequest,
+        request: VirshSandboxInternalRestPublishRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -2613,7 +2618,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Publish parameters (required)
-        :type request: InternalRestPublishRequest
+        :type request: VirshSandboxInternalRestPublishRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -2640,8 +2645,8 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "400": "InternalRestErrorResponse",
-            "501": "InternalRestPublishResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "501": "VirshSandboxInternalRestPublishResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -2655,7 +2660,7 @@ class SandboxApi:
     def publish_changes_without_preload_content(
         self,
         id: str,
-        request: InternalRestPublishRequest,
+        request: VirshSandboxInternalRestPublishRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -2669,7 +2674,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Publish parameters (required)
-        :type request: InternalRestPublishRequest
+        :type request: VirshSandboxInternalRestPublishRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -2696,8 +2701,8 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "400": "InternalRestErrorResponse",
-            "501": "InternalRestPublishResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "501": "VirshSandboxInternalRestPublishResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -2707,7 +2712,7 @@ class SandboxApi:
     def _publish_changes_serialize(
         self,
         id: str,
-        request: InternalRestPublishRequest,
+        request: VirshSandboxInternalRestPublishRequest,
         _request_auth: Optional[Dict[str, Any]],
         _content_type: Optional[str],
         _headers: Optional[Dict[str, Any]],
@@ -2757,7 +2762,7 @@ class SandboxApi:
 
         return self.api_client.param_serialize(
             method="POST",
-            resource_path="/v1/sandbox/{id}/publish",
+            resource_path="/v1/sandboxes/{id}/publish",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -2773,13 +2778,13 @@ class SandboxApi:
     def run_sandbox_command(
         self,
         id: str,
-        request: InternalRestRunCommandRequest,
+        request: VirshSandboxInternalRestRunCommandRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> InternalRestRunCommandResponse:
+    ) -> VirshSandboxInternalRestRunCommandResponse:
         """Run command in sandbox
 
         Executes a command inside the sandbox via SSH
@@ -2787,7 +2792,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Command execution parameters (required)
-        :type request: InternalRestRunCommandRequest
+        :type request: VirshSandboxInternalRestRunCommandRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -2814,9 +2819,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "InternalRestRunCommandResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestRunCommandResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -2830,13 +2835,13 @@ class SandboxApi:
     def run_sandbox_command_with_http_info(
         self,
         id: str,
-        request: InternalRestRunCommandRequest,
+        request: VirshSandboxInternalRestRunCommandRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[InternalRestRunCommandResponse]:
+    ) -> ApiResponse[VirshSandboxInternalRestRunCommandResponse]:
         """Run command in sandbox
 
         Executes a command inside the sandbox via SSH
@@ -2844,7 +2849,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Command execution parameters (required)
-        :type request: InternalRestRunCommandRequest
+        :type request: VirshSandboxInternalRestRunCommandRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -2871,9 +2876,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "InternalRestRunCommandResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestRunCommandResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -2887,7 +2892,7 @@ class SandboxApi:
     def run_sandbox_command_without_preload_content(
         self,
         id: str,
-        request: InternalRestRunCommandRequest,
+        request: VirshSandboxInternalRestRunCommandRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -2901,7 +2906,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Command execution parameters (required)
-        :type request: InternalRestRunCommandRequest
+        :type request: VirshSandboxInternalRestRunCommandRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -2928,9 +2933,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "InternalRestRunCommandResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestRunCommandResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -2940,7 +2945,7 @@ class SandboxApi:
     def _run_sandbox_command_serialize(
         self,
         id: str,
-        request: InternalRestRunCommandRequest,
+        request: VirshSandboxInternalRestRunCommandRequest,
         _request_auth: Optional[Dict[str, Any]],
         _content_type: Optional[str],
         _headers: Optional[Dict[str, Any]],
@@ -2990,7 +2995,7 @@ class SandboxApi:
 
         return self.api_client.param_serialize(
             method="POST",
-            resource_path="/v1/sandbox/{id}/run",
+            resource_path="/v1/sandboxes/{id}/run",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -3198,13 +3203,13 @@ class SandboxApi:
     def start_sandbox(
         self,
         id: str,
-        request: Optional[InternalRestStartSandboxRequest] = None,
+        request: Optional[VirshSandboxInternalRestStartSandboxRequest] = None,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> InternalRestStartSandboxResponse:
+    ) -> VirshSandboxInternalRestStartSandboxResponse:
         """Start sandbox
 
         Starts the virtual machine sandbox
@@ -3212,7 +3217,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Start parameters (optional)
-        :type request: InternalRestStartSandboxRequest, optional
+        :type request: VirshSandboxInternalRestStartSandboxRequest, optional
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -3239,9 +3244,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "InternalRestStartSandboxResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestStartSandboxResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -3255,13 +3260,13 @@ class SandboxApi:
     def start_sandbox_with_http_info(
         self,
         id: str,
-        request: Optional[InternalRestStartSandboxRequest] = None,
+        request: Optional[VirshSandboxInternalRestStartSandboxRequest] = None,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[InternalRestStartSandboxResponse]:
+    ) -> ApiResponse[VirshSandboxInternalRestStartSandboxResponse]:
         """Start sandbox
 
         Starts the virtual machine sandbox
@@ -3269,7 +3274,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Start parameters (optional)
-        :type request: InternalRestStartSandboxRequest, optional
+        :type request: VirshSandboxInternalRestStartSandboxRequest, optional
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -3296,9 +3301,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "InternalRestStartSandboxResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestStartSandboxResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -3312,7 +3317,7 @@ class SandboxApi:
     def start_sandbox_without_preload_content(
         self,
         id: str,
-        request: Optional[InternalRestStartSandboxRequest] = None,
+        request: Optional[VirshSandboxInternalRestStartSandboxRequest] = None,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -3326,7 +3331,7 @@ class SandboxApi:
         :param id: Sandbox ID (required)
         :type id: str
         :param request: Start parameters (optional)
-        :type request: InternalRestStartSandboxRequest, optional
+        :type request: VirshSandboxInternalRestStartSandboxRequest, optional
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -3353,9 +3358,9 @@ class SandboxApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "InternalRestStartSandboxResponse",
-            "400": "InternalRestErrorResponse",
-            "500": "InternalRestErrorResponse",
+            "200": "VirshSandboxInternalRestStartSandboxResponse",
+            "400": "VirshSandboxInternalRestErrorResponse",
+            "500": "VirshSandboxInternalRestErrorResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -3365,7 +3370,7 @@ class SandboxApi:
     def _start_sandbox_serialize(
         self,
         id: str,
-        request: Optional[InternalRestStartSandboxRequest],
+        request: Optional[VirshSandboxInternalRestStartSandboxRequest],
         _request_auth: Optional[Dict[str, Any]],
         _content_type: Optional[str],
         _headers: Optional[Dict[str, Any]],
@@ -3415,7 +3420,7 @@ class SandboxApi:
 
         return self.api_client.param_serialize(
             method="POST",
-            resource_path="/v1/sandbox/{id}/start",
+            resource_path="/v1/sandboxes/{id}/start",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

@@ -10,7 +10,19 @@ This is a monorepo containing multiple projects. See project-specific rules belo
 - @web/AGENTS.md - Web frontend
 - @examples/agent-example/AGENTS.md - Example agent implementation
 
-## Monorepo Development Scripts
+## Mandatory Testing Requirement
+
+**IMPORTANT**: After every code change, tests MUST be created or updated to verify the new behavior. This applies to all projects in the monorepo.
+
+- For Go services: Add unit tests in `*_test.go` files
+- For Python SDK: Add tests in `test/test_client.py`
+- For Web frontend: Add component/integration tests as appropriate
+
+Changes without corresponding tests should not be considered complete.
+
+### Building
+
+Please use docker-compose to build and test the services by specifiying the container needed like `docker-compose up virsh-sandbox` or `docker-compose up tmux-client`
 
 ### Quick Start with Docker Compose
 
@@ -35,25 +47,6 @@ docker-compose down
 
 # Stop and remove volumes
 docker-compose down -v
-```
-
-### Development with mprocs
-
-For local development with hot-reload across all services:
-
-```bash
-# Install mprocs
-brew install mprocs  # macOS
-# or: cargo install mprocs
-
-# Start all services with mprocs
-mprocs
-
-# This runs:
-# - PostgreSQL (via docker-compose)
-# - API server (with hot-reload)
-# - Tmux client (with hot-reload)
-# - Frontend dev server
 ```
 
 ### Git Hooks with Lefthook

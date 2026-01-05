@@ -980,6 +980,53 @@ def update_init_file(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     print("Updated __init__.py to export VirshSandbox")
 
 
+def remove_unused_imports(sdk_dir: Path):
+    """Remove unused imports from generated model files.
+
+    The OpenAPI generator adds standard imports to all model files, but many
+    are not actually used. This function removes common unused imports like
+    `re` which is imported but never used in most model files.
+    """
+    models_dir = sdk_dir / "models"
+    if not models_dir.exists():
+        print(f"Warning: models directory not found at {models_dir}")
+        return
+
+    # List of imports that are commonly unused in model files
+    # These have `# noqa: F401` comments which indicates they may be unused
+    unused_import_patterns = [
+        (r'^import re  # noqa: F401\n', ''),  # Remove unused re import with noqa comment
+        (r'^import re\n', ''),  # Remove unused re import without noqa comment
+    ]
+
+    files_modified = 0
+
+    for model_file in models_dir.glob("*.py"):
+        if model_file.name == "__init__.py":
+            continue
+
+        content = model_file.read_text()
+        original_content = content
+
+        # Check if `re` is actually used in the file (beyond the import)
+        # Look for `re.` usage which would indicate actual usage
+        re_is_used = bool(re.search(r'\bre\.', content))
+
+        if not re_is_used:
+            # Remove the unused re import
+            for pattern, replacement in unused_import_patterns:
+                content = re.sub(pattern, replacement, content, flags=re.MULTILINE)
+
+        if content != original_content:
+            model_file.write_text(content)
+            files_modified += 1
+
+    if files_modified > 0:
+        print(f"  - Removed unused imports from {files_modified} model files")
+    else:
+        print("  - No unused imports to remove")
+
+
 def patch_api_client(sdk_dir: Path):
     """Patch api_client.py to use getattr with defaults for potentially missing config attributes.
 
@@ -1034,6 +1081,9 @@ def main():
 
     print("Patching api_client.py for config compatibility...")
     patch_api_client(sdk_dir)
+
+    print("Removing unused imports from generated files...")
+    remove_unused_imports(sdk_dir)
 
     print("SDK polished!")
 

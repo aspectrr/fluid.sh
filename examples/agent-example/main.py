@@ -136,7 +136,7 @@ def call_tool(name: str, args: dict[str, Any]) -> dict[str, Any]:
 # ---------------------------
 
 
-def run_agent(user_goal: str) -> None:
+def run_agent(user_goal: str, sandbox_id: str | None | Any) -> None:
     """
     Run the agent loop to accomplish the user's goal.
 
@@ -153,6 +153,7 @@ def run_agent(user_goal: str) -> None:
                 "- No shell pipelines or chained commands.\n"
                 "- Always check the health of the API before performing operations.\n"
                 "- Track progress and report what you're doing.\n"
+                f"- Only make changes to the sandbox with ID: {sandbox_id}"
             ),
         },
         {"role": "user", "content": user_goal},
@@ -222,20 +223,18 @@ def main():
     agent_id = str(uuid4())
     try:
 
-        # sandbox = client.sandbox.create_sandbox(source_vm_name="test-vm", agent_id=agent_id)
-        # pprint(sandbox)
-
-        # session = client.sandbox.create_sandbox_session(sandbox_id=sandbox.id)
+        sandbox = client.sandbox.create_sandbox(source_vm_name="test-vm", agent_id=agent_id)
+        pprint(sandbox)
 
         run_agent(
-            "Find an available sandbox and run the command 'ls -l' on the sandbox."
+            "Run the command 'ls -l' on the sandbox.", sandbox["sandbox"]["id"]
         )
     except Exception as e:
         print(f"Error: {e}")
     finally:
         if(sandbox):
             print("Cleaning up sandbox...")
-            # client.sandbox.destroy_sandbox(id=sandbox.id)
+            client.sandbox.destroy_sandbox(id=sandbox["sandbox"]["id"])
 
 
 # ---------------------------
