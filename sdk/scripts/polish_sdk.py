@@ -610,7 +610,6 @@ def get_return_type_for_model(return_type: str, models: dict) -> str:
 def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = True) -> str:
     """Generate a wrapper method with flattened parameters that returns Pydantic models."""
     lines = []
-    aliases = aliases or {}
 
     # Get request fields if applicable
     request_fields = []
@@ -708,10 +707,6 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     apis = discover_apis(sdk_dir)
     models = discover_models(sdk_dir)
 
-    # Generate simplified type aliases for better IDE experience
-    aliases = generate_simplified_aliases(models)
-    print(f"Generated {len(aliases)} type aliases for IDE autocomplete")
-
     # Which APIs use tmux host
     tmux_api_properties = {"command", "file", "tmux", "audit", "health", "human", "plan"}
 
@@ -777,7 +772,7 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
         lines.append("")
 
         for method in api['methods']:
-            method_code = generate_wrapper_method(method, models, use_async=use_async, aliases=aliases)
+            method_code = generate_wrapper_method(method, models, use_async=use_async)
             lines.append(method_code)
 
         wrapper_classes.append("\n".join(lines))
@@ -972,84 +967,36 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
         output_lines.append('        """Context manager exit."""')
         output_lines.append('        self.close()')
 
-    # Add simplified type aliases for better IDE experience
-    output_lines.append('')
-    output_lines.append('')
-    output_lines.append('# User-friendly type aliases for IDE autocomplete')
-    output_lines.append('# These provide shorter names for the TypedDict response types')
-    for verbose_name, simple_name in sorted(aliases.items()):
-        output_lines.append(f'{simple_name} = {verbose_name}')
-
     # Write the file
     client_path = sdk_dir / "client.py"
     client_path.write_text("\n".join(output_lines))
     print(f"Generated unified client: {client_path}")
 
-    # Return aliases for use in updating __init__.py
-    return aliases
 
-
-def update_init_file(sdk_dir: Path, package_name: str = "virsh_sandbox", aliases: dict[str, str] = None):
-    """Update __init__.py to export VirshSandbox and type aliases."""
-    aliases = aliases or {}
+def update_init_file(sdk_dir: Path, package_name: str = "virsh_sandbox"):
+    """Update __init__.py to export VirshSandbox."""
     init_path = sdk_dir / "__init__.py"
     content = init_path.read_text()
 
-    # Check if VirshSandbox is already exported
-    needs_virsh_sandbox = f"from {package_name}.client import VirshSandbox" not in content
-
-    # Build the list of type alias names to export
-    alias_names = sorted(set(aliases.values()))
-
-    # Check if we need to add type aliases (look for any existing alias)
-    needs_type_aliases = alias_names and not any(
-        f'"{alias}"' in content for alias in alias_names[:3]  # Check first few
-    )
-
-    if not needs_virsh_sandbox and not needs_type_aliases:
-        print("VirshSandbox and type aliases already exported in __init__.py")
+    if f"from {package_name}.client import VirshSandbox" in content:
+        print("VirshSandbox already exported in __init__.py")
         return
 
-    # Add type alias names to __all__ list
-    if alias_names and needs_type_aliases:
-        # Add all type alias names to __all__
-        alias_exports = ',\n    '.join(f'"{name}"' for name in alias_names)
+    content = content.replace(
+        '__all__ = [',
+        '__all__ = [\n    "VirshSandbox",'
+    )
+
+    if "# import apis into sdk package" in content:
         content = content.replace(
-            '__all__ = [',
-            f'__all__ = [\n    {alias_exports},'
+            "# import apis into sdk package",
+            f"# import unified client\nfrom {package_name}.client import VirshSandbox as VirshSandbox\n\n# import apis into sdk package"
         )
-
-    if needs_virsh_sandbox:
-        content = content.replace(
-            '__all__ = [',
-            '__all__ = [\n    "VirshSandbox",'
-        )
-
-    # Add imports at the appropriate location
-    import_lines = []
-    if needs_virsh_sandbox:
-        import_lines.append(f"from {package_name}.client import VirshSandbox as VirshSandbox")
-
-    if needs_type_aliases and alias_names:
-        # Import all type aliases
-        aliases_import = ", ".join(alias_names)
-        import_lines.append(f"from {package_name}.client import ({aliases_import})")
-
-    if import_lines:
-        import_block = "\n".join(import_lines)
-        if "# import apis into sdk package" in content:
-            content = content.replace(
-                "# import apis into sdk package",
-                f"# import unified client and type aliases\n{import_block}\n\n# import apis into sdk package"
-            )
-        else:
-            content += f"\n# import unified client and type aliases\n{import_block}\n"
+    else:
+        content += f"\n# import unified client\nfrom {package_name}.client import VirshSandbox as VirshSandbox\n"
 
     init_path.write_text(content)
-    if needs_virsh_sandbox:
-        print("Updated __init__.py to export VirshSandbox")
-    if needs_type_aliases:
-        print(f"Updated __init__.py to export {len(alias_names)} type aliases")
+    print("Updated __init__.py to export VirshSandbox")
 
 
 def remove_unused_imports(sdk_dir: Path):
@@ -1146,10 +1093,10 @@ def main():
         return
 
     print("Generating unified client with flattened parameters...")
-    aliases = generate_unified_client(sdk_dir, package_name)
+    generate_unified_client(sdk_dir, package_name)
 
     print("Updating __init__.py...")
-    update_init_file(sdk_dir, package_name, aliases=aliases)
+    update_init_file(sdk_dir, package_name)
 
     print("Patching api_client.py for config compatibility...")
     patch_api_client(sdk_dir)
