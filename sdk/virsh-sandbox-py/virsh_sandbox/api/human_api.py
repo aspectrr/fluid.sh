@@ -7,18 +7,27 @@
 
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from pydantic import Field, StrictStr
+from typing_extensions import Annotated
+
 from virsh_sandbox.api_client import ApiClient, RequestSerialized
 from virsh_sandbox.api_response import ApiResponse
-from virsh_sandbox.models.tmux_client_internal_types_approve_request import \
-    TmuxClientInternalTypesApproveRequest
-from virsh_sandbox.models.tmux_client_internal_types_ask_human_request import \
-    TmuxClientInternalTypesAskHumanRequest
-from virsh_sandbox.models.tmux_client_internal_types_ask_human_response import \
-    TmuxClientInternalTypesAskHumanResponse
-from virsh_sandbox.models.tmux_client_internal_types_list_approvals_response import \
-    TmuxClientInternalTypesListApprovalsResponse
-from virsh_sandbox.models.tmux_client_internal_types_pending_approval import \
-    TmuxClientInternalTypesPendingApproval
+from virsh_sandbox.exceptions import ApiException
+from virsh_sandbox.models.tmux_client_internal_types_approve_request import (
+    TmuxClientInternalTypesApproveRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_ask_human_request import (
+    TmuxClientInternalTypesAskHumanRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_ask_human_response import (
+    TmuxClientInternalTypesAskHumanResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_list_approvals_response import (
+    TmuxClientInternalTypesListApprovalsResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_pending_approval import (
+    TmuxClientInternalTypesPendingApproval,
+)
 
 
 class HumanApi:

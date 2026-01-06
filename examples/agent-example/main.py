@@ -41,11 +41,17 @@ def call_tool(name: str, args: dict[str, Any]) -> dict[str, Any]:
     try:
         if name == "check_health":
             response = client.health.get_health()
-            return {"message": response}
+            # Convert Pydantic model to dict for JSON serialization
+            return {"status": response.status if hasattr(response, 'status') else "healthy"}
 
         if name == "list_sandboxes":
             response = client.sandbox.list_sandboxes()
-            return {"sandboxes": response}
+            if(response.sandboxes):
+                # Convert list of Pydantic models to list of dicts
+                sandboxes = [sb.to_dict() if hasattr(sb, 'to_dict') else sb for sb in response.sandboxes]
+                return {"sandboxes": sandboxes}
+            else:
+                return {"sandboxes": []}
 
         # if name == "create_sandbox":
         #     response = sandbox_client.create_sandbox(
@@ -77,8 +83,9 @@ def call_tool(name: str, args: dict[str, Any]) -> dict[str, Any]:
                 private_key_path=args.get("private_key_path", None),
                 timeout_sec=args.get("timeout_sec", 60)
             )
-
-            return {"success": True, "message": "Command executed", "output": response}
+            # Convert Pydantic model to dict for JSON serialization
+            output = response.to_dict() if hasattr(response, 'to_dict') else response
+            return {"success": True, "message": "Command executed", "output": output}
 
         # if name == "create_snapshot":
         #     response = sandbox_client.create_snapshot(
@@ -218,7 +225,7 @@ def main():
     agent_id = str(uuid4())
     try:
 
-        sandbox = client.sandbox.create_sandbox(source_vm_name="test-vm", agent_id=agent_id, auto_start=True).sandbox
+        sandbox = client.sandbox.create_sandbox(source_vm_name="test-vm-arm64", agent_id=agent_id, auto_start=True, wait_for_ip=True).sandbox
         print("Sandbox Created:")
         pprint(sandbox)
 
