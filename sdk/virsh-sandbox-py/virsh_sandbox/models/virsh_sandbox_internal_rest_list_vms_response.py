@@ -16,13 +16,15 @@ from __future__ import annotations
 
 import json
 import pprint
+import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
 from pydantic import BaseModel, ConfigDict
 from typing_extensions import Self
 
-from virsh_sandbox.models.virsh_sandbox_internal_rest_vm_info import \
-    VirshSandboxInternalRestVmInfo
+from virsh_sandbox.models.virsh_sandbox_internal_rest_vm_info import (
+    VirshSandboxInternalRestVmInfo,
+)
 
 
 class VirshSandboxInternalRestListVMsResponse(BaseModel):
