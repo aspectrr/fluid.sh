@@ -637,7 +637,7 @@ def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = 
     if all_params:
         params_str = ",\n        ".join(all_params)
         lines.append(f"    {def_keyword} {method.name}(")
-        lines.append(f"        self,")
+        lines.append("        self,")
         lines.append(f"        {params_str},")
         lines.append(f"    ) -> {return_type_hint}:")
     else:

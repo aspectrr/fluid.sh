@@ -7,12 +7,8 @@
 
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from pydantic import Field
-from typing_extensions import Annotated
-
 from virsh_sandbox.api_client import ApiClient, RequestSerialized
 from virsh_sandbox.api_response import ApiResponse
-from virsh_sandbox.exceptions import ApiException
 from virsh_sandbox.models.tmux_client_internal_types_audit_query import \
     TmuxClientInternalTypesAuditQuery
 from virsh_sandbox.models.tmux_client_internal_types_audit_query_response import \
