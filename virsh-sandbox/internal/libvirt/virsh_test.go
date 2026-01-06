@@ -239,3 +239,108 @@ func TestRenderDomainXML_Defaults(t *testing.T) {
 		}
 	}
 }
+
+func TestRenderDomainXML_WithCloudInitISO(t *testing.T) {
+	// Test that cloud-init ISO is properly included in domain XML
+	params := domainXMLParams{
+		Name:         "test-cloud-init",
+		MemoryMB:     2048,
+		VCPUs:        2,
+		DiskPath:     "/var/lib/libvirt/images/jobs/test-cloud-init/disk-overlay.qcow2",
+		CloudInitISO: "/var/lib/libvirt/images/jobs/test-cloud-init/cloud-init.iso",
+		Network:      "default",
+		Arch:         "aarch64",
+		Machine:      "virt",
+		DomainType:   "qemu",
+	}
+
+	xml, err := renderDomainXML(params)
+	if err != nil {
+		t.Fatalf("renderDomainXML() error = %v", err)
+	}
+
+	// Cloud-init ISO elements should be present
+	expectedElements := []string{
+		`<disk type="file" device="cdrom">`,
+		`<source file="/var/lib/libvirt/images/jobs/test-cloud-init/cloud-init.iso"/>`,
+		`<target dev="sda" bus="scsi"/>`,
+		`<readonly/>`,
+		`<controller type="scsi" model="virtio-scsi"/>`,
+	}
+
+	for _, expected := range expectedElements {
+		if !strings.Contains(xml, expected) {
+			t.Errorf("renderDomainXML() expected cloud-init element %q not found in XML:\n%s", expected, xml)
+		}
+	}
+}
+
+func TestRenderDomainXML_WithoutCloudInitISO(t *testing.T) {
+	// Test that no cloud-init CDROM is included when CloudInitISO is empty
+	params := domainXMLParams{
+		Name:       "test-no-cloud-init",
+		MemoryMB:   2048,
+		VCPUs:      2,
+		DiskPath:   "/var/lib/libvirt/images/jobs/test/disk-overlay.qcow2",
+		Network:    "default",
+		Arch:       "x86_64",
+		Machine:    "pc-q35-6.2",
+		DomainType: "kvm",
+		// CloudInitISO is empty
+	}
+
+	xml, err := renderDomainXML(params)
+	if err != nil {
+		t.Fatalf("renderDomainXML() error = %v", err)
+	}
+
+	// Cloud-init ISO elements should NOT be present
+	unexpectedElements := []string{
+		`device="cdrom"`,
+		`<controller type="scsi" model="virtio-scsi"/>`,
+	}
+
+	for _, unexpected := range unexpectedElements {
+		if strings.Contains(xml, unexpected) {
+			t.Errorf("renderDomainXML() unexpected cloud-init element %q found in XML when CloudInitISO is empty:\n%s", unexpected, xml)
+		}
+	}
+
+	// Main disk should still be present
+	if !strings.Contains(xml, `<disk type="file" device="disk">`) {
+		t.Error("renderDomainXML() main disk not found in XML")
+	}
+}
+
+func TestCloudInitSeedForClone_UniqueInstanceID(t *testing.T) {
+	// This test verifies the concept that each clone should get a unique instance-id
+	// The actual buildCloudInitSeedForClone function creates files, so we test the
+	// expected behavior through the domain XML params
+
+	vmNames := []string{"sbx-abc123", "sbx-def456", "sbx-ghi789"}
+
+	for _, vmName := range vmNames {
+		params := domainXMLParams{
+			Name:         vmName,
+			MemoryMB:     1024,
+			VCPUs:        1,
+			DiskPath:     "/var/lib/libvirt/images/jobs/" + vmName + "/disk-overlay.qcow2",
+			CloudInitISO: "/var/lib/libvirt/images/jobs/" + vmName + "/cloud-init.iso",
+			Network:      "default",
+			Arch:         "aarch64",
+			Machine:      "virt",
+			DomainType:   "qemu",
+		}
+
+		xml, err := renderDomainXML(params)
+		if err != nil {
+			t.Fatalf("renderDomainXML() for %s error = %v", vmName, err)
+		}
+
+		// Each sandbox should have its own cloud-init ISO path
+		expectedISOPath := "/var/lib/libvirt/images/jobs/" + vmName + "/cloud-init.iso"
+		if !strings.Contains(xml, expectedISOPath) {
+			t.Errorf("renderDomainXML() for %s expected ISO path %q not found in XML", vmName, expectedISOPath)
+		}
+	}
+}

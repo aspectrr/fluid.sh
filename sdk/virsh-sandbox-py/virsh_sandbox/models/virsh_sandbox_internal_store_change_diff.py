@@ -16,17 +16,21 @@ from __future__ import annotations
 
 import json
 import pprint
+import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
 from pydantic import BaseModel, ConfigDict, StrictStr
 from typing_extensions import Self
 
-from virsh_sandbox.models.virsh_sandbox_internal_store_command_summary import \
-    VirshSandboxInternalStoreCommandSummary
-from virsh_sandbox.models.virsh_sandbox_internal_store_package_info import \
-    VirshSandboxInternalStorePackageInfo
-from virsh_sandbox.models.virsh_sandbox_internal_store_service_change import \
-    VirshSandboxInternalStoreServiceChange
+from virsh_sandbox.models.virsh_sandbox_internal_store_command_summary import (
+    VirshSandboxInternalStoreCommandSummary,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_store_package_info import (
+    VirshSandboxInternalStorePackageInfo,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_store_service_change import (
+    VirshSandboxInternalStoreServiceChange,
+)
 
 
 class VirshSandboxInternalStoreChangeDiff(BaseModel):

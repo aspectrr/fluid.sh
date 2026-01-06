@@ -32,10 +32,7 @@ from virsh_sandbox import rest
 from virsh_sandbox.api_response import ApiResponse
 from virsh_sandbox.api_response import T as ApiResponseT
 from virsh_sandbox.configuration import Configuration
-from virsh_sandbox.exceptions import (ApiException, ApiValueError,
-                                      BadRequestException, ForbiddenException,
-                                      NotFoundException, ServiceException,
-                                      UnauthorizedException)
+from virsh_sandbox.exceptions import ApiException, ApiValueError
 
 RequestSerialized = Tuple[str, str, Dict[str, str], Optional[str], List[str]]
 
@@ -188,10 +185,7 @@ class ApiClient:
             for k, v in path_params:
                 # specified safe chars, encode everything
                 resource_path = resource_path.replace(
-                    "{%s}" % k,
-                    quote(
-                        str(v), safe=getattr(config, "safe_chars_for_path_param", "")
-                    ),
+                    "{%s}" % k, quote(str(v), safe=config.safe_chars_for_path_param)
                 )
 
         # post parameters
@@ -218,9 +212,7 @@ class ApiClient:
             body = self.sanitize_for_serialization(body)
 
         # request url
-        if _host is None or getattr(
-            self.configuration, "ignore_operation_servers", False
-        ):
+        if _host is None or self.configuration.ignore_operation_servers:
             url = self.configuration.host + resource_path
         else:
             # use server/host defined in path or operation instead
