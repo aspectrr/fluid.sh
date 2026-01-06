@@ -33,151 +33,227 @@ from virsh_sandbox.api.tmux_api import TmuxApi
 from virsh_sandbox.api.vms_api import VMsApi
 from virsh_sandbox.api_client import ApiClient
 from virsh_sandbox.configuration import Configuration
-from virsh_sandbox.models.internal_ansible_job import InternalAnsibleJob
-from virsh_sandbox.models.internal_ansible_job_request import \
-    InternalAnsibleJobRequest
-from virsh_sandbox.models.internal_ansible_job_response import \
-    InternalAnsibleJobResponse
-from virsh_sandbox.models.internal_api_create_sandbox_session_request import \
-    InternalApiCreateSandboxSessionRequest
-from virsh_sandbox.models.internal_api_create_sandbox_session_response import \
-    InternalApiCreateSandboxSessionResponse
-from virsh_sandbox.models.internal_api_list_sandbox_sessions_response import \
-    InternalApiListSandboxSessionsResponse
-from virsh_sandbox.models.internal_api_sandbox_session_info import \
-    InternalApiSandboxSessionInfo
-from virsh_sandbox.models.internal_rest_ca_public_key_response import \
-    InternalRestCaPublicKeyResponse
-from virsh_sandbox.models.internal_rest_certificate_response import \
-    InternalRestCertificateResponse
-from virsh_sandbox.models.internal_rest_list_certificates_response import \
-    InternalRestListCertificatesResponse
-from virsh_sandbox.models.internal_rest_list_sessions_response import \
-    InternalRestListSessionsResponse
-from virsh_sandbox.models.internal_rest_request_access_request import \
-    InternalRestRequestAccessRequest
-from virsh_sandbox.models.internal_rest_request_access_response import \
-    InternalRestRequestAccessResponse
-from virsh_sandbox.models.internal_rest_revoke_certificate_request import \
-    InternalRestRevokeCertificateRequest
-from virsh_sandbox.models.internal_rest_session_end_request import \
-    InternalRestSessionEndRequest
-from virsh_sandbox.models.internal_rest_session_start_request import \
-    InternalRestSessionStartRequest
-from virsh_sandbox.models.internal_rest_session_start_response import \
-    InternalRestSessionStartResponse
-from virsh_sandbox.models.tmux_client_internal_types_approve_request import \
-    TmuxClientInternalTypesApproveRequest
-from virsh_sandbox.models.tmux_client_internal_types_ask_human_request import \
-    TmuxClientInternalTypesAskHumanRequest
-from virsh_sandbox.models.tmux_client_internal_types_ask_human_response import \
-    TmuxClientInternalTypesAskHumanResponse
-from virsh_sandbox.models.tmux_client_internal_types_audit_query import \
-    TmuxClientInternalTypesAuditQuery
-from virsh_sandbox.models.tmux_client_internal_types_audit_query_response import \
-    TmuxClientInternalTypesAuditQueryResponse
-from virsh_sandbox.models.tmux_client_internal_types_copy_file_request import \
-    TmuxClientInternalTypesCopyFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_copy_file_response import \
-    TmuxClientInternalTypesCopyFileResponse
-from virsh_sandbox.models.tmux_client_internal_types_create_pane_request import \
-    TmuxClientInternalTypesCreatePaneRequest
-from virsh_sandbox.models.tmux_client_internal_types_create_pane_response import \
-    TmuxClientInternalTypesCreatePaneResponse
-from virsh_sandbox.models.tmux_client_internal_types_create_plan_request import \
-    TmuxClientInternalTypesCreatePlanRequest
-from virsh_sandbox.models.tmux_client_internal_types_create_plan_response import \
-    TmuxClientInternalTypesCreatePlanResponse
-from virsh_sandbox.models.tmux_client_internal_types_delete_file_request import \
-    TmuxClientInternalTypesDeleteFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_delete_file_response import \
-    TmuxClientInternalTypesDeleteFileResponse
-from virsh_sandbox.models.tmux_client_internal_types_edit_file_request import \
-    TmuxClientInternalTypesEditFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_edit_file_response import \
-    TmuxClientInternalTypesEditFileResponse
-from virsh_sandbox.models.tmux_client_internal_types_get_plan_response import \
-    TmuxClientInternalTypesGetPlanResponse
-from virsh_sandbox.models.tmux_client_internal_types_health_response import \
-    TmuxClientInternalTypesHealthResponse
-from virsh_sandbox.models.tmux_client_internal_types_kill_session_response import \
-    TmuxClientInternalTypesKillSessionResponse
-from virsh_sandbox.models.tmux_client_internal_types_list_approvals_response import \
-    TmuxClientInternalTypesListApprovalsResponse
-from virsh_sandbox.models.tmux_client_internal_types_list_dir_request import \
-    TmuxClientInternalTypesListDirRequest
-from virsh_sandbox.models.tmux_client_internal_types_list_dir_response import \
-    TmuxClientInternalTypesListDirResponse
-from virsh_sandbox.models.tmux_client_internal_types_list_panes_response import \
-    TmuxClientInternalTypesListPanesResponse
-from virsh_sandbox.models.tmux_client_internal_types_list_plans_response import \
-    TmuxClientInternalTypesListPlansResponse
-from virsh_sandbox.models.tmux_client_internal_types_pending_approval import \
-    TmuxClientInternalTypesPendingApproval
-from virsh_sandbox.models.tmux_client_internal_types_read_file_request import \
-    TmuxClientInternalTypesReadFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_read_file_response import \
-    TmuxClientInternalTypesReadFileResponse
-from virsh_sandbox.models.tmux_client_internal_types_read_pane_request import \
-    TmuxClientInternalTypesReadPaneRequest
-from virsh_sandbox.models.tmux_client_internal_types_read_pane_response import \
-    TmuxClientInternalTypesReadPaneResponse
-from virsh_sandbox.models.tmux_client_internal_types_run_command_request import \
-    TmuxClientInternalTypesRunCommandRequest
-from virsh_sandbox.models.tmux_client_internal_types_run_command_response import \
-    TmuxClientInternalTypesRunCommandResponse
-from virsh_sandbox.models.tmux_client_internal_types_send_keys_request import \
-    TmuxClientInternalTypesSendKeysRequest
-from virsh_sandbox.models.tmux_client_internal_types_send_keys_response import \
-    TmuxClientInternalTypesSendKeysResponse
-from virsh_sandbox.models.tmux_client_internal_types_session_info import \
-    TmuxClientInternalTypesSessionInfo
-from virsh_sandbox.models.tmux_client_internal_types_step_status import \
-    TmuxClientInternalTypesStepStatus
-from virsh_sandbox.models.tmux_client_internal_types_switch_pane_request import \
-    TmuxClientInternalTypesSwitchPaneRequest
-from virsh_sandbox.models.tmux_client_internal_types_switch_pane_response import \
-    TmuxClientInternalTypesSwitchPaneResponse
-from virsh_sandbox.models.tmux_client_internal_types_update_plan_request import \
-    TmuxClientInternalTypesUpdatePlanRequest
-from virsh_sandbox.models.tmux_client_internal_types_update_plan_response import \
-    TmuxClientInternalTypesUpdatePlanResponse
-from virsh_sandbox.models.tmux_client_internal_types_window_info import \
-    TmuxClientInternalTypesWindowInfo
-from virsh_sandbox.models.tmux_client_internal_types_write_file_request import \
-    TmuxClientInternalTypesWriteFileRequest
-from virsh_sandbox.models.tmux_client_internal_types_write_file_response import \
-    TmuxClientInternalTypesWriteFileResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_request import \
-    VirshSandboxInternalRestCreateSandboxRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_response import \
-    VirshSandboxInternalRestCreateSandboxResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_destroy_sandbox_response import \
-    VirshSandboxInternalRestDestroySandboxResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_request import \
-    VirshSandboxInternalRestDiffRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_response import \
-    VirshSandboxInternalRestDiffResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_inject_ssh_key_request import \
-    VirshSandboxInternalRestInjectSSHKeyRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sandboxes_response import \
-    VirshSandboxInternalRestListSandboxesResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_list_vms_response import \
-    VirshSandboxInternalRestListVMsResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_publish_request import \
-    VirshSandboxInternalRestPublishRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_request import \
-    VirshSandboxInternalRestRunCommandRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_response import \
-    VirshSandboxInternalRestRunCommandResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_request import \
-    VirshSandboxInternalRestSnapshotRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_response import \
-    VirshSandboxInternalRestSnapshotResponse
-from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_request import \
-    VirshSandboxInternalRestStartSandboxRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_response import \
-    VirshSandboxInternalRestStartSandboxResponse
+from virsh_sandbox.models.internal_rest_ca_public_key_response import (
+    InternalRestCaPublicKeyResponse,
+)
+from virsh_sandbox.models.internal_rest_certificate_response import (
+    InternalRestCertificateResponse,
+)
+from virsh_sandbox.models.internal_rest_create_sandbox_request import (
+    InternalRestCreateSandboxRequest,
+)
+from virsh_sandbox.models.internal_rest_create_sandbox_response import (
+    InternalRestCreateSandboxResponse,
+)
+from virsh_sandbox.models.internal_rest_destroy_sandbox_response import (
+    InternalRestDestroySandboxResponse,
+)
+from virsh_sandbox.models.internal_rest_diff_request import InternalRestDiffRequest
+from virsh_sandbox.models.internal_rest_diff_response import InternalRestDiffResponse
+from virsh_sandbox.models.internal_rest_get_sandbox_response import (
+    InternalRestGetSandboxResponse,
+)
+from virsh_sandbox.models.internal_rest_inject_ssh_key_request import (
+    InternalRestInjectSSHKeyRequest,
+)
+from virsh_sandbox.models.internal_rest_list_certificates_response import (
+    InternalRestListCertificatesResponse,
+)
+from virsh_sandbox.models.internal_rest_list_sandbox_commands_response import (
+    InternalRestListSandboxCommandsResponse,
+)
+from virsh_sandbox.models.internal_rest_list_sandboxes_response import (
+    InternalRestListSandboxesResponse,
+)
+from virsh_sandbox.models.internal_rest_list_sessions_response import (
+    InternalRestListSessionsResponse,
+)
+from virsh_sandbox.models.internal_rest_list_vms_response import (
+    InternalRestListVMsResponse,
+)
+from virsh_sandbox.models.internal_rest_publish_request import (
+    InternalRestPublishRequest,
+)
+from virsh_sandbox.models.internal_rest_request_access_request import (
+    InternalRestRequestAccessRequest,
+)
+from virsh_sandbox.models.internal_rest_request_access_response import (
+    InternalRestRequestAccessResponse,
+)
+from virsh_sandbox.models.internal_rest_revoke_certificate_request import (
+    InternalRestRevokeCertificateRequest,
+)
+from virsh_sandbox.models.internal_rest_run_command_request import (
+    InternalRestRunCommandRequest,
+)
+from virsh_sandbox.models.internal_rest_run_command_response import (
+    InternalRestRunCommandResponse,
+)
+from virsh_sandbox.models.internal_rest_session_end_request import (
+    InternalRestSessionEndRequest,
+)
+from virsh_sandbox.models.internal_rest_session_start_request import (
+    InternalRestSessionStartRequest,
+)
+from virsh_sandbox.models.internal_rest_session_start_response import (
+    InternalRestSessionStartResponse,
+)
+from virsh_sandbox.models.internal_rest_snapshot_request import (
+    InternalRestSnapshotRequest,
+)
+from virsh_sandbox.models.internal_rest_snapshot_response import (
+    InternalRestSnapshotResponse,
+)
+from virsh_sandbox.models.internal_rest_start_sandbox_request import (
+    InternalRestStartSandboxRequest,
+)
+from virsh_sandbox.models.internal_rest_start_sandbox_response import (
+    InternalRestStartSandboxResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_request import (
+    TmuxClientInternalApiCreateSandboxSessionRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_response import (
+    TmuxClientInternalApiCreateSandboxSessionResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_api_list_sandbox_sessions_response import (
+    TmuxClientInternalApiListSandboxSessionsResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_api_sandbox_session_info import (
+    TmuxClientInternalApiSandboxSessionInfo,
+)
+from virsh_sandbox.models.tmux_client_internal_types_approve_request import (
+    TmuxClientInternalTypesApproveRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_ask_human_request import (
+    TmuxClientInternalTypesAskHumanRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_ask_human_response import (
+    TmuxClientInternalTypesAskHumanResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_audit_query import (
+    TmuxClientInternalTypesAuditQuery,
+)
+from virsh_sandbox.models.tmux_client_internal_types_audit_query_response import (
+    TmuxClientInternalTypesAuditQueryResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_copy_file_request import (
+    TmuxClientInternalTypesCopyFileRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_copy_file_response import (
+    TmuxClientInternalTypesCopyFileResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_create_pane_request import (
+    TmuxClientInternalTypesCreatePaneRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_create_pane_response import (
+    TmuxClientInternalTypesCreatePaneResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_create_plan_request import (
+    TmuxClientInternalTypesCreatePlanRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_create_plan_response import (
+    TmuxClientInternalTypesCreatePlanResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_delete_file_request import (
+    TmuxClientInternalTypesDeleteFileRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_delete_file_response import (
+    TmuxClientInternalTypesDeleteFileResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_edit_file_request import (
+    TmuxClientInternalTypesEditFileRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_edit_file_response import (
+    TmuxClientInternalTypesEditFileResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_get_plan_response import (
+    TmuxClientInternalTypesGetPlanResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_health_response import (
+    TmuxClientInternalTypesHealthResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_kill_session_response import (
+    TmuxClientInternalTypesKillSessionResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_list_approvals_response import (
+    TmuxClientInternalTypesListApprovalsResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_list_dir_request import (
+    TmuxClientInternalTypesListDirRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_list_dir_response import (
+    TmuxClientInternalTypesListDirResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_list_panes_response import (
+    TmuxClientInternalTypesListPanesResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_list_plans_response import (
+    TmuxClientInternalTypesListPlansResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_pending_approval import (
+    TmuxClientInternalTypesPendingApproval,
+)
+from virsh_sandbox.models.tmux_client_internal_types_read_file_request import (
+    TmuxClientInternalTypesReadFileRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_read_file_response import (
+    TmuxClientInternalTypesReadFileResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_read_pane_request import (
+    TmuxClientInternalTypesReadPaneRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_read_pane_response import (
+    TmuxClientInternalTypesReadPaneResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_run_command_request import (
+    TmuxClientInternalTypesRunCommandRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_run_command_response import (
+    TmuxClientInternalTypesRunCommandResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_send_keys_request import (
+    TmuxClientInternalTypesSendKeysRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_send_keys_response import (
+    TmuxClientInternalTypesSendKeysResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_session_info import (
+    TmuxClientInternalTypesSessionInfo,
+)
+from virsh_sandbox.models.tmux_client_internal_types_step_status import (
+    TmuxClientInternalTypesStepStatus,
+)
+from virsh_sandbox.models.tmux_client_internal_types_switch_pane_request import (
+    TmuxClientInternalTypesSwitchPaneRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_switch_pane_response import (
+    TmuxClientInternalTypesSwitchPaneResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_update_plan_request import (
+    TmuxClientInternalTypesUpdatePlanRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_update_plan_response import (
+    TmuxClientInternalTypesUpdatePlanResponse,
+)
+from virsh_sandbox.models.tmux_client_internal_types_window_info import (
+    TmuxClientInternalTypesWindowInfo,
+)
+from virsh_sandbox.models.tmux_client_internal_types_write_file_request import (
+    TmuxClientInternalTypesWriteFileRequest,
+)
+from virsh_sandbox.models.tmux_client_internal_types_write_file_response import (
+    TmuxClientInternalTypesWriteFileResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_ansible_job import (
+    VirshSandboxInternalAnsibleJob,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_ansible_job_request import (
+    VirshSandboxInternalAnsibleJobRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_ansible_job_response import (
+    VirshSandboxInternalAnsibleJobResponse,
+)
 
 
 class AccessOperations:
@@ -377,7 +453,7 @@ class AnsibleOperations:
         check: Optional[bool] = None,
         playbook: Optional[str] = None,
         vm_name: Optional[str] = None,
-    ) -> InternalAnsibleJobResponse:
+    ) -> VirshSandboxInternalAnsibleJobResponse:
         """Create Ansible job
 
         Args:
@@ -386,10 +462,10 @@ class AnsibleOperations:
             vm_name: vm_name
 
         Returns:
-            InternalAnsibleJobResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalAnsibleJobResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalAnsibleJobRequest(
+        request = VirshSandboxInternalAnsibleJobRequest(
             check=check,
             playbook=playbook,
             vm_name=vm_name,
@@ -399,14 +475,14 @@ class AnsibleOperations:
     def get_ansible_job(
         self,
         job_id: str,
-    ) -> InternalAnsibleJob:
+    ) -> VirshSandboxInternalAnsibleJob:
         """Get Ansible job
 
         Args:
             job_id: str
 
         Returns:
-            InternalAnsibleJob: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalAnsibleJob: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.get_ansible_job(job_id=job_id)
@@ -997,38 +1073,38 @@ class SandboxOperations:
     def create_sandbox(
         self,
         agent_id: Optional[str] = None,
+        auto_start: Optional[bool] = None,
         cpu: Optional[int] = None,
         memory_mb: Optional[int] = None,
         source_vm_name: Optional[str] = None,
-        vm_name: Optional[str] = None,
         ttl_seconds: Optional[int] = None,
-        auto_start: Optional[bool] = None,
+        vm_name: Optional[str] = None,
         wait_for_ip: Optional[bool] = None,
-    ) -> VirshSandboxInternalRestCreateSandboxResponse:
+    ) -> InternalRestCreateSandboxResponse:
         """Create a new sandbox
 
         Args:
             agent_id: required
+            auto_start: optional; if true, start the VM immediately after creation
             cpu: optional; default from service config if <=0
             memory_mb: optional; default from service config if <=0
             source_vm_name: required; name of existing VM in libvirt to clone from
-            vm_name: optional; generated if empty
             ttl_seconds: optional; TTL for auto garbage collection
-            auto_start: optional; if true, start the VM immediately after creation
+            vm_name: optional; generated if empty
             wait_for_ip: optional; if true and auto_start, wait for IP discovery
 
         Returns:
-            VirshSandboxInternalRestCreateSandboxResponse: Pydantic model with full IDE autocomplete.
+            InternalRestCreateSandboxResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = VirshSandboxInternalRestCreateSandboxRequest(
+        request = InternalRestCreateSandboxRequest(
             agent_id=agent_id,
+            auto_start=auto_start,
             cpu=cpu,
             memory_mb=memory_mb,
             source_vm_name=source_vm_name,
-            vm_name=vm_name,
             ttl_seconds=ttl_seconds,
-            auto_start=auto_start,
+            vm_name=vm_name,
             wait_for_ip=wait_for_ip,
         )
         return self._api.create_sandbox(request=request)
@@ -1038,7 +1114,7 @@ class SandboxOperations:
         sandbox_id: Optional[str] = None,
         session_name: Optional[str] = None,
         ttl_minutes: Optional[int] = None,
-    ) -> InternalApiCreateSandboxSessionResponse:
+    ) -> TmuxClientInternalApiCreateSandboxSessionResponse:
         """Create sandbox session
 
         Args:
@@ -1047,10 +1123,10 @@ class SandboxOperations:
             ttl_minutes: TTLMinutes is the certificate TTL in minutes (1-10, default 5)
 
         Returns:
-            InternalApiCreateSandboxSessionResponse: Pydantic model with full IDE autocomplete.
+            TmuxClientInternalApiCreateSandboxSessionResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalApiCreateSandboxSessionRequest(
+        request = TmuxClientInternalApiCreateSandboxSessionRequest(
             sandbox_id=sandbox_id,
             session_name=session_name,
             ttl_minutes=ttl_minutes,
@@ -1062,7 +1138,7 @@ class SandboxOperations:
         id: str,
         external: Optional[bool] = None,
         name: Optional[str] = None,
-    ) -> VirshSandboxInternalRestSnapshotResponse:
+    ) -> InternalRestSnapshotResponse:
         """Create snapshot
 
         Args:
@@ -1071,10 +1147,10 @@ class SandboxOperations:
             name: required
 
         Returns:
-            VirshSandboxInternalRestSnapshotResponse: Pydantic model with full IDE autocomplete.
+            InternalRestSnapshotResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = VirshSandboxInternalRestSnapshotRequest(
+        request = InternalRestSnapshotRequest(
             external=external,
             name=name,
         )
@@ -1083,14 +1159,14 @@ class SandboxOperations:
     def destroy_sandbox(
         self,
         id: str,
-    ) -> VirshSandboxInternalRestDestroySandboxResponse:
+    ) -> InternalRestDestroySandboxResponse:
         """Destroy sandbox
 
         Args:
             id: str
 
         Returns:
-            VirshSandboxInternalRestDestroySandboxResponse: Pydantic model with full IDE autocomplete.
+            InternalRestDestroySandboxResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.destroy_sandbox(id=id)
@@ -1100,7 +1176,7 @@ class SandboxOperations:
         id: str,
         from_snapshot: Optional[str] = None,
         to_snapshot: Optional[str] = None,
-    ) -> VirshSandboxInternalRestDiffResponse:
+    ) -> InternalRestDiffResponse:
         """Diff snapshots
 
         Args:
@@ -1109,10 +1185,10 @@ class SandboxOperations:
             to_snapshot: required
 
         Returns:
-            VirshSandboxInternalRestDiffResponse: Pydantic model with full IDE autocomplete.
+            InternalRestDiffResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = VirshSandboxInternalRestDiffRequest(
+        request = InternalRestDiffRequest(
             from_snapshot=from_snapshot,
             to_snapshot=to_snapshot,
         )
@@ -1131,17 +1207,34 @@ class SandboxOperations:
         """
         return self._api.generate_configuration(id=id, tool=tool)
 
+    def get_sandbox(
+        self,
+        id: str,
+        include_commands: Optional[bool] = None,
+    ) -> InternalRestGetSandboxResponse:
+        """Get sandbox details
+
+        Args:
+            id: str
+            include_commands: Optional[bool]
+
+        Returns:
+            InternalRestGetSandboxResponse: Pydantic model with full IDE autocomplete.
+            Call .model_dump() to convert to dict if needed.
+        """
+        return self._api.get_sandbox(id=id, include_commands=include_commands)
+
     def get_sandbox_session(
         self,
         session_name: str,
-    ) -> InternalApiSandboxSessionInfo:
+    ) -> TmuxClientInternalApiSandboxSessionInfo:
         """Get sandbox session
 
         Args:
             session_name: str
 
         Returns:
-            InternalApiSandboxSessionInfo: Pydantic model with full IDE autocomplete.
+            TmuxClientInternalApiSandboxSessionInfo: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.get_sandbox_session(session_name=session_name)
@@ -1159,7 +1252,7 @@ class SandboxOperations:
             public_key: required
             username: required (explicit); typical: \
         """
-        request = VirshSandboxInternalRestInjectSSHKeyRequest(
+        request = InternalRestInjectSSHKeyRequest(
             public_key=public_key,
             username=username,
         )
@@ -1180,11 +1273,30 @@ class SandboxOperations:
         """
         return self._api.kill_sandbox_session(session_name=session_name)
 
-    def list_sandbox_sessions(self) -> InternalApiListSandboxSessionsResponse:
+    def list_sandbox_commands(
+        self,
+        id: str,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> InternalRestListSandboxCommandsResponse:
+        """List sandbox commands
+
+        Args:
+            id: str
+            limit: Optional[int]
+            offset: Optional[int]
+
+        Returns:
+            InternalRestListSandboxCommandsResponse: Pydantic model with full IDE autocomplete.
+            Call .model_dump() to convert to dict if needed.
+        """
+        return self._api.list_sandbox_commands(id=id, limit=limit, offset=offset)
+
+    def list_sandbox_sessions(self) -> TmuxClientInternalApiListSandboxSessionsResponse:
         """List sandbox sessions
 
         Returns:
-            InternalApiListSandboxSessionsResponse: Pydantic model with full IDE autocomplete.
+            TmuxClientInternalApiListSandboxSessionsResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.list_sandbox_sessions()
@@ -1198,7 +1310,7 @@ class SandboxOperations:
         vm_name: Optional[str] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> VirshSandboxInternalRestListSandboxesResponse:
+    ) -> InternalRestListSandboxesResponse:
         """List sandboxes
 
         Args:
@@ -1211,7 +1323,7 @@ class SandboxOperations:
             offset: Optional[int]
 
         Returns:
-            VirshSandboxInternalRestListSandboxesResponse: Pydantic model with full IDE autocomplete.
+            InternalRestListSandboxesResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.list_sandboxes(
@@ -1239,7 +1351,7 @@ class SandboxOperations:
             message: optional commit/PR message
             reviewers: optional
         """
-        request = VirshSandboxInternalRestPublishRequest(
+        request = InternalRestPublishRequest(
             job_id=job_id,
             message=message,
             reviewers=reviewers,
@@ -1254,7 +1366,7 @@ class SandboxOperations:
         private_key_path: Optional[str] = None,
         timeout_sec: Optional[int] = None,
         username: Optional[str] = None,
-    ) -> VirshSandboxInternalRestRunCommandResponse:
+    ) -> InternalRestRunCommandResponse:
         """Run command in sandbox
 
         Args:
@@ -1266,10 +1378,10 @@ class SandboxOperations:
             username: required
 
         Returns:
-            VirshSandboxInternalRestRunCommandResponse: Pydantic model with full IDE autocomplete.
+            InternalRestRunCommandResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = VirshSandboxInternalRestRunCommandRequest(
+        request = InternalRestRunCommandRequest(
             command=command,
             env=env,
             private_key_path=private_key_path,
@@ -1291,7 +1403,7 @@ class SandboxOperations:
         self,
         id: str,
         wait_for_ip: Optional[bool] = None,
-    ) -> VirshSandboxInternalRestStartSandboxResponse:
+    ) -> InternalRestStartSandboxResponse:
         """Start sandbox
 
         Args:
@@ -1299,13 +1411,24 @@ class SandboxOperations:
             wait_for_ip: optional; default false
 
         Returns:
-            VirshSandboxInternalRestStartSandboxResponse: Pydantic model with full IDE autocomplete.
+            InternalRestStartSandboxResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = VirshSandboxInternalRestStartSandboxRequest(
+        request = InternalRestStartSandboxRequest(
             wait_for_ip=wait_for_ip,
         )
         return self._api.start_sandbox(id=id, request=request)
+
+    def stream_sandbox_activity(
+        self,
+        id: str,
+    ) -> None:
+        """Stream sandbox activity
+
+        Args:
+            id: str
+        """
+        return self._api.stream_sandbox_activity(id=id)
 
 
 class TmuxOperations:
@@ -1504,11 +1627,11 @@ class VMsOperations:
     def __init__(self, api: VMsApi):
         self._api = api
 
-    def list_virtual_machines(self) -> VirshSandboxInternalRestListVMsResponse:
+    def list_virtual_machines(self) -> InternalRestListVMsResponse:
         """List all VMs
 
         Returns:
-            VirshSandboxInternalRestListVMsResponse: Pydantic model with full IDE autocomplete.
+            InternalRestListVMsResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.list_virtual_machines()
