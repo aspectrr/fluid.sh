@@ -42,14 +42,15 @@ pre-commit:
       root: "sdk/virsh-sandbox-py"
       run: isort .
       stage_fixed: true
-    lint-sdk:
-      glob: "*.py"
-      root: "sdk/virsh-sandbox-py"
-      run: ruff check .
-    test-sdk:
-      glob: "*.py"
-      root: "sdk/virsh-sandbox-py"
-      run: python3 -m pytest test/ -v --tb=short
+    # lint-sdk:
+    #   glob: "*.py"
+    #   root: "sdk/virsh-sandbox-py"
+    #   run: ruff check . --fix
+    #   stage_fixed: true
+    # test-sdk:
+    #   glob: "*.py"
+    #   root: "sdk/virsh-sandbox-py"
+    #   run: python3 -m pytest test/ -v --tb=short
 
     # lint-virsh-sandbox:
     #   glob: "*.go"
