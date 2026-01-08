@@ -5,7 +5,7 @@ This agent uses OpenAI's function calling to interact with the
 virsh-sandbox API through a set of defined tools.
 """
 import json
-import time
+from time import sleep
 from uuid import uuid4
 from typing import Any
 from virsh_sandbox import VirshSandbox, ApiException
@@ -78,10 +78,6 @@ def call_tool(name: str, args: dict[str, Any]) -> dict[str, Any]:
             response = client.sandbox.run_sandbox_command(
                 id=args["sandbox_id"],
                 command=args["command"],
-                env=args.get("env", {}),
-                username=args.get("username", None),
-                private_key_path=args.get("private_key_path", None),
-                timeout_sec=args.get("timeout_sec", 60)
             )
             # Convert Pydantic model to dict for JSON serialization
             output = response.to_dict() if hasattr(response, 'to_dict') else response
@@ -215,7 +211,7 @@ def run_agent(user_goal: str, sandbox_id: str | None | Any) -> None:
                 print("\n[agent] Task completed!")
                 return
 
-        time.sleep(0.2)
+        sleep(0.2)
 
 def main():
     print("Starting virsh-sandbox agent...")
@@ -225,13 +221,14 @@ def main():
     agent_id = str(uuid4())
     try:
 
-        sandbox = client.sandbox.create_sandbox(source_vm_name="test-vm-arm64", agent_id=agent_id, auto_start=True, wait_for_ip=True).sandbox
-        print("Sandbox Created:")
+        sandbox = client.sandbox.create_sandbox(source_vm_name="test-vm", agent_id=agent_id).sandbox
         pprint(sandbox)
 
-        if(sandbox):
+        if(sandbox and sandbox.id):
+            res = client.sandbox.start_sandbox(id=sandbox.id, wait_for_ip=True)
+            pprint(res)
             run_agent(
-                "Run the command 'ls -l'", sandbox.id
+                "Run the command 'whoami'", sandbox.id
             )
     except Exception as e:
         print(f"Error: {e}")

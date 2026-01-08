@@ -6,9 +6,9 @@ package libvirt
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -51,8 +51,24 @@ type Manager interface {
 	DiffSnapshot(ctx context.Context, vmName, fromSnapshot, toSnapshot string) (*FSComparePlan, error)
 
 	// GetIPAddress attempts to fetch the VM's primary IP via libvirt leases.
-	GetIPAddress(ctx context.Context, vmName string, timeout time.Duration) (string, error)
+	// Returns the IP address and MAC address of the VM's primary interface.
+	GetIPAddress(ctx context.Context, vmName string, timeout time.Duration) (ip string, mac string, err error)
+
+	// GetVMState returns the current state of a VM using virsh domstate.
+	GetVMState(ctx context.Context, vmName string) (VMState, error)
 }
+
+// VMState represents possible VM states from virsh domstate.
+type VMState string
+
+const (
+	VMStateRunning   VMState = "running"
+	VMStatePaused    VMState = "paused"
+	VMStateShutOff   VMState = "shut off"
+	VMStateCrashed   VMState = "crashed"
+	VMStateSuspended VMState = "pmsuspended"
+	VMStateUnknown   VMState = "unknown"
+)
 
 // Config controls how the virsh-based manager interacts with the host.
 type Config struct {
@@ -109,11 +125,13 @@ type FSComparePlan struct {
 
 // VirshManager implements Manager using virsh/qemu-img/qemu-nbd/virt-customize and simple domain XML.
 type VirshManager struct {
-	cfg Config
+	cfg    Config
+	logger *slog.Logger
 }
 
-// NewVirshManager creates a new VirshManager with the provided config.
-func NewVirshManager(cfg Config) *VirshManager {
+// NewVirshManager creates a new VirshManager with the provided config and optional logger.
+// If logger is nil, slog.Default() is used.
+func NewVirshManager(cfg Config, logger *slog.Logger) *VirshManager {
 	// Fill sensible defaults
 	if cfg.DefaultVCPUs == 0 {
 		cfg.DefaultVCPUs = 2
@@ -121,7 +139,10 @@ func NewVirshManager(cfg Config) *VirshManager {
 	if cfg.DefaultMemoryMB == 0 {
 		cfg.DefaultMemoryMB = 2048
 	}
-	return &VirshManager{cfg: cfg}
+	if logger == nil {
+		logger = slog.Default()
+	}
+	return &VirshManager{cfg: cfg, logger: logger}
 }
 
 // NewFromEnv builds a Config from environment variables and returns a manager.
@@ -136,7 +157,20 @@ func NewFromEnv() *VirshManager {
 		DefaultVCPUs:       intFromEnv("DEFAULT_VCPUS", 2),
 		DefaultMemoryMB:    intFromEnv("DEFAULT_MEMORY_MB", 2048),
 	}
-	return NewVirshManager(cfg)
+	return NewVirshManager(cfg, nil)
+}
+
+// ConfigFromEnv returns a Config populated from environment variables.
+func ConfigFromEnv() Config {
+	return Config{
+		LibvirtURI:         getenvDefault("LIBVIRT_URI", "qemu:///system"),
+		BaseImageDir:       getenvDefault("BASE_IMAGE_DIR", "/var/lib/libvirt/images/base"),
+		WorkDir:            getenvDefault("SANDBOX_WORKDIR", "/var/lib/libvirt/images/jobs"),
+		DefaultNetwork:     getenvDefault("LIBVIRT_NETWORK", "default"),
+		SSHKeyInjectMethod: getenvDefault("SSH_KEY_INJECT_METHOD", "virt-customize"),
+		DefaultVCPUs:       intFromEnv("DEFAULT_VCPUS", 2),
+		DefaultMemoryMB:    intFromEnv("DEFAULT_MEMORY_MB", 2048),
+	}
 }
 
 func (m *VirshManager) CloneVM(ctx context.Context, baseImage, newVMName string, cpu, memoryMB int, network string) (DomainRef, error) {
@@ -391,9 +425,83 @@ func (m *VirshManager) StartVM(ctx context.Context, vmName string) error {
 	if vmName == "" {
 		return fmt.Errorf("vmName is required")
 	}
+
+	m.logger.Info("starting VM",
+		"vm_name", vmName,
+		"libvirt_uri", m.cfg.LibvirtURI,
+	)
+
 	virsh := m.binPath("virsh", m.cfg.VirshPath)
-	_, err := m.run(ctx, virsh, "--connect", m.cfg.LibvirtURI, "start", vmName)
-	return err
+	out, err := m.run(ctx, virsh, "--connect", m.cfg.LibvirtURI, "start", vmName)
+	if err != nil {
+		m.logger.Error("failed to start VM",
+			"vm_name", vmName,
+			"error", err,
+			"output", out,
+		)
+		return err
+	}
+
+	m.logger.Debug("virsh start command completed",
+		"vm_name", vmName,
+		"output", out,
+	)
+
+	// Verify VM actually started by checking state
+	state, stateErr := m.GetVMState(ctx, vmName)
+	if stateErr != nil {
+		m.logger.Warn("unable to verify VM state after start",
+			"vm_name", vmName,
+			"error", stateErr,
+		)
+	} else {
+		m.logger.Info("VM state after start command",
+			"vm_name", vmName,
+			"state", state,
+		)
+		if state != VMStateRunning {
+			m.logger.Warn("VM not in running state after start command",
+				"vm_name", vmName,
+				"actual_state", state,
+				"expected_state", VMStateRunning,
+				"hint", "On ARM Macs with Lima, VMs may fail to start due to CPU mode limitations",
+			)
+		}
+	}
+
+	return nil
+}
+
+// GetVMState returns the current state of a VM using virsh domstate.
+func (m *VirshManager) GetVMState(ctx context.Context, vmName string) (VMState, error) {
+	if vmName == "" {
+		return VMStateUnknown, fmt.Errorf("vmName is required")
+	}
+	virsh := m.binPath("virsh", m.cfg.VirshPath)
+	out, err := m.run(ctx, virsh, "--connect", m.cfg.LibvirtURI, "domstate", vmName)
+	if err != nil {
+		return VMStateUnknown, fmt.Errorf("get vm state: %w", err)
+	}
+	return parseVMState(out), nil
+}
+
+// parseVMState converts virsh domstate output to VMState.
+func parseVMState(output string) VMState {
+	state := strings.TrimSpace(output)
+	switch state {
+	case "running":
+		return VMStateRunning
+	case "paused":
+		return VMStatePaused
+	case "shut off":
+		return VMStateShutOff
+	case "crashed":
+		return VMStateCrashed
+	case "pmsuspended":
+		return VMStateSuspended
+	default:
+		return VMStateUnknown
+	}
 }
 
 func (m *VirshManager) StopVM(ctx context.Context, vmName string, force bool) error {
@@ -504,26 +612,73 @@ func (m *VirshManager) DiffSnapshot(ctx context.Context, vmName, fromSnapshot, t
 	return plan, nil
 }
 
-func (m *VirshManager) GetIPAddress(ctx context.Context, vmName string, timeout time.Duration) (string, error) {
+func (m *VirshManager) GetIPAddress(ctx context.Context, vmName string, timeout time.Duration) (string, string, error) {
 	if vmName == "" {
-		return "", fmt.Errorf("vmName is required")
+		return "", "", fmt.Errorf("vmName is required")
 	}
+
+	m.logger.Info("discovering IP address",
+		"vm_name", vmName,
+		"timeout", timeout,
+	)
+
+	// First check VM state - if not running, IP discovery will definitely fail
+	state, stateErr := m.GetVMState(ctx, vmName)
+	if stateErr == nil && state != VMStateRunning {
+		m.logger.Warn("attempting IP discovery on non-running VM",
+			"vm_name", vmName,
+			"state", state,
+			"hint", "VM must be in 'running' state to have an IP address",
+		)
+	}
+
 	virsh := m.binPath("virsh", m.cfg.VirshPath)
 	deadline := time.Now().Add(timeout)
+	startTime := time.Now()
+	attempt := 0
 	for {
+		attempt++
 		out, err := m.run(ctx, virsh, "--connect", m.cfg.LibvirtURI, "domifaddr", vmName, "--source", "lease")
 		if err == nil {
-			ip := parseDomIfAddrIPv4(out)
+			ip, mac := parseDomIfAddrIPv4WithMAC(out)
 			if ip != "" {
-				return ip, nil
+				m.logger.Info("IP address discovered",
+					"vm_name", vmName,
+					"ip_address", ip,
+					"mac_address", mac,
+					"attempts", attempt,
+					"elapsed", time.Since(startTime),
+				)
+				return ip, mac, nil
 			}
 		}
+
+		// Log progress every 10 attempts (20 seconds)
+		if attempt%10 == 0 {
+			m.logger.Debug("IP discovery in progress",
+				"vm_name", vmName,
+				"attempts", attempt,
+				"elapsed", time.Since(startTime),
+				"domifaddr_output", out,
+			)
+		}
+
 		if time.Now().After(deadline) {
 			break
 		}
 		time.Sleep(2 * time.Second)
 	}
-	return "", errors.New("ip address not found within timeout")
+
+	// Final state check for better error message
+	finalState, _ := m.GetVMState(ctx, vmName)
+	m.logger.Error("IP address discovery failed",
+		"vm_name", vmName,
+		"timeout", timeout,
+		"attempts", attempt,
+		"final_vm_state", finalState,
+	)
+
+	return "", "", fmt.Errorf("ip address not found within timeout (VM state: %s)", finalState)
 }
 
 // --- Helpers ---
@@ -610,6 +765,13 @@ func defaultGuestUser(vmName string) string {
 }
 
 func parseDomIfAddrIPv4(s string) string {
+	ip, _ := parseDomIfAddrIPv4WithMAC(s)
+	return ip
+}
+
+// parseDomIfAddrIPv4WithMAC parses virsh domifaddr output and returns both IP and MAC address.
+// This allows callers to verify the IP belongs to the expected VM by checking the MAC.
+func parseDomIfAddrIPv4WithMAC(s string) (ip string, mac string) {
 	// virsh domifaddr output example:
 	// Name       MAC address          Protocol     Address
 	// ----------------------------------------------------------------------------
@@ -622,14 +784,17 @@ func parseDomIfAddrIPv4(s string) string {
 		}
 		parts := strings.Fields(l)
 		if len(parts) >= 4 && parts[2] == "ipv4" {
+			mac = parts[1]
 			addr := parts[3]
 			if i := strings.IndexByte(addr, '/'); i > 0 {
-				return addr[:i]
+				ip = addr[:i]
+			} else {
+				ip = addr
 			}
-			return addr
+			return ip, mac
 		}
 	}
-	return ""
+	return "", ""
 }
 
 // vmArchInfo holds architecture details extracted from a VM's XML.

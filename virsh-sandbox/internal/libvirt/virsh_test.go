@@ -344,3 +344,94 @@ func TestCloudInitSeedForClone_UniqueInstanceID(t *testing.T) {
 		}
 	}
 }
+
+func TestParseVMState(t *testing.T) {
+	tests := []struct {
+		name     string
+		output   string
+		expected VMState
+	}{
+		{
+			name:     "running state",
+			output:   "running\n",
+			expected: VMStateRunning,
+		},
+		{
+			name:     "running state without newline",
+			output:   "running",
+			expected: VMStateRunning,
+		},
+		{
+			name:     "shut off state",
+			output:   "shut off\n",
+			expected: VMStateShutOff,
+		},
+		{
+			name:     "paused state",
+			output:   "paused\n",
+			expected: VMStatePaused,
+		},
+		{
+			name:     "crashed state",
+			output:   "crashed\n",
+			expected: VMStateCrashed,
+		},
+		{
+			name:     "pmsuspended state",
+			output:   "pmsuspended\n",
+			expected: VMStateSuspended,
+		},
+		{
+			name:     "unknown state",
+			output:   "some-unknown-state\n",
+			expected: VMStateUnknown,
+		},
+		{
+			name:     "empty string",
+			output:   "",
+			expected: VMStateUnknown,
+		},
+		{
+			name:     "whitespace only",
+			output:   "   \n",
+			expected: VMStateUnknown,
+		},
+		{
+			name:     "running with extra whitespace",
+			output:   "  running  \n",
+			expected: VMStateRunning,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := parseVMState(tt.output)
+			if result != tt.expected {
+				t.Errorf("parseVMState(%q) = %v, want %v", tt.output, result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestVMState_StringValues(t *testing.T) {
+	// Verify that VMState constants have the expected string values
+	tests := []struct {
+		state    VMState
+		expected string
+	}{
+		{VMStateRunning, "running"},
+		{VMStateShutOff, "shut off"},
+		{VMStatePaused, "paused"},
+		{VMStateCrashed, "crashed"},
+		{VMStateSuspended, "pmsuspended"},
+		{VMStateUnknown, "unknown"},
+	}
+
+	for _, tt := range tests {
+		t.Run(string(tt.state), func(t *testing.T) {
+			if string(tt.state) != tt.expected {
+				t.Errorf("VMState constant %v has value %q, want %q", tt.state, string(tt.state), tt.expected)
+			}
+		})
+	}
+}

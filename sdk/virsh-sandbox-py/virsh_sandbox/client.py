@@ -18,10 +18,11 @@ Example:
     client.command.run_command(command="ls", args=["-la"])
 """
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple, Union
 
 from virsh_sandbox.api.access_api import AccessApi
 from virsh_sandbox.api.ansible_api import AnsibleApi
+from virsh_sandbox.api.ansible_playbooks_api import AnsiblePlaybooksApi
 from virsh_sandbox.api.audit_api import AuditApi
 from virsh_sandbox.api.command_api import CommandApi
 from virsh_sandbox.api.file_api import FileApi
@@ -33,46 +34,52 @@ from virsh_sandbox.api.tmux_api import TmuxApi
 from virsh_sandbox.api.vms_api import VMsApi
 from virsh_sandbox.api_client import ApiClient
 from virsh_sandbox.configuration import Configuration
+from virsh_sandbox.models.internal_ansible_add_task_request import (
+    InternalAnsibleAddTaskRequest,
+)
+from virsh_sandbox.models.internal_ansible_add_task_response import (
+    InternalAnsibleAddTaskResponse,
+)
+from virsh_sandbox.models.internal_ansible_create_playbook_request import (
+    InternalAnsibleCreatePlaybookRequest,
+)
+from virsh_sandbox.models.internal_ansible_create_playbook_response import (
+    InternalAnsibleCreatePlaybookResponse,
+)
+from virsh_sandbox.models.internal_ansible_export_playbook_response import (
+    InternalAnsibleExportPlaybookResponse,
+)
+from virsh_sandbox.models.internal_ansible_get_playbook_response import (
+    InternalAnsibleGetPlaybookResponse,
+)
+from virsh_sandbox.models.internal_ansible_job import InternalAnsibleJob
+from virsh_sandbox.models.internal_ansible_job_request import InternalAnsibleJobRequest
+from virsh_sandbox.models.internal_ansible_job_response import (
+    InternalAnsibleJobResponse,
+)
+from virsh_sandbox.models.internal_ansible_list_playbooks_response import (
+    InternalAnsibleListPlaybooksResponse,
+)
+from virsh_sandbox.models.internal_ansible_reorder_tasks_request import (
+    InternalAnsibleReorderTasksRequest,
+)
+from virsh_sandbox.models.internal_ansible_update_task_request import (
+    InternalAnsibleUpdateTaskRequest,
+)
+from virsh_sandbox.models.internal_ansible_update_task_response import (
+    InternalAnsibleUpdateTaskResponse,
+)
 from virsh_sandbox.models.internal_rest_ca_public_key_response import (
     InternalRestCaPublicKeyResponse,
 )
 from virsh_sandbox.models.internal_rest_certificate_response import (
     InternalRestCertificateResponse,
 )
-from virsh_sandbox.models.internal_rest_create_sandbox_request import (
-    InternalRestCreateSandboxRequest,
-)
-from virsh_sandbox.models.internal_rest_create_sandbox_response import (
-    InternalRestCreateSandboxResponse,
-)
-from virsh_sandbox.models.internal_rest_destroy_sandbox_response import (
-    InternalRestDestroySandboxResponse,
-)
-from virsh_sandbox.models.internal_rest_diff_request import InternalRestDiffRequest
-from virsh_sandbox.models.internal_rest_diff_response import InternalRestDiffResponse
-from virsh_sandbox.models.internal_rest_get_sandbox_response import (
-    InternalRestGetSandboxResponse,
-)
-from virsh_sandbox.models.internal_rest_inject_ssh_key_request import (
-    InternalRestInjectSSHKeyRequest,
-)
 from virsh_sandbox.models.internal_rest_list_certificates_response import (
     InternalRestListCertificatesResponse,
 )
-from virsh_sandbox.models.internal_rest_list_sandbox_commands_response import (
-    InternalRestListSandboxCommandsResponse,
-)
-from virsh_sandbox.models.internal_rest_list_sandboxes_response import (
-    InternalRestListSandboxesResponse,
-)
 from virsh_sandbox.models.internal_rest_list_sessions_response import (
     InternalRestListSessionsResponse,
-)
-from virsh_sandbox.models.internal_rest_list_vms_response import (
-    InternalRestListVMsResponse,
-)
-from virsh_sandbox.models.internal_rest_publish_request import (
-    InternalRestPublishRequest,
 )
 from virsh_sandbox.models.internal_rest_request_access_request import (
     InternalRestRequestAccessRequest,
@@ -83,32 +90,20 @@ from virsh_sandbox.models.internal_rest_request_access_response import (
 from virsh_sandbox.models.internal_rest_revoke_certificate_request import (
     InternalRestRevokeCertificateRequest,
 )
-from virsh_sandbox.models.internal_rest_run_command_request import (
-    InternalRestRunCommandRequest,
-)
-from virsh_sandbox.models.internal_rest_run_command_response import (
-    InternalRestRunCommandResponse,
+from virsh_sandbox.models.internal_rest_revoke_certificate_response import (
+    InternalRestRevokeCertificateResponse,
 )
 from virsh_sandbox.models.internal_rest_session_end_request import (
     InternalRestSessionEndRequest,
+)
+from virsh_sandbox.models.internal_rest_session_end_response import (
+    InternalRestSessionEndResponse,
 )
 from virsh_sandbox.models.internal_rest_session_start_request import (
     InternalRestSessionStartRequest,
 )
 from virsh_sandbox.models.internal_rest_session_start_response import (
     InternalRestSessionStartResponse,
-)
-from virsh_sandbox.models.internal_rest_snapshot_request import (
-    InternalRestSnapshotRequest,
-)
-from virsh_sandbox.models.internal_rest_snapshot_response import (
-    InternalRestSnapshotResponse,
-)
-from virsh_sandbox.models.internal_rest_start_sandbox_request import (
-    InternalRestStartSandboxRequest,
-)
-from virsh_sandbox.models.internal_rest_start_sandbox_response import (
-    InternalRestStartSandboxResponse,
 )
 from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_request import (
     TmuxClientInternalApiCreateSandboxSessionRequest,
@@ -245,14 +240,56 @@ from virsh_sandbox.models.tmux_client_internal_types_write_file_request import (
 from virsh_sandbox.models.tmux_client_internal_types_write_file_response import (
     TmuxClientInternalTypesWriteFileResponse,
 )
-from virsh_sandbox.models.virsh_sandbox_internal_ansible_job import (
-    VirshSandboxInternalAnsibleJob,
+from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_request import (
+    VirshSandboxInternalRestCreateSandboxRequest,
 )
-from virsh_sandbox.models.virsh_sandbox_internal_ansible_job_request import (
-    VirshSandboxInternalAnsibleJobRequest,
+from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_response import (
+    VirshSandboxInternalRestCreateSandboxResponse,
 )
-from virsh_sandbox.models.virsh_sandbox_internal_ansible_job_response import (
-    VirshSandboxInternalAnsibleJobResponse,
+from virsh_sandbox.models.virsh_sandbox_internal_rest_destroy_sandbox_response import (
+    VirshSandboxInternalRestDestroySandboxResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_request import (
+    VirshSandboxInternalRestDiffRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_response import (
+    VirshSandboxInternalRestDiffResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_get_sandbox_response import (
+    VirshSandboxInternalRestGetSandboxResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_inject_ssh_key_request import (
+    VirshSandboxInternalRestInjectSSHKeyRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sandbox_commands_response import (
+    VirshSandboxInternalRestListSandboxCommandsResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sandboxes_response import (
+    VirshSandboxInternalRestListSandboxesResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_list_vms_response import (
+    VirshSandboxInternalRestListVMsResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_publish_request import (
+    VirshSandboxInternalRestPublishRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_request import (
+    VirshSandboxInternalRestRunCommandRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_response import (
+    VirshSandboxInternalRestRunCommandResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_request import (
+    VirshSandboxInternalRestSnapshotRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_response import (
+    VirshSandboxInternalRestSnapshotResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_request import (
+    VirshSandboxInternalRestStartSandboxRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_response import (
+    VirshSandboxInternalRestStartSandboxResponse,
 )
 
 
@@ -262,38 +299,16 @@ class AccessOperations:
     def __init__(self, api: AccessApi):
         self._api = api
 
-    def v1_access_ca_pubkey_get(self) -> InternalRestCaPublicKeyResponse:
+    def get_ca_public_key(self) -> InternalRestCaPublicKeyResponse:
         """Get the SSH CA public key
 
         Returns:
             InternalRestCaPublicKeyResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        return self._api.v1_access_ca_pubkey_get()
+        return self._api.get_ca_public_key()
 
-    def v1_access_certificate_cert_id_delete(
-        self,
-        cert_id: str,
-        reason: Optional[str] = None,
-    ) -> Dict[str, str]:
-        """Revoke a certificate
-
-        Args:
-            cert_id: str
-            reason: reason
-
-        Returns:
-            Dict[str, str]: Pydantic model with full IDE autocomplete.
-            Call .model_dump() to convert to dict if needed.
-        """
-        request = InternalRestRevokeCertificateRequest(
-            reason=reason,
-        )
-        return self._api.v1_access_certificate_cert_id_delete(
-            cert_id=cert_id, request=request
-        )
-
-    def v1_access_certificate_cert_id_get(
+    def get_certificate(
         self,
         cert_id: str,
     ) -> InternalRestCertificateResponse:
@@ -306,9 +321,9 @@ class AccessOperations:
             InternalRestCertificateResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        return self._api.v1_access_certificate_cert_id_get(cert_id=cert_id)
+        return self._api.get_certificate(cert_id=cert_id)
 
-    def v1_access_certificates_get(
+    def list_certificates(
         self,
         sandbox_id: Optional[str] = None,
         user_id: Optional[str] = None,
@@ -331,7 +346,7 @@ class AccessOperations:
             InternalRestListCertificatesResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        return self._api.v1_access_certificates_get(
+        return self._api.list_certificates(
             sandbox_id=sandbox_id,
             user_id=user_id,
             status=status,
@@ -340,7 +355,81 @@ class AccessOperations:
             offset=offset,
         )
 
-    def v1_access_request_post(
+    def list_sessions(
+        self,
+        sandbox_id: Optional[str] = None,
+        certificate_id: Optional[str] = None,
+        user_id: Optional[str] = None,
+        active_only: Optional[bool] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> InternalRestListSessionsResponse:
+        """List sessions
+
+        Args:
+            sandbox_id: Optional[str]
+            certificate_id: Optional[str]
+            user_id: Optional[str]
+            active_only: Optional[bool]
+            limit: Optional[int]
+            offset: Optional[int]
+
+        Returns:
+            InternalRestListSessionsResponse: Pydantic model with full IDE autocomplete.
+            Call .model_dump() to convert to dict if needed.
+        """
+        return self._api.list_sessions(
+            sandbox_id=sandbox_id,
+            certificate_id=certificate_id,
+            user_id=user_id,
+            active_only=active_only,
+            limit=limit,
+            offset=offset,
+        )
+
+    def record_session_end(
+        self,
+        reason: Optional[str] = None,
+        session_id: Optional[str] = None,
+    ) -> InternalRestSessionEndResponse:
+        """Record session end
+
+        Args:
+            reason: reason
+            session_id: session_id
+
+        Returns:
+            InternalRestSessionEndResponse: Pydantic model with full IDE autocomplete.
+            Call .model_dump() to convert to dict if needed.
+        """
+        request = InternalRestSessionEndRequest(
+            reason=reason,
+            session_id=session_id,
+        )
+        return self._api.record_session_end(request=request)
+
+    def record_session_start(
+        self,
+        certificate_id: Optional[str] = None,
+        source_ip: Optional[str] = None,
+    ) -> InternalRestSessionStartResponse:
+        """Record session start
+
+        Args:
+            certificate_id: certificate_id
+            source_ip: source_ip
+
+        Returns:
+            InternalRestSessionStartResponse: Pydantic model with full IDE autocomplete.
+            Call .model_dump() to convert to dict if needed.
+        """
+        request = InternalRestSessionStartRequest(
+            certificate_id=certificate_id,
+            source_ip=source_ip,
+        )
+        return self._api.record_session_start(request=request)
+
+    def request_access(
         self,
         public_key: Optional[str] = None,
         sandbox_id: Optional[str] = None,
@@ -365,81 +454,27 @@ class AccessOperations:
             ttl_minutes=ttl_minutes,
             user_id=user_id,
         )
-        return self._api.v1_access_request_post(request=request)
+        return self._api.request_access(request=request)
 
-    def v1_access_session_end_post(
+    def revoke_certificate(
         self,
+        cert_id: str,
         reason: Optional[str] = None,
-        session_id: Optional[str] = None,
-    ) -> Dict[str, str]:
-        """Record session end
+    ) -> InternalRestRevokeCertificateResponse:
+        """Revoke a certificate
 
         Args:
+            cert_id: str
             reason: reason
-            session_id: session_id
 
         Returns:
-            Dict[str, str]: Pydantic model with full IDE autocomplete.
+            InternalRestRevokeCertificateResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalRestSessionEndRequest(
+        request = InternalRestRevokeCertificateRequest(
             reason=reason,
-            session_id=session_id,
         )
-        return self._api.v1_access_session_end_post(request=request)
-
-    def v1_access_session_start_post(
-        self,
-        certificate_id: Optional[str] = None,
-        source_ip: Optional[str] = None,
-    ) -> InternalRestSessionStartResponse:
-        """Record session start
-
-        Args:
-            certificate_id: certificate_id
-            source_ip: source_ip
-
-        Returns:
-            InternalRestSessionStartResponse: Pydantic model with full IDE autocomplete.
-            Call .model_dump() to convert to dict if needed.
-        """
-        request = InternalRestSessionStartRequest(
-            certificate_id=certificate_id,
-            source_ip=source_ip,
-        )
-        return self._api.v1_access_session_start_post(request=request)
-
-    def v1_access_sessions_get(
-        self,
-        sandbox_id: Optional[str] = None,
-        certificate_id: Optional[str] = None,
-        user_id: Optional[str] = None,
-        active_only: Optional[bool] = None,
-        limit: Optional[int] = None,
-        offset: Optional[int] = None,
-    ) -> InternalRestListSessionsResponse:
-        """List sessions
-
-        Args:
-            sandbox_id: Optional[str]
-            certificate_id: Optional[str]
-            user_id: Optional[str]
-            active_only: Optional[bool]
-            limit: Optional[int]
-            offset: Optional[int]
-
-        Returns:
-            InternalRestListSessionsResponse: Pydantic model with full IDE autocomplete.
-            Call .model_dump() to convert to dict if needed.
-        """
-        return self._api.v1_access_sessions_get(
-            sandbox_id=sandbox_id,
-            certificate_id=certificate_id,
-            user_id=user_id,
-            active_only=active_only,
-            limit=limit,
-            offset=offset,
-        )
+        return self._api.revoke_certificate(cert_id=cert_id, request=request)
 
 
 class AnsibleOperations:
@@ -453,7 +488,7 @@ class AnsibleOperations:
         check: Optional[bool] = None,
         playbook: Optional[str] = None,
         vm_name: Optional[str] = None,
-    ) -> VirshSandboxInternalAnsibleJobResponse:
+    ) -> InternalAnsibleJobResponse:
         """Create Ansible job
 
         Args:
@@ -462,10 +497,10 @@ class AnsibleOperations:
             vm_name: vm_name
 
         Returns:
-            VirshSandboxInternalAnsibleJobResponse: Pydantic model with full IDE autocomplete.
+            InternalAnsibleJobResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = VirshSandboxInternalAnsibleJobRequest(
+        request = InternalAnsibleJobRequest(
             check=check,
             playbook=playbook,
             vm_name=vm_name,
@@ -475,14 +510,14 @@ class AnsibleOperations:
     def get_ansible_job(
         self,
         job_id: str,
-    ) -> VirshSandboxInternalAnsibleJob:
+    ) -> InternalAnsibleJob:
         """Get Ansible job
 
         Args:
             job_id: str
 
         Returns:
-            VirshSandboxInternalAnsibleJob: Pydantic model with full IDE autocomplete.
+            InternalAnsibleJob: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.get_ansible_job(job_id=job_id)
@@ -497,6 +532,172 @@ class AnsibleOperations:
             job_id: str
         """
         return self._api.stream_ansible_job_output(job_id=job_id)
+
+
+class AnsiblePlaybooksOperations:
+    """Wrapper for AnsiblePlaybooksApi with simplified method signatures."""
+
+    def __init__(self, api: AnsiblePlaybooksApi):
+        self._api = api
+
+    def add_playbook_task(
+        self,
+        name: str,
+        module: Optional[str] = None,
+        name: Optional[str] = None,
+        params: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> InternalAnsibleAddTaskResponse:
+        """Add task to playbook
+
+        Args:
+            name: str
+            module: module
+            name: name
+            params: params
+
+        Returns:
+            InternalAnsibleAddTaskResponse: Pydantic model with full IDE autocomplete.
+            Call .model_dump() to convert to dict if needed.
+        """
+        request = InternalAnsibleAddTaskRequest(
+            module=module,
+            name=name,
+            params=params,
+        )
+        return self._api.add_playbook_task(name=name, request=request)
+
+    def create_playbook(
+        self,
+        become: Optional[bool] = None,
+        hosts: Optional[str] = None,
+        name: Optional[str] = None,
+    ) -> InternalAnsibleCreatePlaybookResponse:
+        """Create playbook
+
+        Args:
+            become: become
+            hosts: hosts
+            name: name
+
+        Returns:
+            InternalAnsibleCreatePlaybookResponse: Pydantic model with full IDE autocomplete.
+            Call .model_dump() to convert to dict if needed.
+        """
+        request = InternalAnsibleCreatePlaybookRequest(
+            become=become,
+            hosts=hosts,
+            name=name,
+        )
+        return self._api.create_playbook(request=request)
+
+    def delete_playbook(
+        self,
+        name: str,
+    ) -> None:
+        """Delete playbook
+
+        Args:
+            name: str
+        """
+        return self._api.delete_playbook(name=name)
+
+    def delete_playbook_task(
+        self,
+        name: str,
+        task_id: str,
+    ) -> None:
+        """Delete task
+
+        Args:
+            name: str
+            task_id: str
+        """
+        return self._api.delete_playbook_task(name=name, task_id=task_id)
+
+    def export_playbook(
+        self,
+        name: str,
+    ) -> InternalAnsibleExportPlaybookResponse:
+        """Export playbook
+
+        Args:
+            name: str
+
+        Returns:
+            InternalAnsibleExportPlaybookResponse: Pydantic model with full IDE autocomplete.
+            Call .model_dump() to convert to dict if needed.
+        """
+        return self._api.export_playbook(name=name)
+
+    def get_playbook(
+        self,
+        name: str,
+    ) -> InternalAnsibleGetPlaybookResponse:
+        """Get playbook
+
+        Args:
+            name: str
+
+        Returns:
+            InternalAnsibleGetPlaybookResponse: Pydantic model with full IDE autocomplete.
+            Call .model_dump() to convert to dict if needed.
+        """
+        return self._api.get_playbook(name=name)
+
+    def list_playbooks(self) -> InternalAnsibleListPlaybooksResponse:
+        """List playbooks
+
+        Returns:
+            InternalAnsibleListPlaybooksResponse: Pydantic model with full IDE autocomplete.
+            Call .model_dump() to convert to dict if needed.
+        """
+        return self._api.list_playbooks()
+
+    def reorder_playbook_tasks(
+        self,
+        name: str,
+        task_ids: Optional[List[str]] = None,
+    ) -> None:
+        """Reorder tasks
+
+        Args:
+            name: str
+            task_ids: task_ids
+        """
+        request = InternalAnsibleReorderTasksRequest(
+            task_ids=task_ids,
+        )
+        return self._api.reorder_playbook_tasks(name=name, request=request)
+
+    def update_playbook_task(
+        self,
+        name: str,
+        task_id: str,
+        module: Optional[str] = None,
+        name: Optional[str] = None,
+        params: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> InternalAnsibleUpdateTaskResponse:
+        """Update task
+
+        Args:
+            name: str
+            task_id: str
+            module: module
+            name: name
+            params: params
+
+        Returns:
+            InternalAnsibleUpdateTaskResponse: Pydantic model with full IDE autocomplete.
+            Call .model_dump() to convert to dict if needed.
+        """
+        request = InternalAnsibleUpdateTaskRequest(
+            module=module,
+            name=name,
+            params=params,
+        )
+        return self._api.update_playbook_task(
+            name=name, task_id=task_id, request=request
+        )
 
 
 class AuditOperations:
@@ -1080,7 +1281,8 @@ class SandboxOperations:
         ttl_seconds: Optional[int] = None,
         vm_name: Optional[str] = None,
         wait_for_ip: Optional[bool] = None,
-    ) -> InternalRestCreateSandboxResponse:
+        request_timeout: Union[None, float, Tuple[float, float]] = None,
+    ) -> VirshSandboxInternalRestCreateSandboxResponse:
         """Create a new sandbox
 
         Args:
@@ -1091,13 +1293,14 @@ class SandboxOperations:
             source_vm_name: required; name of existing VM in libvirt to clone from
             ttl_seconds: optional; TTL for auto garbage collection
             vm_name: optional; generated if empty
-            wait_for_ip: optional; if true and auto_start, wait for IP discovery
+            wait_for_ip: optional; if true and auto_start, wait for IP discovery. When True, consider setting request_timeout to accommodate IP discovery (server default is 120s)
+            request_timeout: HTTP request timeout in seconds. Can be a single float for total timeout, or a tuple (connect_timeout, read_timeout). For operations with wait_for_ip=True, set this to at least 180 seconds.
 
         Returns:
-            InternalRestCreateSandboxResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestCreateSandboxResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalRestCreateSandboxRequest(
+        request = VirshSandboxInternalRestCreateSandboxRequest(
             agent_id=agent_id,
             auto_start=auto_start,
             cpu=cpu,
@@ -1107,7 +1310,9 @@ class SandboxOperations:
             vm_name=vm_name,
             wait_for_ip=wait_for_ip,
         )
-        return self._api.create_sandbox(request=request)
+        return self._api.create_sandbox(
+            request=request, _request_timeout=request_timeout
+        )
 
     def create_sandbox_session(
         self,
@@ -1138,7 +1343,7 @@ class SandboxOperations:
         id: str,
         external: Optional[bool] = None,
         name: Optional[str] = None,
-    ) -> InternalRestSnapshotResponse:
+    ) -> VirshSandboxInternalRestSnapshotResponse:
         """Create snapshot
 
         Args:
@@ -1147,10 +1352,10 @@ class SandboxOperations:
             name: required
 
         Returns:
-            InternalRestSnapshotResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestSnapshotResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalRestSnapshotRequest(
+        request = VirshSandboxInternalRestSnapshotRequest(
             external=external,
             name=name,
         )
@@ -1159,14 +1364,14 @@ class SandboxOperations:
     def destroy_sandbox(
         self,
         id: str,
-    ) -> InternalRestDestroySandboxResponse:
+    ) -> VirshSandboxInternalRestDestroySandboxResponse:
         """Destroy sandbox
 
         Args:
             id: str
 
         Returns:
-            InternalRestDestroySandboxResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestDestroySandboxResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.destroy_sandbox(id=id)
@@ -1176,7 +1381,7 @@ class SandboxOperations:
         id: str,
         from_snapshot: Optional[str] = None,
         to_snapshot: Optional[str] = None,
-    ) -> InternalRestDiffResponse:
+    ) -> VirshSandboxInternalRestDiffResponse:
         """Diff snapshots
 
         Args:
@@ -1185,10 +1390,10 @@ class SandboxOperations:
             to_snapshot: required
 
         Returns:
-            InternalRestDiffResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestDiffResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalRestDiffRequest(
+        request = VirshSandboxInternalRestDiffRequest(
             from_snapshot=from_snapshot,
             to_snapshot=to_snapshot,
         )
@@ -1211,7 +1416,7 @@ class SandboxOperations:
         self,
         id: str,
         include_commands: Optional[bool] = None,
-    ) -> InternalRestGetSandboxResponse:
+    ) -> VirshSandboxInternalRestGetSandboxResponse:
         """Get sandbox details
 
         Args:
@@ -1219,7 +1424,7 @@ class SandboxOperations:
             include_commands: Optional[bool]
 
         Returns:
-            InternalRestGetSandboxResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestGetSandboxResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.get_sandbox(id=id, include_commands=include_commands)
@@ -1252,7 +1457,7 @@ class SandboxOperations:
             public_key: required
             username: required (explicit); typical: \
         """
-        request = InternalRestInjectSSHKeyRequest(
+        request = VirshSandboxInternalRestInjectSSHKeyRequest(
             public_key=public_key,
             username=username,
         )
@@ -1278,7 +1483,7 @@ class SandboxOperations:
         id: str,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> InternalRestListSandboxCommandsResponse:
+    ) -> VirshSandboxInternalRestListSandboxCommandsResponse:
         """List sandbox commands
 
         Args:
@@ -1287,7 +1492,7 @@ class SandboxOperations:
             offset: Optional[int]
 
         Returns:
-            InternalRestListSandboxCommandsResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestListSandboxCommandsResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.list_sandbox_commands(id=id, limit=limit, offset=offset)
@@ -1310,7 +1515,7 @@ class SandboxOperations:
         vm_name: Optional[str] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> InternalRestListSandboxesResponse:
+    ) -> VirshSandboxInternalRestListSandboxesResponse:
         """List sandboxes
 
         Args:
@@ -1323,7 +1528,7 @@ class SandboxOperations:
             offset: Optional[int]
 
         Returns:
-            InternalRestListSandboxesResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestListSandboxesResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.list_sandboxes(
@@ -1351,7 +1556,7 @@ class SandboxOperations:
             message: optional commit/PR message
             reviewers: optional
         """
-        request = InternalRestPublishRequest(
+        request = VirshSandboxInternalRestPublishRequest(
             job_id=job_id,
             message=message,
             reviewers=reviewers,
@@ -1365,30 +1570,34 @@ class SandboxOperations:
         env: Optional[Dict[str, str]] = None,
         private_key_path: Optional[str] = None,
         timeout_sec: Optional[int] = None,
-        username: Optional[str] = None,
-    ) -> InternalRestRunCommandResponse:
+        user: Optional[str] = None,
+        request_timeout: Union[None, float, Tuple[float, float]] = None,
+    ) -> VirshSandboxInternalRestRunCommandResponse:
         """Run command in sandbox
 
         Args:
             id: str
             command: required
             env: optional
-            private_key_path: required; path on API host
+            private_key_path: optional; if empty, uses managed credentials (requires SSH CA)
             timeout_sec: optional; default from service config
-            username: required
+            user: optional; defaults to \
+            request_timeout: HTTP request timeout in seconds. Can be a single float for total timeout, or a tuple (connect_timeout, read_timeout). For operations with wait_for_ip=True, set this to at least 180 seconds.
 
         Returns:
-            InternalRestRunCommandResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestRunCommandResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalRestRunCommandRequest(
+        request = VirshSandboxInternalRestRunCommandRequest(
             command=command,
             env=env,
             private_key_path=private_key_path,
             timeout_sec=timeout_sec,
-            username=username,
+            user=user,
         )
-        return self._api.run_sandbox_command(id=id, request=request)
+        return self._api.run_sandbox_command(
+            id=id, request=request, _request_timeout=request_timeout
+        )
 
     def sandbox_api_health(self) -> Dict[str, object]:
         """Check sandbox API health
@@ -1403,21 +1612,25 @@ class SandboxOperations:
         self,
         id: str,
         wait_for_ip: Optional[bool] = None,
-    ) -> InternalRestStartSandboxResponse:
+        request_timeout: Union[None, float, Tuple[float, float]] = None,
+    ) -> VirshSandboxInternalRestStartSandboxResponse:
         """Start sandbox
 
         Args:
             id: str
-            wait_for_ip: optional; default false
+            wait_for_ip: optional; default false. When True, consider setting request_timeout to accommodate IP discovery (server default is 120s)
+            request_timeout: HTTP request timeout in seconds. Can be a single float for total timeout, or a tuple (connect_timeout, read_timeout). For operations with wait_for_ip=True, set this to at least 180 seconds.
 
         Returns:
-            InternalRestStartSandboxResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestStartSandboxResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalRestStartSandboxRequest(
+        request = VirshSandboxInternalRestStartSandboxRequest(
             wait_for_ip=wait_for_ip,
         )
-        return self._api.start_sandbox(id=id, request=request)
+        return self._api.start_sandbox(
+            id=id, request=request, _request_timeout=request_timeout
+        )
 
     def stream_sandbox_activity(
         self,
@@ -1627,11 +1840,11 @@ class VMsOperations:
     def __init__(self, api: VMsApi):
         self._api = api
 
-    def list_virtual_machines(self) -> InternalRestListVMsResponse:
+    def list_virtual_machines(self) -> VirshSandboxInternalRestListVMsResponse:
         """List all VMs
 
         Returns:
-            InternalRestListVMsResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestListVMsResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.list_virtual_machines()
@@ -1700,6 +1913,7 @@ class VirshSandbox:
 
         self._access: Optional[AccessOperations] = None
         self._ansible: Optional[AnsibleOperations] = None
+        self._ansible_playbooks: Optional[AnsiblePlaybooksOperations] = None
         self._audit: Optional[AuditOperations] = None
         self._command: Optional[CommandOperations] = None
         self._file: Optional[FileOperations] = None
@@ -1725,6 +1939,14 @@ class VirshSandbox:
             api = AnsibleApi(api_client=self._main_api_client)
             self._ansible = AnsibleOperations(api)
         return self._ansible
+
+    @property
+    def ansible_playbooks(self) -> AnsiblePlaybooksOperations:
+        """Access AnsiblePlaybooksApi operations."""
+        if self._ansible_playbooks is None:
+            api = AnsiblePlaybooksApi(api_client=self._main_api_client)
+            self._ansible_playbooks = AnsiblePlaybooksOperations(api)
+        return self._ansible_playbooks
 
     @property
     def audit(self) -> AuditOperations:

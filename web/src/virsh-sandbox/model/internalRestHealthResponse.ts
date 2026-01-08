@@ -6,4 +6,6 @@
  * OpenAPI spec version: 0.0.1-beta
  */
 
-export type 200 = {[key: string]: string};
+export interface InternalRestHealthResponse {
+  status?: string;
+}
