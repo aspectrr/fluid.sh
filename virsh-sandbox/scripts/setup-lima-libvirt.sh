@@ -191,8 +191,18 @@ vmType: "qemu"
 firmware:
   legacyBIOS: false
 
-# Use default Lima mounts (~ is mounted automatically)
-# No custom mounts needed - Lima handles home directory mounting
+# Mount directories to share between host and Lima
+mounts:
+  # Mount home directory at same macOS path (allows cd to work from host)
+  - location: "__HOME__"
+    mountPoint: "__HOME__"
+    writable: true
+  # Libvirt images directory - mount to /mnt to avoid conflicts with libvirt package install
+  # The package tries to chmod /var/lib/libvirt/images which fails on 9p mounts
+  # We symlink the subdirectories in the provision script after libvirt is installed
+  - location: "/var/lib/libvirt/images"
+    mountPoint: "/mnt/host-libvirt-images"
+    writable: true
 
 # Containerd is not needed for our use case
 containerd:
@@ -251,23 +261,23 @@ provision:
 
       # Configure libvirt for remote TCP access (qemu+tcp://)
       # WARNING: TCP without TLS is not secure - use only for local development
-      cat > /etc/libvirt/libvirtd.conf << 'LIBVIRT_CONF'
-      # Listen on TCP for remote connections
-      listen_tls = 0
-      listen_tcp = 1
-      tcp_port = "16509"
+      printf '%s\n' \
+        'listen_tls = 0' \
+        'listen_tcp = 1' \
+        'tcp_port = "16509"' \
+        'auth_tcp = "none"' \
+        'unix_sock_group = "libvirt"' \
+        'unix_sock_rw_perms = "0770"' \
+        'listen_addr = "0.0.0.0"' \
+        > /etc/libvirt/libvirtd.conf
 
-      # Allow unauthenticated connections (DEVELOPMENT ONLY!)
-      # For production, use SASL or TLS authentication
-      auth_tcp = "none"
-
-      # Unix socket permissions for local access
-      unix_sock_group = "libvirt"
-      unix_sock_rw_perms = "0770"
-
-      # Allow connections from any address (within the VM)
-      listen_addr = "0.0.0.0"
-      LIBVIRT_CONF
+      # Configure QEMU to disable security driver (AppArmor) and run as root
+      # Required for accessing disk images on 9p mounts from host
+      printf '%s\n' \
+        'security_driver = "none"' \
+        'user = "root"' \
+        'group = "root"' \
+        >> /etc/libvirt/qemu.conf
 
       # Disable socket activation so we can use -l flag for TCP listening
       # The -l flag and socket activation are mutually exclusive
@@ -277,11 +287,11 @@ provision:
 
       # Configure libvirtd service to run with -l (listen) flag
       mkdir -p /etc/systemd/system/libvirtd.service.d
-      cat > /etc/systemd/system/libvirtd.service.d/override.conf << 'SYSTEMD_OVERRIDE'
-      [Service]
-      ExecStart=
-      ExecStart=/usr/sbin/libvirtd -l
-      SYSTEMD_OVERRIDE
+      printf '%s\n' \
+        '[Service]' \
+        'ExecStart=' \
+        'ExecStart=/usr/sbin/libvirtd -l' \
+        > /etc/systemd/system/libvirtd.service.d/override.conf
 
       systemctl daemon-reload
       systemctl enable libvirtd
@@ -299,11 +309,16 @@ provision:
         echo "VMs will run in emulation mode (slower)"
       fi
 
-      # Create directories for libvirt images
-      mkdir -p /var/lib/libvirt/images/base
-      mkdir -p /var/lib/libvirt/images/jobs
-      chmod 755 /var/lib/libvirt/images/base
-      chmod 755 /var/lib/libvirt/images/jobs
+      # Symlink libvirt image directories to host-mounted location
+      # The host directory is mounted at /mnt/host-libvirt-images to avoid
+      # conflicts with libvirt package installation (it tries to chmod which fails on 9p)
+      mkdir -p /mnt/host-libvirt-images/base
+      mkdir -p /mnt/host-libvirt-images/jobs
+      # Remove libvirt's default directories and replace with symlinks
+      rm -rf /var/lib/libvirt/images/base
+      rm -rf /var/lib/libvirt/images/jobs
+      ln -sf /mnt/host-libvirt-images/base /var/lib/libvirt/images/base
+      ln -sf /mnt/host-libvirt-images/jobs /var/lib/libvirt/images/jobs
 
   - mode: user
     script: |
@@ -360,6 +375,7 @@ LIMA_CONFIG_EOF
     sed -i.bak "s|__DISK__|${LIMA_DISK}|g" "${config_file}"
     sed -i.bak "s|__USER__|${USER}|g" "${config_file}"
     sed -i.bak "s|__VM_NAME__|${LIMA_VM_NAME}|g" "${config_file}"
+    sed -i.bak "s|__HOME__|${HOME}|g" "${config_file}"
     rm -f "${config_file}.bak"
 }
 
@@ -382,22 +398,44 @@ generate_test_vm_script() {
 
 set -euo pipefail
 
-VM_NAME="${1:-test-vm}"
-VM_MEMORY=1024
-VM_VCPUS=1
-VM_DISK_SIZE="5G"
-BASE_IMAGE_DIR="/var/lib/libvirt/images/base"
-CLOUD_IMAGE_URL="https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img"
-
 # Colors
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+RED='\033[0;31m'
 NC='\033[0m'
 
+VM_NAME="${1:-test-vm}"
+VM_MEMORY=2048
+VM_VCPUS=2
+VM_DISK_SIZE="10G"
+BASE_IMAGE_DIR="/var/lib/libvirt/images/base"
+
+# Detect architecture and select appropriate cloud image and virt-install options
+ARCH=$(uname -m)
+case "${ARCH}" in
+    aarch64|arm64)
+        CLOUD_IMAGE_ARCH="arm64"
+        CLOUD_IMAGE_URL="https://cloud-images.ubuntu.com/releases/jammy/release/ubuntu-22.04-server-cloudimg-arm64.img"
+        # ARM64 requires specific virt-install options
+        VIRT_INSTALL_ARCH_OPTS="--arch aarch64 --machine virt --boot uefi"
+        ;;
+    x86_64|amd64)
+        CLOUD_IMAGE_ARCH="amd64"
+        CLOUD_IMAGE_URL="https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img"
+        # x86_64 uses default options
+        VIRT_INSTALL_ARCH_OPTS=""
+        ;;
+    *)
+        echo -e "${RED}[ERROR]${NC} Unsupported architecture: ${ARCH}"
+        exit 1
+        ;;
+esac
+
+echo -e "${BLUE}[INFO]${NC} Detected architecture: ${ARCH} -> using ${CLOUD_IMAGE_ARCH} image"
 echo -e "${BLUE}[INFO]${NC} Creating test VM: ${VM_NAME}"
 
 # Download cloud image if not present
-CLOUD_IMAGE="${BASE_IMAGE_DIR}/ubuntu-22.04-minimal-cloudimg-amd64.img"
+CLOUD_IMAGE="${BASE_IMAGE_DIR}/ubuntu-22.04-cloudimg-${CLOUD_IMAGE_ARCH}.img"
 if [ ! -f "${CLOUD_IMAGE}" ]; then
     echo -e "${BLUE}[INFO]${NC} Downloading Ubuntu cloud image..."
     sudo mkdir -p "${BASE_IMAGE_DIR}"
@@ -479,19 +517,25 @@ fi
 
 # Create the VM using virt-install
 echo -e "${BLUE}[INFO]${NC} Creating VM with virt-install..."
+echo -e "${BLUE}[INFO]${NC} Architecture options: ${VIRT_INSTALL_ARCH_OPTS:-default}"
+
+# Build virt-install command with architecture-specific options
+# shellcheck disable=SC2086
 sudo virt-install \
     --name "${VM_NAME}" \
     --memory "${VM_MEMORY}" \
     --vcpus "${VM_VCPUS}" \
-    --disk "path=${VM_DISK},format=qcow2" \
-    --disk "path=${CLOUD_INIT_ISO},device=cdrom" \
+    --disk "path=${VM_DISK},format=qcow2,bus=virtio" \
+    --disk "path=${CLOUD_INIT_ISO},device=cdrom,bus=scsi" \
+    --controller scsi,model=virtio-scsi \
     --os-variant ubuntu22.04 \
-    --network network=default \
-    --graphics none \
+    --network network=default,model=virtio \
+    --graphics vnc \
     --console pty,target_type=serial \
     --import \
     --noautoconsole \
-    --wait 0
+    --wait 0 \
+    ${VIRT_INSTALL_ARCH_OPTS}
 
 echo -e "${GREEN}[SUCCESS]${NC} Test VM '${VM_NAME}' created successfully!"
 echo ""
@@ -507,10 +551,211 @@ echo ""
 echo "Default credentials:"
 echo "  Username: testuser"
 echo "  Password: testpassword"
+echo ""
+echo "  Username: root"
+echo "  Password: rootpassword"
 
 TEST_VM_EOF
 
     chmod +x "${script_file}"
+}
+
+# =============================================================================
+# Create Test VM in Lima (using virsh define instead of virt-install)
+# =============================================================================
+
+create_test_vm_in_lima() {
+    local lima_vm="$1"
+    local vm_name="test-vm"
+
+    # Check architecture
+    local arch
+    arch=$(limactl shell "${lima_vm}" -- uname -m)
+
+    if [[ "${arch}" == "aarch64" ]]; then
+        local cloud_image_url="https://cloud-images.ubuntu.com/releases/jammy/release/ubuntu-22.04-server-cloudimg-arm64.img"
+        local cloud_image="ubuntu-22.04-server-cloudimg-arm64.img"
+    else
+        local cloud_image_url="https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img"
+        local cloud_image="ubuntu-22.04-minimal-cloudimg-amd64.img"
+    fi
+
+    log_info "Detected architecture: ${arch}"
+
+    # Run setup inside Lima
+    limactl shell "${lima_vm}" -- sudo bash << SETUP_VM
+set -e
+
+BASE_DIR="/var/lib/libvirt/images/base"
+VM_NAME="${vm_name}"
+CLOUD_IMAGE="${cloud_image}"
+CLOUD_IMAGE_URL="${cloud_image_url}"
+
+# Download cloud image if needed
+if [ ! -f "\${BASE_DIR}/\${CLOUD_IMAGE}" ]; then
+    echo "[INFO] Downloading cloud image..."
+    mkdir -p "\${BASE_DIR}"
+    wget -q --show-progress -O "\${BASE_DIR}/\${CLOUD_IMAGE}" "\${CLOUD_IMAGE_URL}"
+fi
+
+# Create VM disk if needed
+if [ ! -f "\${BASE_DIR}/\${VM_NAME}.qcow2" ]; then
+    echo "[INFO] Creating VM disk..."
+    qemu-img create -f qcow2 -F qcow2 -b "\${BASE_DIR}/\${CLOUD_IMAGE}" "\${BASE_DIR}/\${VM_NAME}.qcow2" 10G
+fi
+
+# Create cloud-init ISO
+echo "[INFO] Creating cloud-init ISO..."
+mkdir -p /tmp/cloud-init-\${VM_NAME}
+cat > /tmp/cloud-init-\${VM_NAME}/user-data << 'USERDATA'
+#cloud-config
+hostname: test-vm
+users:
+  - name: testuser
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    lock_passwd: false
+chpasswd:
+  list: |
+    testuser:testpassword
+  expire: false
+ssh_pwauth: true
+network:
+  version: 2
+  ethernets:
+    id0:
+      match:
+        driver: virtio*
+      dhcp4: true
+USERDATA
+
+cat > /tmp/cloud-init-\${VM_NAME}/meta-data << METADATA
+instance-id: \${VM_NAME}
+local-hostname: \${VM_NAME}
+METADATA
+
+cloud-localds "\${BASE_DIR}/\${VM_NAME}-cloud-init.iso" /tmp/cloud-init-\${VM_NAME}/user-data /tmp/cloud-init-\${VM_NAME}/meta-data
+rm -rf /tmp/cloud-init-\${VM_NAME}
+
+# Check if VM already defined
+if virsh dominfo "\${VM_NAME}" &>/dev/null; then
+    echo "[INFO] VM \${VM_NAME} already exists"
+    virsh list --all
+    exit 0
+fi
+
+# Create VM XML based on architecture
+if [ "${arch}" = "aarch64" ]; then
+    cat > /tmp/\${VM_NAME}.xml << 'VMXML'
+<domain type='qemu'>
+  <name>test-vm</name>
+  <memory unit='MiB'>2048</memory>
+  <vcpu>2</vcpu>
+  <os>
+    <type arch='aarch64' machine='virt'>hvm</type>
+    <loader readonly='yes' type='pflash'>/usr/share/AAVMF/AAVMF_CODE.fd</loader>
+    <nvram template='/usr/share/AAVMF/AAVMF_VARS.fd'/>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <gic version='3'/>
+  </features>
+  <cpu mode='custom'>
+    <model>cortex-a57</model>
+  </cpu>
+  <devices>
+    <emulator>/usr/bin/qemu-system-aarch64</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2' cache='writeback'/>
+      <source file='/var/lib/libvirt/images/base/test-vm.qcow2'/>
+      <target dev='vda' bus='virtio'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/var/lib/libvirt/images/base/test-vm-cloud-init.iso'/>
+      <target dev='sda' bus='scsi'/>
+      <readonly/>
+    </disk>
+    <controller type='scsi' model='virtio-scsi'/>
+    <interface type='network'>
+      <source network='default'/>
+      <model type='virtio'/>
+    </interface>
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+    <graphics type='vnc' port='-1' autoport='yes'/>
+  </devices>
+</domain>
+VMXML
+else
+    cat > /tmp/\${VM_NAME}.xml << 'VMXML'
+<domain type='kvm'>
+  <name>test-vm</name>
+  <memory unit='MiB'>2048</memory>
+  <vcpu>2</vcpu>
+  <os>
+    <type arch='x86_64' machine='q35'>hvm</type>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+  </features>
+  <devices>
+    <emulator>/usr/bin/qemu-system-x86_64</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2' cache='writeback'/>
+      <source file='/var/lib/libvirt/images/base/test-vm.qcow2'/>
+      <target dev='vda' bus='virtio'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/var/lib/libvirt/images/base/test-vm-cloud-init.iso'/>
+      <target dev='sda' bus='scsi'/>
+      <readonly/>
+    </disk>
+    <controller type='scsi' model='virtio-scsi'/>
+    <interface type='network'>
+      <source network='default'/>
+      <model type='virtio'/>
+    </interface>
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+    <graphics type='vnc' port='-1' autoport='yes'/>
+  </devices>
+</domain>
+VMXML
+fi
+
+echo "[INFO] Defining VM..."
+virsh define /tmp/\${VM_NAME}.xml
+rm -f /tmp/\${VM_NAME}.xml
+
+echo "[SUCCESS] Test VM created!"
+virsh list --all
+echo ""
+echo "Default credentials:"
+echo "  Username: testuser"
+echo "  Password: testpassword"
+echo ""
+echo "  Username: root"
+echo "  Password: rootpassword"
+SETUP_VM
+
+    if [ $? -eq 0 ]; then
+        log_success "Test VM 'test-vm' created successfully"
+    else
+        log_error "Failed to create test VM"
+        return 1
+    fi
 }
 
 # =============================================================================
@@ -677,34 +922,40 @@ main() {
             sleep 10
 
             # Get SSH port and key path
-            SSH_PORT=$(limactl show-ssh --format=args "${LIMA_VM_NAME}" | grep -oP '(?<=-p )\d+' || echo "60022")
-            SSH_KEY="${HOME}/.lima/${LIMA_VM_NAME}/identityfile"
+            SSH_PORT=$(limactl list "${LIMA_VM_NAME}" --format '{{.SSHLocalPort}}' 2>/dev/null || echo "60022")
+            SSH_KEY="${HOME}/.lima/_config/user"
 
-            # Verify libvirt is working
-            log_info "Verifying libvirt installation..."
-            if limactl shell "${LIMA_VM_NAME}" -- virsh version &>/dev/null; then
-                log_success "Libvirt is working correctly inside Lima"
-            else
-                log_warn "Libvirt may not be fully configured yet"
-            fi
+            # Wait for libvirtd to be fully ready
+            log_info "Waiting for libvirtd to be ready..."
+            for i in {1..30}; do
+                if limactl shell "${LIMA_VM_NAME}" -- sudo virsh version &>/dev/null; then
+                    log_success "Libvirt is working correctly inside Lima"
+                    break
+                fi
+                sleep 2
+                if [ "$i" -eq 30 ]; then
+                    log_warn "Libvirt may not be fully configured yet"
+                fi
+            done
 
             # Test TCP connection from host
             log_info "Testing TCP connection from host..."
-            sleep 5  # Give libvirt a moment to start listening
-            if virsh -c "qemu+tcp://localhost:16509/system" version &>/dev/null; then
-                log_success "TCP connection to libvirt is working!"
-            else
-                log_warn "TCP connection not yet available. It may take a moment."
-                log_info "Try: virsh -c 'qemu+tcp://localhost:16509/system' version"
-            fi
+            for i in {1..10}; do
+                if virsh -c "qemu+tcp://localhost:16509/system" version &>/dev/null; then
+                    log_success "TCP connection to libvirt is working!"
+                    break
+                fi
+                sleep 2
+                if [ "$i" -eq 10 ]; then
+                    log_warn "TCP connection not yet available. It may take a moment."
+                    log_info "Try: virsh -c 'qemu+tcp://localhost:16509/system' version"
+                fi
+            done
 
             # Create test VM if requested
             if [ "${CREATE_TEST_VM}" = true ]; then
                 log_info "Creating test VM inside Lima..."
-                TEST_VM_SCRIPT="/tmp/create-test-vm.sh"
-                generate_test_vm_script "${TEST_VM_SCRIPT}"
-                limactl copy "${TEST_VM_SCRIPT}" "${LIMA_VM_NAME}:/tmp/create-test-vm.sh"
-                limactl shell "${LIMA_VM_NAME}" -- bash /tmp/create-test-vm.sh
+                create_test_vm_in_lima "${LIMA_VM_NAME}"
             fi
 
             # Generate environment file

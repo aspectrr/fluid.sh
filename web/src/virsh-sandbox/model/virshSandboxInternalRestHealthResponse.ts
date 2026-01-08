@@ -6,4 +6,6 @@
  * OpenAPI spec version: 0.0.1-beta
  */
 
-export type GetHealth200 = { [key: string]: unknown };
+export interface VirshSandboxInternalRestHealthResponse {
+  status?: string;
+}

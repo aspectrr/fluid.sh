@@ -13,14 +13,10 @@ from typing_extensions import Annotated
 from virsh_sandbox.api_client import ApiClient, RequestSerialized
 from virsh_sandbox.api_response import ApiResponse
 from virsh_sandbox.exceptions import ApiException
-from virsh_sandbox.models.virsh_sandbox_internal_ansible_job import (
-    VirshSandboxInternalAnsibleJob,
-)
-from virsh_sandbox.models.virsh_sandbox_internal_ansible_job_request import (
-    VirshSandboxInternalAnsibleJobRequest,
-)
-from virsh_sandbox.models.virsh_sandbox_internal_ansible_job_response import (
-    VirshSandboxInternalAnsibleJobResponse,
+from virsh_sandbox.models.internal_ansible_job import InternalAnsibleJob
+from virsh_sandbox.models.internal_ansible_job_request import InternalAnsibleJobRequest
+from virsh_sandbox.models.internal_ansible_job_response import (
+    InternalAnsibleJobResponse,
 )
 
 
@@ -34,19 +30,19 @@ class AnsibleApi:
 
     def create_ansible_job(
         self,
-        request: VirshSandboxInternalAnsibleJobRequest,
+        request: InternalAnsibleJobRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> VirshSandboxInternalAnsibleJobResponse:
+    ) -> InternalAnsibleJobResponse:
         """Create Ansible job
 
         Creates a new Ansible playbook execution job
 
         :param request: Job creation parameters (required)
-        :type request: VirshSandboxInternalAnsibleJobRequest
+        :type request: InternalAnsibleJobRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -72,7 +68,7 @@ class AnsibleApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "VirshSandboxInternalAnsibleJobResponse",
+            "200": "InternalAnsibleJobResponse",
             "400": "VirshSandboxInternalErrorErrorResponse",
         }
         response_data = self.api_client.call_api(
@@ -86,19 +82,19 @@ class AnsibleApi:
 
     def create_ansible_job_with_http_info(
         self,
-        request: VirshSandboxInternalAnsibleJobRequest,
+        request: InternalAnsibleJobRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[VirshSandboxInternalAnsibleJobResponse]:
+    ) -> ApiResponse[InternalAnsibleJobResponse]:
         """Create Ansible job
 
         Creates a new Ansible playbook execution job
 
         :param request: Job creation parameters (required)
-        :type request: VirshSandboxInternalAnsibleJobRequest
+        :type request: InternalAnsibleJobRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -124,7 +120,7 @@ class AnsibleApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "VirshSandboxInternalAnsibleJobResponse",
+            "200": "InternalAnsibleJobResponse",
             "400": "VirshSandboxInternalErrorErrorResponse",
         }
         response_data = self.api_client.call_api(
@@ -138,7 +134,7 @@ class AnsibleApi:
 
     def create_ansible_job_without_preload_content(
         self,
-        request: VirshSandboxInternalAnsibleJobRequest,
+        request: InternalAnsibleJobRequest,
         _request_timeout: Union[None, float, Tuple[float, float]] = None,
         _request_auth: Optional[Dict[str, Any]] = None,
         _content_type: Optional[str] = None,
@@ -150,7 +146,7 @@ class AnsibleApi:
         Creates a new Ansible playbook execution job
 
         :param request: Job creation parameters (required)
-        :type request: VirshSandboxInternalAnsibleJobRequest
+        :type request: InternalAnsibleJobRequest
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
                                  timeout. It can also be a pair (tuple) of
@@ -176,7 +172,7 @@ class AnsibleApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "VirshSandboxInternalAnsibleJobResponse",
+            "200": "InternalAnsibleJobResponse",
             "400": "VirshSandboxInternalErrorErrorResponse",
         }
         response_data = self.api_client.call_api(
@@ -186,7 +182,7 @@ class AnsibleApi:
 
     def _create_ansible_job_serialize(
         self,
-        request: VirshSandboxInternalAnsibleJobRequest,
+        request: InternalAnsibleJobRequest,
         _request_auth: Optional[Dict[str, Any]],
         _content_type: Optional[str],
         _headers: Optional[Dict[str, Any]],
@@ -255,7 +251,7 @@ class AnsibleApi:
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> VirshSandboxInternalAnsibleJob:
+    ) -> InternalAnsibleJob:
         """Get Ansible job
 
         Gets the status of an Ansible job
@@ -287,7 +283,7 @@ class AnsibleApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "VirshSandboxInternalAnsibleJob",
+            "200": "InternalAnsibleJob",
             "404": "VirshSandboxInternalErrorErrorResponse",
         }
         response_data = self.api_client.call_api(
@@ -307,7 +303,7 @@ class AnsibleApi:
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[VirshSandboxInternalAnsibleJob]:
+    ) -> ApiResponse[InternalAnsibleJob]:
         """Get Ansible job
 
         Gets the status of an Ansible job
@@ -339,7 +335,7 @@ class AnsibleApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "VirshSandboxInternalAnsibleJob",
+            "200": "InternalAnsibleJob",
             "404": "VirshSandboxInternalErrorErrorResponse",
         }
         response_data = self.api_client.call_api(
@@ -391,7 +387,7 @@ class AnsibleApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "VirshSandboxInternalAnsibleJob",
+            "200": "InternalAnsibleJob",
             "404": "VirshSandboxInternalErrorErrorResponse",
         }
         response_data = self.api_client.call_api(

@@ -18,10 +18,14 @@ vmType: "qemu"
 firmware:
   legacyBIOS: false
 
-# Mount directories for sharing images between host and VM
+# Mount directories to share between host and Lima
 mounts:
+  # Mount home directory at same path as macOS (allows cd to work)
   - location: "~"
-    mountPoint: "/home/collinpfeifer.linux"
+    mountPoint: "~"
+    writable: true
+  # Libvirt images directory (required for Docker-created cloud-init ISOs)
+  - location: "/var/lib/libvirt/images"
     writable: true
 
 # Containerd is not needed for our use case
@@ -99,7 +103,27 @@ provision:
       listen_addr = "0.0.0.0"
       LIBVIRT_CONF
 
-      # Configure libvirt to listen on TCP
+      # Configure QEMU to disable security driver (AppArmor) and run as root
+      # Required for accessing disk images on 9p mounts from host
+      cat >> /etc/libvirt/qemu.conf << 'QEMU_CONF'
+
+      # Disable security driver to allow access to 9p-mounted host paths
+      # DEVELOPMENT ONLY - do not use in production
+      security_driver = "none"
+
+      # Run QEMU as root to access 9p-mounted files owned by host user
+      # DEVELOPMENT ONLY - do not use in production
+      user = "root"
+      group = "root"
+      QEMU_CONF
+
+      # Disable socket activation so we can use -l flag for TCP listening
+      # The -l flag and socket activation are mutually exclusive
+      systemctl stop libvirtd.socket libvirtd-ro.socket libvirtd-admin.socket || true
+      systemctl disable libvirtd.socket libvirtd-ro.socket libvirtd-admin.socket || true
+      systemctl mask libvirtd.socket libvirtd-ro.socket libvirtd-admin.socket || true
+
+      # Configure libvirtd service to run with -l (listen) flag
       mkdir -p /etc/systemd/system/libvirtd.service.d
       cat > /etc/systemd/system/libvirtd.service.d/override.conf << 'SYSTEMD_OVERRIDE'
       [Service]
@@ -107,21 +131,8 @@ provision:
       ExecStart=/usr/sbin/libvirtd -l
       SYSTEMD_OVERRIDE
 
-      # Also configure socket-based activation to allow TCP
-      cat > /etc/systemd/system/libvirtd-tcp.socket << 'TCP_SOCKET'
-      [Unit]
-      Description=libvirt TCP socket
-
-      [Socket]
-      ListenStream=16509
-      Accept=no
-
-      [Install]
-      WantedBy=sockets.target
-      TCP_SOCKET
-
       systemctl daemon-reload
-      systemctl enable libvirtd-tcp.socket
+      systemctl enable libvirtd
       systemctl restart libvirtd
 
       # Enable default network

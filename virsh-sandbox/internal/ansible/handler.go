@@ -162,6 +162,19 @@ func (h *Handler) RegisterRoutes(r chi.Router) {
 	})
 }
 
+// RegisterRoutesWithPlaybooks registers Ansible routes including playbook management.
+func (h *Handler) RegisterRoutesWithPlaybooks(r chi.Router, playbookHandler *PlaybookHandler) {
+	r.Route("/ansible", func(r chi.Router) {
+		r.Post("/jobs", h.HandleCreateJob)
+		r.Get("/jobs/{job_id}", h.HandleGetJob)
+		r.Get("/jobs/{job_id}/stream", h.HandleJobWebSocket)
+
+		if playbookHandler != nil {
+			playbookHandler.RegisterPlaybookRoutes(r)
+		}
+	})
+}
+
 // validationError represents a validation error.
 type validationError struct {
 	field   string
