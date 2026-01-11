@@ -21,14 +21,7 @@ def run_blocking_with_loader(blocking_func, *args, **kwargs):
     t = threading.Thread(target=progress_thread, args=(stop_event, kwargs.pop("title", "Working...")))
     t.start()
     try:
-        print("\n")
-        for k, val in kwargs.items():
-            print(f"{k}: {val}")
-        for val in args:
-            print(val)
-        print("\n")
-        result = blocking_func(*args, **kwargs)  # runs synchronously here
-        return result
+         return blocking_func(*args, **kwargs)  # runs synchronously here
     finally:
         stop_event.set()
         t.join()
