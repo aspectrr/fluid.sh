@@ -40,43 +40,11 @@ from virsh_sandbox.models.internal_rest_ca_public_key_response import (
 from virsh_sandbox.models.internal_rest_certificate_response import (
     InternalRestCertificateResponse,
 )
-from virsh_sandbox.models.internal_rest_create_sandbox_request import (
-    InternalRestCreateSandboxRequest,
-)
-from virsh_sandbox.models.internal_rest_create_sandbox_response import (
-    InternalRestCreateSandboxResponse,
-)
-from virsh_sandbox.models.internal_rest_destroy_sandbox_response import (
-    InternalRestDestroySandboxResponse,
-)
-from virsh_sandbox.models.internal_rest_diff_request import InternalRestDiffRequest
-from virsh_sandbox.models.internal_rest_diff_response import InternalRestDiffResponse
-from virsh_sandbox.models.internal_rest_discover_ip_response import (
-    InternalRestDiscoverIPResponse,
-)
-from virsh_sandbox.models.internal_rest_get_sandbox_response import (
-    InternalRestGetSandboxResponse,
-)
-from virsh_sandbox.models.internal_rest_inject_ssh_key_request import (
-    InternalRestInjectSSHKeyRequest,
-)
 from virsh_sandbox.models.internal_rest_list_certificates_response import (
     InternalRestListCertificatesResponse,
 )
-from virsh_sandbox.models.internal_rest_list_sandbox_commands_response import (
-    InternalRestListSandboxCommandsResponse,
-)
-from virsh_sandbox.models.internal_rest_list_sandboxes_response import (
-    InternalRestListSandboxesResponse,
-)
 from virsh_sandbox.models.internal_rest_list_sessions_response import (
     InternalRestListSessionsResponse,
-)
-from virsh_sandbox.models.internal_rest_list_vms_response import (
-    InternalRestListVMsResponse,
-)
-from virsh_sandbox.models.internal_rest_publish_request import (
-    InternalRestPublishRequest,
 )
 from virsh_sandbox.models.internal_rest_request_access_request import (
     InternalRestRequestAccessRequest,
@@ -90,12 +58,6 @@ from virsh_sandbox.models.internal_rest_revoke_certificate_request import (
 from virsh_sandbox.models.internal_rest_revoke_certificate_response import (
     InternalRestRevokeCertificateResponse,
 )
-from virsh_sandbox.models.internal_rest_run_command_request import (
-    InternalRestRunCommandRequest,
-)
-from virsh_sandbox.models.internal_rest_run_command_response import (
-    InternalRestRunCommandResponse,
-)
 from virsh_sandbox.models.internal_rest_session_end_request import (
     InternalRestSessionEndRequest,
 )
@@ -107,18 +69,6 @@ from virsh_sandbox.models.internal_rest_session_start_request import (
 )
 from virsh_sandbox.models.internal_rest_session_start_response import (
     InternalRestSessionStartResponse,
-)
-from virsh_sandbox.models.internal_rest_snapshot_request import (
-    InternalRestSnapshotRequest,
-)
-from virsh_sandbox.models.internal_rest_snapshot_response import (
-    InternalRestSnapshotResponse,
-)
-from virsh_sandbox.models.internal_rest_start_sandbox_request import (
-    InternalRestStartSandboxRequest,
-)
-from virsh_sandbox.models.internal_rest_start_sandbox_response import (
-    InternalRestStartSandboxResponse,
 )
 from virsh_sandbox.models.tmux_client_internal_api_create_sandbox_session_request import (
     TmuxClientInternalApiCreateSandboxSessionRequest,
@@ -293,6 +243,60 @@ from virsh_sandbox.models.virsh_sandbox_internal_ansible_update_task_request imp
 )
 from virsh_sandbox.models.virsh_sandbox_internal_ansible_update_task_response import (
     VirshSandboxInternalAnsibleUpdateTaskResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_request import (
+    VirshSandboxInternalRestCreateSandboxRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_response import (
+    VirshSandboxInternalRestCreateSandboxResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_destroy_sandbox_response import (
+    VirshSandboxInternalRestDestroySandboxResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_request import (
+    VirshSandboxInternalRestDiffRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_response import (
+    VirshSandboxInternalRestDiffResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_discover_ip_response import (
+    VirshSandboxInternalRestDiscoverIPResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_get_sandbox_response import (
+    VirshSandboxInternalRestGetSandboxResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_inject_ssh_key_request import (
+    VirshSandboxInternalRestInjectSSHKeyRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sandbox_commands_response import (
+    VirshSandboxInternalRestListSandboxCommandsResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sandboxes_response import (
+    VirshSandboxInternalRestListSandboxesResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_list_vms_response import (
+    VirshSandboxInternalRestListVMsResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_publish_request import (
+    VirshSandboxInternalRestPublishRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_request import (
+    VirshSandboxInternalRestRunCommandRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_response import (
+    VirshSandboxInternalRestRunCommandResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_request import (
+    VirshSandboxInternalRestSnapshotRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_response import (
+    VirshSandboxInternalRestSnapshotResponse,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_request import (
+    VirshSandboxInternalRestStartSandboxRequest,
+)
+from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_response import (
+    VirshSandboxInternalRestStartSandboxResponse,
 )
 
 
@@ -548,7 +552,7 @@ class AnsiblePlaybooksOperations:
         playbook_name: str,
         module: Optional[str] = None,
         name: Optional[str] = None,
-        params: Optional[Dict[str, Dict[str, Any]]] = None,
+        params: Optional[Dict[str, Any]] = None,
     ) -> VirshSandboxInternalAnsibleAddTaskResponse:
         """Add task to playbook
 
@@ -682,7 +686,7 @@ class AnsiblePlaybooksOperations:
         task_id: str,
         module: Optional[str] = None,
         name: Optional[str] = None,
-        params: Optional[Dict[str, Dict[str, Any]]] = None,
+        params: Optional[Dict[str, Any]] = None,
     ) -> VirshSandboxInternalAnsibleUpdateTaskResponse:
         """Update task
 
@@ -1289,7 +1293,7 @@ class SandboxOperations:
         vm_name: Optional[str] = None,
         wait_for_ip: Optional[bool] = None,
         request_timeout: Union[None, float, Tuple[float, float]] = None,
-    ) -> InternalRestCreateSandboxResponse:
+    ) -> VirshSandboxInternalRestCreateSandboxResponse:
         """Create a new sandbox
 
         Args:
@@ -1304,10 +1308,10 @@ class SandboxOperations:
             request_timeout: HTTP request timeout in seconds. Can be a single float for total timeout, or a tuple (connect_timeout, read_timeout). For operations with wait_for_ip=True, set this to at least 180 seconds.
 
         Returns:
-            InternalRestCreateSandboxResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestCreateSandboxResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalRestCreateSandboxRequest(
+        request = VirshSandboxInternalRestCreateSandboxRequest(
             agent_id=agent_id,
             auto_start=auto_start,
             cpu=cpu,
@@ -1350,7 +1354,7 @@ class SandboxOperations:
         id: str,
         external: Optional[bool] = None,
         name: Optional[str] = None,
-    ) -> InternalRestSnapshotResponse:
+    ) -> VirshSandboxInternalRestSnapshotResponse:
         """Create snapshot
 
         Args:
@@ -1359,10 +1363,10 @@ class SandboxOperations:
             name: required
 
         Returns:
-            InternalRestSnapshotResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestSnapshotResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalRestSnapshotRequest(
+        request = VirshSandboxInternalRestSnapshotRequest(
             external=external,
             name=name,
         )
@@ -1371,14 +1375,14 @@ class SandboxOperations:
     def destroy_sandbox(
         self,
         id: str,
-    ) -> InternalRestDestroySandboxResponse:
+    ) -> VirshSandboxInternalRestDestroySandboxResponse:
         """Destroy sandbox
 
         Args:
             id: str
 
         Returns:
-            InternalRestDestroySandboxResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestDestroySandboxResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.destroy_sandbox(id=id)
@@ -1388,7 +1392,7 @@ class SandboxOperations:
         id: str,
         from_snapshot: Optional[str] = None,
         to_snapshot: Optional[str] = None,
-    ) -> InternalRestDiffResponse:
+    ) -> VirshSandboxInternalRestDiffResponse:
         """Diff snapshots
 
         Args:
@@ -1397,10 +1401,10 @@ class SandboxOperations:
             to_snapshot: required
 
         Returns:
-            InternalRestDiffResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestDiffResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalRestDiffRequest(
+        request = VirshSandboxInternalRestDiffRequest(
             from_snapshot=from_snapshot,
             to_snapshot=to_snapshot,
         )
@@ -1409,14 +1413,14 @@ class SandboxOperations:
     def discover_sandbox_ip(
         self,
         id: str,
-    ) -> InternalRestDiscoverIPResponse:
+    ) -> VirshSandboxInternalRestDiscoverIPResponse:
         """Discover sandbox IP
 
         Args:
             id: str
 
         Returns:
-            InternalRestDiscoverIPResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestDiscoverIPResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.discover_sandbox_ip(id=id)
@@ -1438,7 +1442,7 @@ class SandboxOperations:
         self,
         id: str,
         include_commands: Optional[bool] = None,
-    ) -> InternalRestGetSandboxResponse:
+    ) -> VirshSandboxInternalRestGetSandboxResponse:
         """Get sandbox details
 
         Args:
@@ -1446,7 +1450,7 @@ class SandboxOperations:
             include_commands: Optional[bool]
 
         Returns:
-            InternalRestGetSandboxResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestGetSandboxResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.get_sandbox(id=id, include_commands=include_commands)
@@ -1479,7 +1483,7 @@ class SandboxOperations:
             public_key: required
             username: required (explicit); typical: \
         """
-        request = InternalRestInjectSSHKeyRequest(
+        request = VirshSandboxInternalRestInjectSSHKeyRequest(
             public_key=public_key,
             username=username,
         )
@@ -1505,7 +1509,7 @@ class SandboxOperations:
         id: str,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> InternalRestListSandboxCommandsResponse:
+    ) -> VirshSandboxInternalRestListSandboxCommandsResponse:
         """List sandbox commands
 
         Args:
@@ -1514,7 +1518,7 @@ class SandboxOperations:
             offset: Optional[int]
 
         Returns:
-            InternalRestListSandboxCommandsResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestListSandboxCommandsResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.list_sandbox_commands(id=id, limit=limit, offset=offset)
@@ -1537,7 +1541,7 @@ class SandboxOperations:
         vm_name: Optional[str] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> InternalRestListSandboxesResponse:
+    ) -> VirshSandboxInternalRestListSandboxesResponse:
         """List sandboxes
 
         Args:
@@ -1550,7 +1554,7 @@ class SandboxOperations:
             offset: Optional[int]
 
         Returns:
-            InternalRestListSandboxesResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestListSandboxesResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.list_sandboxes(
@@ -1578,7 +1582,7 @@ class SandboxOperations:
             message: optional commit/PR message
             reviewers: optional
         """
-        request = InternalRestPublishRequest(
+        request = VirshSandboxInternalRestPublishRequest(
             job_id=job_id,
             message=message,
             reviewers=reviewers,
@@ -1594,7 +1598,7 @@ class SandboxOperations:
         timeout_sec: Optional[int] = None,
         user: Optional[str] = None,
         request_timeout: Union[None, float, Tuple[float, float]] = None,
-    ) -> InternalRestRunCommandResponse:
+    ) -> VirshSandboxInternalRestRunCommandResponse:
         """Run command in sandbox
 
         Args:
@@ -1607,10 +1611,10 @@ class SandboxOperations:
             request_timeout: HTTP request timeout in seconds. Can be a single float for total timeout, or a tuple (connect_timeout, read_timeout). For operations with wait_for_ip=True, set this to at least 180 seconds.
 
         Returns:
-            InternalRestRunCommandResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestRunCommandResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalRestRunCommandRequest(
+        request = VirshSandboxInternalRestRunCommandRequest(
             command=command,
             env=env,
             private_key_path=private_key_path,
@@ -1635,7 +1639,7 @@ class SandboxOperations:
         id: str,
         wait_for_ip: Optional[bool] = None,
         request_timeout: Union[None, float, Tuple[float, float]] = None,
-    ) -> InternalRestStartSandboxResponse:
+    ) -> VirshSandboxInternalRestStartSandboxResponse:
         """Start sandbox
 
         Args:
@@ -1644,10 +1648,10 @@ class SandboxOperations:
             request_timeout: HTTP request timeout in seconds. Can be a single float for total timeout, or a tuple (connect_timeout, read_timeout). For operations with wait_for_ip=True, set this to at least 180 seconds.
 
         Returns:
-            InternalRestStartSandboxResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestStartSandboxResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
-        request = InternalRestStartSandboxRequest(
+        request = VirshSandboxInternalRestStartSandboxRequest(
             wait_for_ip=wait_for_ip,
         )
         return self._api.start_sandbox(
@@ -1862,11 +1866,11 @@ class VMsOperations:
     def __init__(self, api: VMsApi):
         self._api = api
 
-    def list_virtual_machines(self) -> InternalRestListVMsResponse:
+    def list_virtual_machines(self) -> VirshSandboxInternalRestListVMsResponse:
         """List all VMs
 
         Returns:
-            InternalRestListVMsResponse: Pydantic model with full IDE autocomplete.
+            VirshSandboxInternalRestListVMsResponse: Pydantic model with full IDE autocomplete.
             Call .model_dump() to convert to dict if needed.
         """
         return self._api.list_virtual_machines()
