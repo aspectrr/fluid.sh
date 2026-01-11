@@ -112,7 +112,6 @@ func (s *Server) routes() {
 				r.Get("/", s.handleGetSandbox)
 				r.Get("/commands", s.handleListSandboxCommands)
 				r.Get("/stream", s.handleSandboxStream)
-				r.Get("/ip", s.handleDiscoverIP)
 
 				r.Post("/sshkey", s.handleInjectSSHKey)
 				r.Post("/start", s.handleStartSandbox)

@@ -30,34 +30,34 @@ def simplify_type_name(verbose_name: str) -> str:
     name = verbose_name
 
     # Remove Dict suffix first
-    if name.endswith("Dict"):
+    if name.endswith('Dict'):
         name = name[:-4]
 
     # Remove common prefixes in order of specificity
     prefixes_to_remove = [
-        "VirshSandboxInternalRest",
-        "VirshSandboxInternalStore",
-        "VirshSandboxInternal",
-        "VirshSandbox",
-        "TmuxClientInternalTypes",
-        "TmuxClientInternalApi",
-        "TmuxClientInternal",
-        "TmuxClient",
-        "InternalRest",
-        "InternalApi",
-        "InternalStore",
-        "Internal",
+        'VirshSandboxInternalRest',
+        'VirshSandboxInternalStore',
+        'VirshSandboxInternal',
+        'VirshSandbox',
+        'TmuxClientInternalTypes',
+        'TmuxClientInternalApi',
+        'TmuxClientInternal',
+        'TmuxClient',
+        'InternalRest',
+        'InternalApi',
+        'InternalStore',
+        'Internal',
     ]
 
     for prefix in prefixes_to_remove:
         if name.startswith(prefix):
-            name = name[len(prefix) :]
+            name = name[len(prefix):]
             break
 
     # Handle edge cases where name might be empty or start with lowercase
     if not name or not name[0].isupper():
         # Fall back to a reasonable extraction
-        name = verbose_name.replace("Dict", "")
+        name = verbose_name.replace('Dict', '')
 
     return name
 
@@ -72,10 +72,9 @@ def generate_simplified_aliases(models: dict) -> dict[str, str]:
     """
     # Filter to only non-request, non-query, non-enum models (same as topological_sort_models)
     filtered_models = {
-        name: info
-        for name, info in models.items()
-        if not name.endswith("Request")
-        and not name.endswith("Query")
+        name: info for name, info in models.items()
+        if not name.endswith('Request')
+        and not name.endswith('Query')
         and not is_enum_model(name, models)
     }
 
@@ -626,7 +625,7 @@ def get_return_type_for_model(return_type: str, models: dict) -> str:
         return "None"
 
     # Handle List[ModelType] - keep as is
-    list_match = re.match(r"List\[(\w+)\]", return_type)
+    list_match = re.match(r'List\[(\w+)\]', return_type)
     if list_match:
         inner_type = list_match.group(1)
         if inner_type in models:
@@ -634,7 +633,7 @@ def get_return_type_for_model(return_type: str, models: dict) -> str:
         return return_type
 
     # Handle single model types - keep the model class name
-    type_match = re.match(r"(?:Optional\[)?(\w+)(?:\])?", return_type)
+    type_match = re.match(r'(?:Optional\[)?(\w+)(?:\])?', return_type)
     if type_match:
         base_type = type_match.group(1)
         if base_type in models:
@@ -643,9 +642,7 @@ def get_return_type_for_model(return_type: str, models: dict) -> str:
     return return_type
 
 
-def generate_wrapper_method(
-    method: MethodInfo, models: dict, use_async: bool = True
-) -> str:
+def generate_wrapper_method(method: MethodInfo, models: dict, use_async: bool = True) -> str:
     """Generate a wrapper method with flattened parameters that returns Pydantic models."""
     lines = []
 
@@ -676,12 +673,6 @@ def generate_wrapper_method(
     for field in request_fields:
         field_type = simplify_type(field.type_hint)
         all_params.append(f"{field.name}: Optional[{field_type}] = None")
-
-    # Add request_timeout parameter for long-running methods
-    if needs_request_timeout:
-        all_params.append(
-            "request_timeout: Union[None, float, Tuple[float, float]] = None"
-        )
 
     # Method signature - use the original Pydantic model as return type
     return_type_hint = get_return_type_for_model(method.return_type, models)
@@ -717,9 +708,7 @@ def generate_wrapper_method(
     if method.return_type != "None":
         lines.append("")
         lines.append("        Returns:")
-        lines.append(
-            f"            {return_type_hint}: Pydantic model with full IDE autocomplete."
-        )
+        lines.append(f"            {return_type_hint}: Pydantic model with full IDE autocomplete.")
         lines.append("            Call .model_dump() to convert to dict if needed.")
 
     lines.append('        """')
@@ -746,24 +735,12 @@ def generate_wrapper_method(
             lines.append(f"        request = {method.request_type}()")
             call_args.append("request=request")
 
-        # Add _request_timeout if this method needs it
-        if needs_request_timeout:
-            call_args.append("_request_timeout=request_timeout")
-
         # Return the Pydantic model directly (no _to_dict conversion)
-        lines.append(
-            f"        return {await_keyword}self._api.{method.name}({', '.join(call_args)})"
-        )
+        lines.append(f"        return {await_keyword}self._api.{method.name}({', '.join(call_args)})")
     else:
         # No request object needed - return model directly
-        # Add _request_timeout if this method needs it
-        if needs_request_timeout:
-            call_args.append("_request_timeout=request_timeout")
-
         if call_args:
-            lines.append(
-                f"        return {await_keyword}self._api.{method.name}({', '.join(call_args)})"
-            )
+            lines.append(f"        return {await_keyword}self._api.{method.name}({', '.join(call_args)})")
         else:
             lines.append(f"        return {await_keyword}self._api.{method.name}()")
 
@@ -884,10 +861,10 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     # Build the complete file
     output_lines = []
 
-    output_lines.append("# coding: utf-8")
-    output_lines.append("")
-    output_lines.append("from __future__ import annotations")
-    output_lines.append("")
+    output_lines.append('# coding: utf-8')
+    output_lines.append('')
+    output_lines.append('from __future__ import annotations')
+    output_lines.append('')
     output_lines.append('"""')
     output_lines.append("Unified VirshSandbox Client")
     output_lines.append("")
@@ -924,11 +901,11 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
             '    client.command.run_command(command="ls", args=["-la"])'
         )
     output_lines.append('"""')
-    output_lines.append("")
-    output_lines.append("from typing import Dict, List, Optional, Tuple, Union")
-    output_lines.append("")
-    output_lines.append(f"from {package_name}.api_client import ApiClient")
-    output_lines.append(f"from {package_name}.configuration import Configuration")
+    output_lines.append('')
+    output_lines.append('from typing import Dict, List, Optional')
+    output_lines.append('')
+    output_lines.append(f'from {package_name}.api_client import ApiClient')
+    output_lines.append(f'from {package_name}.configuration import Configuration')
 
     for imp in sorted(api_imports):
         output_lines.append(imp)
@@ -936,8 +913,8 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     for imp in sorted(model_imports):
         output_lines.append(imp)
 
-    output_lines.append("")
-    output_lines.append("")
+    output_lines.append('')
+    output_lines.append('')
 
     # Add wrapper classes
     for wrapper in wrapper_classes:

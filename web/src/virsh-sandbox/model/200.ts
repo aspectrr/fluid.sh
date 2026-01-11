@@ -6,9 +6,4 @@
  * OpenAPI spec version: 0.0.1-beta
  */
 
-export type GetSandboxParams = {
-/**
- * Include command history
- */
-include_commands?: boolean;
-};
+export type 200 = {[key: string]: string};

@@ -309,14 +309,25 @@ func (m *VirshManager) CloneFromVM(ctx context.Context, sourceVMName, newVMName 
 		return DomainRef{}, fmt.Errorf("lookup source VM %q: %w", sourceVMName, err)
 	}
 
-	// Parse domblklist output to find the disk path
+	// Parse domblklist output to find the disk path and cloud-init CDROM
+	// Format: Type   Device   Target   Source
+	//         file   disk     vda      /path/to/disk.qcow2
+	//         file   cdrom    sda      /path/to/cloud-init.iso
 	basePath := ""
+	sourceCloudInitISO := ""
 	lines := strings.Split(out, "\n")
 	for _, line := range lines {
 		fields := strings.Fields(line)
-		if len(fields) >= 4 && fields[0] == "file" && fields[1] == "disk" {
-			basePath = fields[3]
-			break
+		if len(fields) >= 4 && fields[0] == "file" {
+			if fields[1] == "disk" && basePath == "" {
+				basePath = fields[3]
+			} else if fields[1] == "cdrom" {
+				// Check if this looks like a cloud-init ISO
+				src := fields[3]
+				if strings.Contains(src, "cloud-init") || strings.HasSuffix(src, ".iso") {
+					sourceCloudInitISO = src
+				}
+			}
 		}
 	}
 	if basePath == "" {
@@ -339,8 +350,39 @@ func (m *VirshManager) CloneFromVM(ctx context.Context, sourceVMName, newVMName 
 		return DomainRef{}, fmt.Errorf("create overlay: %w", err)
 	}
 
-	// Dump the source VM's XML and modify it for the new VM
-	sourceXML, err := m.run(ctx, virsh, "--connect", m.cfg.LibvirtURI, "dumpxml", sourceVMName)
+	// Generate a new cloud-init ISO for this sandbox with a unique instance-id.
+	// This is critical: when cloning from a VM, the disk already has cloud-init state
+	// from the source VM's instance-id. If we reuse the same cloud-init ISO, cloud-init
+	// will see the same instance-id and skip re-initialization, including network setup.
+	// By creating a new ISO with a unique instance-id, we force cloud-init to re-run
+	// and configure networking for this clone's MAC address.
+	cloudInitISO := ""
+	if sourceCloudInitISO != "" {
+		// Source VM has cloud-init - create a new seed ISO for this sandbox
+		cloudInitISO = filepath.Join(jobDir, "cloud-init.iso")
+		if err := m.buildCloudInitSeedForClone(ctx, newVMName, cloudInitISO); err != nil {
+			log.Printf("WARNING: failed to build cloud-init seed for clone %s: %v, networking may not work", newVMName, err)
+			// Fall back to source ISO if we can't create a new one
+			cloudInitISO = sourceCloudInitISO
+		} else {
+			log.Printf("CloneFromVM: created new cloud-init ISO with instance-id=%s", newVMName)
+		}
+	}
+
+	// Create minimal domain XML referencing overlay disk, cloud-init ISO (if present), and network.
+	xmlPath := filepath.Join(jobDir, "domain.xml")
+	xml, err := renderDomainXML(domainXMLParams{
+		Name:         newVMName,
+		MemoryMB:     memoryMB,
+		VCPUs:        cpu,
+		DiskPath:     overlayPath,
+		CloudInitISO: cloudInitISO,
+		Network:      network,
+		BootOrder:    []string{"hd", "cdrom", "network"},
+		Arch:         archInfo.Arch,
+		Machine:      archInfo.Machine,
+		DomainType:   archInfo.DomainType,
+	})
 	if err != nil {
 		return DomainRef{}, fmt.Errorf("dumpxml source vm: %w", err)
 	}
@@ -1408,19 +1450,16 @@ func (m *VirshManager) getVMArchitecture(ctx context.Context, vmName string) (vm
 // --- Domain XML rendering ---
 
 type domainXMLParams struct {
-	Name            string
-	MemoryMB        int
-	VCPUs           int
-	DiskPath        string
-	CloudInitISO    string // Optional path to cloud-init ISO for networking config
-	Network         string // "default", "user", "socket_vmnet", or custom network name
-	SocketVMNetPath string // Path to socket_vmnet socket (used when Network="socket_vmnet")
-	Emulator        string // Optional custom emulator path (e.g., wrapper script for socket_vmnet)
-	BootOrder       []string
-	Arch            string // e.g., "x86_64" or "aarch64"
-	Machine         string // e.g., "pc-q35-6.2" or "virt"
-	DomainType      string // e.g., "kvm" or "qemu"
-	MACAddress      string // Optional MAC address for the network interface
+	Name         string
+	MemoryMB     int
+	VCPUs        int
+	DiskPath     string
+	CloudInitISO string // Optional path to cloud-init ISO for networking config
+	Network      string
+	BootOrder    []string
+	Arch         string // e.g., "x86_64" or "aarch64"
+	Machine      string // e.g., "pc-q35-6.2" or "virt"
+	DomainType   string // e.g., "kvm" or "qemu"
 }
 
 func renderDomainXML(p domainXMLParams) (string, error) {
@@ -1618,22 +1657,24 @@ local-hostname: %s
 	return fmt.Errorf("cloud-init seed build tools not found: need cloud-localds or genisoimage/mkisofs")
 }
 
-// buildCloudInitSeedForClone creates a cloud-init ISO for a cloned VM.
+// buildCloudInitSeedForClone creates a minimal cloud-init ISO for a cloned VM.
 // The key purpose is to provide a NEW instance-id that differs from what's stored
 // on the cloned disk. This forces cloud-init to re-run its initialization,
 // including network configuration for the clone's new MAC address.
 //
-// If SSHCAPubKey is configured, this function also:
-// - Creates a 'sandbox' user with sudo access for managed SSH credentials
-// - Injects the SSH CA public key and configures sshd to trust it
+// Unlike buildCloudInitSeed which creates users and SSH keys, this function
+// preserves the existing user configuration from the base image and only
+// triggers cloud-init to re-run network setup.
 func (m *VirshManager) buildCloudInitSeedForClone(ctx context.Context, vmName, outISO string) error {
 	jobDir := filepath.Dir(outISO)
 
-	// Build cloud-init user-data
-	var userDataBuilder strings.Builder
-	userDataBuilder.WriteString(`#cloud-config
-# Cloud-init config for cloned VMs
+	// Minimal user-data that preserves existing users but ensures cloud-init runs
+	// The empty users list with 'default' tells cloud-init to use the default user
+	// from the base image while still processing network configuration.
+	userData := `#cloud-config
+# Minimal cloud-init config for cloned VMs
 # This triggers cloud-init to re-run network configuration
+# while preserving existing user accounts from the base image
 
 # Ensure networking is configured via DHCP
 network:
@@ -1643,42 +1684,7 @@ network:
       match:
         driver: virtio*
       dhcp4: true
-`)
-
-	// If SSH CA is configured, add sandbox user and SSH CA trust
-	if m.cfg.SSHCAPubKey != "" {
-		userDataBuilder.WriteString(`
-# Create sandbox user for managed SSH credentials
-users:
-  - default
-  - name: sandbox
-    sudo: ALL=(ALL) NOPASSWD:ALL
-    shell: /bin/bash
-    lock_passwd: true
-
-# Write SSH CA public key
-write_files:
-  - path: /etc/ssh/ssh_ca.pub
-    content: |
-      `)
-		userDataBuilder.WriteString(m.cfg.SSHCAPubKey)
-		userDataBuilder.WriteString(`
-    permissions: '0644'
-    owner: root:root
-
-# Configure sshd to trust the CA
-runcmd:
-  - |
-    if [ -s /etc/ssh/ssh_ca.pub ]; then
-      if ! grep -q "TrustedUserCAKeys" /etc/ssh/sshd_config; then
-        echo "TrustedUserCAKeys /etc/ssh/ssh_ca.pub" >> /etc/ssh/sshd_config
-        systemctl restart sshd || systemctl restart ssh || true
-      fi
-    fi
-`)
-	}
-
-	userData := userDataBuilder.String()
+`
 
 	// Use a unique instance-id based on the VM name
 	// This is the critical part: cloud-init checks if instance-id has changed
@@ -1699,41 +1705,18 @@ local-hostname: %s
 	// Try cloud-localds if available
 	if hasBin("cloud-localds") {
 		if _, err := m.run(ctx, "cloud-localds", outISO, userDataPath, metaDataPath); err == nil {
-			// Verify the ISO was actually created
-			if _, statErr := os.Stat(outISO); statErr == nil {
-				return nil
-			} else {
-				log.Printf("WARNING: cloud-localds succeeded but ISO not found at %s: %v", outISO, statErr)
-			}
-		} else {
-			log.Printf("WARNING: cloud-localds failed: %v, trying fallback tools", err)
+			return nil
 		}
 	}
 
 	// Fallback to genisoimage/mkisofs
 	if hasBin("genisoimage") {
 		_, err := m.run(ctx, "genisoimage", "-output", outISO, "-volid", "cidata", "-joliet", "-rock", userDataPath, metaDataPath)
-		if err != nil {
-			log.Printf("WARNING: genisoimage failed: %v", err)
-			return err
-		}
-		// Verify the ISO was actually created
-		if _, statErr := os.Stat(outISO); statErr != nil {
-			return fmt.Errorf("genisoimage succeeded but ISO not found at %s: %w", outISO, statErr)
-		}
-		return nil
+		return err
 	}
 	if hasBin("mkisofs") {
 		_, err := m.run(ctx, "mkisofs", "-output", outISO, "-V", "cidata", "-J", "-R", userDataPath, metaDataPath)
-		if err != nil {
-			log.Printf("WARNING: mkisofs failed: %v", err)
-			return err
-		}
-		// Verify the ISO was actually created
-		if _, statErr := os.Stat(outISO); statErr != nil {
-			return fmt.Errorf("mkisofs succeeded but ISO not found at %s: %w", outISO, statErr)
-		}
-		return nil
+		return err
 	}
 
 	return fmt.Errorf("cloud-init seed build tools not found: need cloud-localds or genisoimage/mkisofs")

@@ -1,6 +1,6 @@
 [project]
 name = "virsh_sandbox"
-version = "0.0.20-beta"
+version = "0.0.15-beta"
 description = "virsh-sandbox API"
 authors = [
   {name = "OpenAPI Generator Community",email = "team@openapitools.org"},
@@ -114,3 +114,6 @@ disallow_incomplete_defs = true
 disallow_untyped_defs = true
 no_implicit_reexport = true
 warn_return_any = true
+
+[tool.isort]
+profile = "black"

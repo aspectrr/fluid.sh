@@ -34,14 +34,8 @@ from virsh_sandbox.models.internal_rest_request_access_response import (
 from virsh_sandbox.models.internal_rest_revoke_certificate_request import (
     InternalRestRevokeCertificateRequest,
 )
-from virsh_sandbox.models.internal_rest_revoke_certificate_response import (
-    InternalRestRevokeCertificateResponse,
-)
 from virsh_sandbox.models.internal_rest_session_end_request import (
     InternalRestSessionEndRequest,
-)
-from virsh_sandbox.models.internal_rest_session_end_response import (
-    InternalRestSessionEndResponse,
 )
 from virsh_sandbox.models.internal_rest_session_start_request import (
     InternalRestSessionStartRequest,

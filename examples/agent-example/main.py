@@ -298,9 +298,13 @@ def main():
     try:
         sandbox = run_blocking_with_loader(client.sandbox.create_sandbox, source_vm_name="test-vm", agent_id=agent_id, auto_start=True, wait_for_ip=True, request_timeout=180.0, title="Creating sandbox...").sandbox
 
-        if(sandbox and sandbox.id):
+        sandbox = client.sandbox.create_sandbox(source_vm_name="test-vm-arm64", agent_id=agent_id, auto_start=True, wait_for_ip=True).sandbox
+        print("Sandbox Created:")
+        pprint(sandbox)
+
+        if(sandbox):
             run_agent(
-                "Install 'cowsay' and run it, create an Ansible playbook to recreate the task.", sandbox.id
+                "Run the command 'ls -l'", sandbox.id
             )
     except Exception as e:
         print(f"Error: {e}")

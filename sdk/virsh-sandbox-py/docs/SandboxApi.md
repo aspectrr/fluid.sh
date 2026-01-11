@@ -26,7 +26,7 @@ Method | HTTP request | Description
 
 
 # **create_sandbox**
-> VirshSandboxInternalRestCreateSandboxResponse create_sandbox(request)
+> InternalRestCreateSandboxResponse create_sandbox(request)
 
 Create a new sandbox
 
@@ -37,8 +37,8 @@ Creates a new virtual machine sandbox by cloning from an existing VM
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_request import VirshSandboxInternalRestCreateSandboxRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_create_sandbox_response import VirshSandboxInternalRestCreateSandboxResponse
+from virsh_sandbox.models.internal_rest_create_sandbox_request import InternalRestCreateSandboxRequest
+from virsh_sandbox.models.internal_rest_create_sandbox_response import InternalRestCreateSandboxResponse
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -53,7 +53,7 @@ configuration = virsh_sandbox.Configuration(
 with virsh_sandbox.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = virsh_sandbox.SandboxApi(api_client)
-    request = virsh_sandbox.VirshSandboxInternalRestCreateSandboxRequest() # VirshSandboxInternalRestCreateSandboxRequest | Sandbox creation parameters
+    request = virsh_sandbox.InternalRestCreateSandboxRequest() # InternalRestCreateSandboxRequest | Sandbox creation parameters
 
     try:
         # Create a new sandbox
@@ -71,11 +71,11 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **request** | [**VirshSandboxInternalRestCreateSandboxRequest**](VirshSandboxInternalRestCreateSandboxRequest.md)| Sandbox creation parameters | 
+ **request** | [**InternalRestCreateSandboxRequest**](InternalRestCreateSandboxRequest.md)| Sandbox creation parameters | 
 
 ### Return type
 
-[**VirshSandboxInternalRestCreateSandboxResponse**](VirshSandboxInternalRestCreateSandboxResponse.md)
+[**InternalRestCreateSandboxResponse**](InternalRestCreateSandboxResponse.md)
 
 ### Authorization
 
@@ -168,7 +168,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **create_snapshot**
-> VirshSandboxInternalRestSnapshotResponse create_snapshot(id, request)
+> InternalRestSnapshotResponse create_snapshot(id, request)
 
 Create snapshot
 
@@ -179,8 +179,8 @@ Creates a snapshot of the sandbox
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_request import VirshSandboxInternalRestSnapshotRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_snapshot_response import VirshSandboxInternalRestSnapshotResponse
+from virsh_sandbox.models.internal_rest_snapshot_request import InternalRestSnapshotRequest
+from virsh_sandbox.models.internal_rest_snapshot_response import InternalRestSnapshotResponse
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -196,7 +196,7 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = virsh_sandbox.SandboxApi(api_client)
     id = 'id_example' # str | Sandbox ID
-    request = virsh_sandbox.VirshSandboxInternalRestSnapshotRequest() # VirshSandboxInternalRestSnapshotRequest | Snapshot parameters
+    request = virsh_sandbox.InternalRestSnapshotRequest() # InternalRestSnapshotRequest | Snapshot parameters
 
     try:
         # Create snapshot
@@ -215,11 +215,11 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **str**| Sandbox ID | 
- **request** | [**VirshSandboxInternalRestSnapshotRequest**](VirshSandboxInternalRestSnapshotRequest.md)| Snapshot parameters | 
+ **request** | [**InternalRestSnapshotRequest**](InternalRestSnapshotRequest.md)| Snapshot parameters | 
 
 ### Return type
 
-[**VirshSandboxInternalRestSnapshotResponse**](VirshSandboxInternalRestSnapshotResponse.md)
+[**InternalRestSnapshotResponse**](InternalRestSnapshotResponse.md)
 
 ### Authorization
 
@@ -241,7 +241,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **destroy_sandbox**
-> VirshSandboxInternalRestDestroySandboxResponse destroy_sandbox(id)
+> InternalRestDestroySandboxResponse destroy_sandbox(id)
 
 Destroy sandbox
 
@@ -252,7 +252,7 @@ Destroys the sandbox and cleans up resources
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.virsh_sandbox_internal_rest_destroy_sandbox_response import VirshSandboxInternalRestDestroySandboxResponse
+from virsh_sandbox.models.internal_rest_destroy_sandbox_response import InternalRestDestroySandboxResponse
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -289,7 +289,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**VirshSandboxInternalRestDestroySandboxResponse**](VirshSandboxInternalRestDestroySandboxResponse.md)
+[**InternalRestDestroySandboxResponse**](InternalRestDestroySandboxResponse.md)
 
 ### Authorization
 
@@ -312,7 +312,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **diff_snapshots**
-> VirshSandboxInternalRestDiffResponse diff_snapshots(id, request)
+> InternalRestDiffResponse diff_snapshots(id, request)
 
 Diff snapshots
 
@@ -323,8 +323,8 @@ Computes differences between two snapshots
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_request import VirshSandboxInternalRestDiffRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_diff_response import VirshSandboxInternalRestDiffResponse
+from virsh_sandbox.models.internal_rest_diff_request import InternalRestDiffRequest
+from virsh_sandbox.models.internal_rest_diff_response import InternalRestDiffResponse
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -340,7 +340,7 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = virsh_sandbox.SandboxApi(api_client)
     id = 'id_example' # str | Sandbox ID
-    request = virsh_sandbox.VirshSandboxInternalRestDiffRequest() # VirshSandboxInternalRestDiffRequest | Diff parameters
+    request = virsh_sandbox.InternalRestDiffRequest() # InternalRestDiffRequest | Diff parameters
 
     try:
         # Diff snapshots
@@ -359,11 +359,11 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **str**| Sandbox ID | 
- **request** | [**VirshSandboxInternalRestDiffRequest**](VirshSandboxInternalRestDiffRequest.md)| Diff parameters | 
+ **request** | [**InternalRestDiffRequest**](InternalRestDiffRequest.md)| Diff parameters | 
 
 ### Return type
 
-[**VirshSandboxInternalRestDiffResponse**](VirshSandboxInternalRestDiffResponse.md)
+[**InternalRestDiffResponse**](InternalRestDiffResponse.md)
 
 ### Authorization
 
@@ -524,7 +524,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_sandbox**
-> VirshSandboxInternalRestGetSandboxResponse get_sandbox(id, include_commands=include_commands)
+> InternalRestGetSandboxResponse get_sandbox(id, include_commands=include_commands)
 
 Get sandbox details
 
@@ -535,7 +535,7 @@ Returns detailed information about a specific sandbox including recent commands
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.virsh_sandbox_internal_rest_get_sandbox_response import VirshSandboxInternalRestGetSandboxResponse
+from virsh_sandbox.models.internal_rest_get_sandbox_response import InternalRestGetSandboxResponse
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -574,7 +574,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**VirshSandboxInternalRestGetSandboxResponse**](VirshSandboxInternalRestGetSandboxResponse.md)
+[**InternalRestGetSandboxResponse**](InternalRestGetSandboxResponse.md)
 
 ### Authorization
 
@@ -677,7 +677,7 @@ Injects a public SSH key for a user in the sandbox
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.virsh_sandbox_internal_rest_inject_ssh_key_request import VirshSandboxInternalRestInjectSSHKeyRequest
+from virsh_sandbox.models.internal_rest_inject_ssh_key_request import InternalRestInjectSSHKeyRequest
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -693,7 +693,7 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = virsh_sandbox.SandboxApi(api_client)
     id = 'id_example' # str | Sandbox ID
-    request = virsh_sandbox.VirshSandboxInternalRestInjectSSHKeyRequest() # VirshSandboxInternalRestInjectSSHKeyRequest | SSH key injection parameters
+    request = virsh_sandbox.InternalRestInjectSSHKeyRequest() # InternalRestInjectSSHKeyRequest | SSH key injection parameters
 
     try:
         # Inject SSH key into sandbox
@@ -710,7 +710,7 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **str**| Sandbox ID | 
- **request** | [**VirshSandboxInternalRestInjectSSHKeyRequest**](VirshSandboxInternalRestInjectSSHKeyRequest.md)| SSH key injection parameters | 
+ **request** | [**InternalRestInjectSSHKeyRequest**](InternalRestInjectSSHKeyRequest.md)| SSH key injection parameters | 
 
 ### Return type
 
@@ -806,7 +806,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_sandbox_commands**
-> VirshSandboxInternalRestListSandboxCommandsResponse list_sandbox_commands(id, limit=limit, offset=offset)
+> InternalRestListSandboxCommandsResponse list_sandbox_commands(id, limit=limit, offset=offset)
 
 List sandbox commands
 
@@ -817,7 +817,7 @@ Returns all commands executed in the sandbox
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sandbox_commands_response import VirshSandboxInternalRestListSandboxCommandsResponse
+from virsh_sandbox.models.internal_rest_list_sandbox_commands_response import InternalRestListSandboxCommandsResponse
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -858,7 +858,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**VirshSandboxInternalRestListSandboxCommandsResponse**](VirshSandboxInternalRestListSandboxCommandsResponse.md)
+[**InternalRestListSandboxCommandsResponse**](InternalRestListSandboxCommandsResponse.md)
 
 ### Authorization
 
@@ -946,7 +946,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_sandboxes**
-> VirshSandboxInternalRestListSandboxesResponse list_sandboxes(agent_id=agent_id, job_id=job_id, base_image=base_image, state=state, vm_name=vm_name, limit=limit, offset=offset)
+> InternalRestListSandboxesResponse list_sandboxes(agent_id=agent_id, job_id=job_id, base_image=base_image, state=state, vm_name=vm_name, limit=limit, offset=offset)
 
 List sandboxes
 
@@ -957,7 +957,7 @@ Lists all sandboxes with optional filtering by agent_id, job_id, base_image, sta
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.virsh_sandbox_internal_rest_list_sandboxes_response import VirshSandboxInternalRestListSandboxesResponse
+from virsh_sandbox.models.internal_rest_list_sandboxes_response import InternalRestListSandboxesResponse
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -1006,7 +1006,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**VirshSandboxInternalRestListSandboxesResponse**](VirshSandboxInternalRestListSandboxesResponse.md)
+[**InternalRestListSandboxesResponse**](InternalRestListSandboxesResponse.md)
 
 ### Authorization
 
@@ -1038,7 +1038,7 @@ Publishes sandbox changes to GitOps repository
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.virsh_sandbox_internal_rest_publish_request import VirshSandboxInternalRestPublishRequest
+from virsh_sandbox.models.internal_rest_publish_request import InternalRestPublishRequest
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -1054,7 +1054,7 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = virsh_sandbox.SandboxApi(api_client)
     id = 'id_example' # str | Sandbox ID
-    request = virsh_sandbox.VirshSandboxInternalRestPublishRequest() # VirshSandboxInternalRestPublishRequest | Publish parameters
+    request = virsh_sandbox.InternalRestPublishRequest() # InternalRestPublishRequest | Publish parameters
 
     try:
         # Publish changes
@@ -1071,7 +1071,7 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **str**| Sandbox ID | 
- **request** | [**VirshSandboxInternalRestPublishRequest**](VirshSandboxInternalRestPublishRequest.md)| Publish parameters | 
+ **request** | [**InternalRestPublishRequest**](InternalRestPublishRequest.md)| Publish parameters | 
 
 ### Return type
 
@@ -1096,7 +1096,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **run_sandbox_command**
-> VirshSandboxInternalRestRunCommandResponse run_sandbox_command(id, request)
+> InternalRestRunCommandResponse run_sandbox_command(id, request)
 
 Run command in sandbox
 
@@ -1107,8 +1107,8 @@ Executes a command inside the sandbox via SSH. If private_key_path is omitted an
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_request import VirshSandboxInternalRestRunCommandRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_run_command_response import VirshSandboxInternalRestRunCommandResponse
+from virsh_sandbox.models.internal_rest_run_command_request import InternalRestRunCommandRequest
+from virsh_sandbox.models.internal_rest_run_command_response import InternalRestRunCommandResponse
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -1124,7 +1124,7 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = virsh_sandbox.SandboxApi(api_client)
     id = 'id_example' # str | Sandbox ID
-    request = virsh_sandbox.VirshSandboxInternalRestRunCommandRequest() # VirshSandboxInternalRestRunCommandRequest | Command execution parameters
+    request = virsh_sandbox.InternalRestRunCommandRequest() # InternalRestRunCommandRequest | Command execution parameters
 
     try:
         # Run command in sandbox
@@ -1143,11 +1143,11 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **str**| Sandbox ID | 
- **request** | [**VirshSandboxInternalRestRunCommandRequest**](VirshSandboxInternalRestRunCommandRequest.md)| Command execution parameters | 
+ **request** | [**InternalRestRunCommandRequest**](InternalRestRunCommandRequest.md)| Command execution parameters | 
 
 ### Return type
 
-[**VirshSandboxInternalRestRunCommandResponse**](VirshSandboxInternalRestRunCommandResponse.md)
+[**InternalRestRunCommandResponse**](InternalRestRunCommandResponse.md)
 
 ### Authorization
 
@@ -1233,7 +1233,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **start_sandbox**
-> VirshSandboxInternalRestStartSandboxResponse start_sandbox(id, request=request)
+> InternalRestStartSandboxResponse start_sandbox(id, request=request)
 
 Start sandbox
 
@@ -1244,8 +1244,8 @@ Starts the virtual machine sandbox
 
 ```python
 import virsh_sandbox
-from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_request import VirshSandboxInternalRestStartSandboxRequest
-from virsh_sandbox.models.virsh_sandbox_internal_rest_start_sandbox_response import VirshSandboxInternalRestStartSandboxResponse
+from virsh_sandbox.models.internal_rest_start_sandbox_request import InternalRestStartSandboxRequest
+from virsh_sandbox.models.internal_rest_start_sandbox_response import InternalRestStartSandboxResponse
 from virsh_sandbox.rest import ApiException
 from pprint import pprint
 
@@ -1261,7 +1261,7 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = virsh_sandbox.SandboxApi(api_client)
     id = 'id_example' # str | Sandbox ID
-    request = virsh_sandbox.VirshSandboxInternalRestStartSandboxRequest() # VirshSandboxInternalRestStartSandboxRequest | Start parameters (optional)
+    request = virsh_sandbox.InternalRestStartSandboxRequest() # InternalRestStartSandboxRequest | Start parameters (optional)
 
     try:
         # Start sandbox
@@ -1280,11 +1280,11 @@ with virsh_sandbox.ApiClient(configuration) as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **str**| Sandbox ID | 
- **request** | [**VirshSandboxInternalRestStartSandboxRequest**](VirshSandboxInternalRestStartSandboxRequest.md)| Start parameters | [optional] 
+ **request** | [**InternalRestStartSandboxRequest**](InternalRestStartSandboxRequest.md)| Start parameters | [optional] 
 
 ### Return type
 
-[**VirshSandboxInternalRestStartSandboxResponse**](VirshSandboxInternalRestStartSandboxResponse.md)
+[**InternalRestStartSandboxResponse**](InternalRestStartSandboxResponse.md)
 
 ### Authorization
 
