@@ -22,8 +22,8 @@ import * as axios from "axios";
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 import type {
-  InternalRestErrorResponse,
-  InternalRestListVMsResponse,
+  VirshSandboxInternalRestErrorResponse,
+  VirshSandboxInternalRestListVMsResponse,
 } from ".././model";
 
 /**
@@ -32,7 +32,7 @@ import type {
  */
 export const listVirtualMachines = (
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<InternalRestListVMsResponse>> => {
+): Promise<AxiosResponse<VirshSandboxInternalRestListVMsResponse>> => {
   return axios.default.get(`/v1/vms`, options);
 };
 
@@ -42,7 +42,7 @@ export const getListVirtualMachinesQueryKey = () => {
 
 export const getListVirtualMachinesQueryOptions = <
   TData = Awaited<ReturnType<typeof listVirtualMachines>>,
-  TError = AxiosError<InternalRestErrorResponse>,
+  TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
 >(options?: {
   query?: Partial<
     UseQueryOptions<
@@ -72,11 +72,11 @@ export type ListVirtualMachinesQueryResult = NonNullable<
   Awaited<ReturnType<typeof listVirtualMachines>>
 >;
 export type ListVirtualMachinesQueryError =
-  AxiosError<InternalRestErrorResponse>;
+  AxiosError<VirshSandboxInternalRestErrorResponse>;
 
 export function useListVirtualMachines<
   TData = Awaited<ReturnType<typeof listVirtualMachines>>,
-  TError = AxiosError<InternalRestErrorResponse>,
+  TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
 >(
   options: {
     query: Partial<
@@ -102,7 +102,7 @@ export function useListVirtualMachines<
 };
 export function useListVirtualMachines<
   TData = Awaited<ReturnType<typeof listVirtualMachines>>,
-  TError = AxiosError<InternalRestErrorResponse>,
+  TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
 >(
   options?: {
     query?: Partial<
@@ -128,7 +128,7 @@ export function useListVirtualMachines<
 };
 export function useListVirtualMachines<
   TData = Awaited<ReturnType<typeof listVirtualMachines>>,
-  TError = AxiosError<InternalRestErrorResponse>,
+  TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
 >(
   options?: {
     query?: Partial<
@@ -150,7 +150,7 @@ export function useListVirtualMachines<
 
 export function useListVirtualMachines<
   TData = Awaited<ReturnType<typeof listVirtualMachines>>,
-  TError = AxiosError<InternalRestErrorResponse>,
+  TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
 >(
   options?: {
     query?: Partial<

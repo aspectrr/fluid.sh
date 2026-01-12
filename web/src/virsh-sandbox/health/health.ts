@@ -21,7 +21,7 @@ import type {
 import * as axios from "axios";
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
-import type { InternalRestHealthResponse } from ".././model";
+import type { VirshSandboxInternalRestHealthResponse } from ".././model";
 
 /**
  * Returns service health status
@@ -29,7 +29,7 @@ import type { InternalRestHealthResponse } from ".././model";
  */
 export const getHealth = (
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<InternalRestHealthResponse>> => {
+): Promise<AxiosResponse<VirshSandboxInternalRestHealthResponse>> => {
   return axios.default.get(`/v1/health`, options);
 };
 

@@ -12,10 +12,10 @@ export interface InternalRestRunCommandRequest {
   command?: string;
   /** optional */
   env?: InternalRestRunCommandRequestEnv;
-  /** required; path on API host */
+  /** optional; if empty, uses managed credentials (requires SSH CA) */
   private_key_path?: string;
   /** optional; default from service config */
   timeout_sec?: number;
-  /** required */
-  username?: string;
+  /** optional; defaults to "sandbox" when using managed credentials */
+  user?: string;
 }
