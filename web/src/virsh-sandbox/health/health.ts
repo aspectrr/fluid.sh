@@ -5,7 +5,7 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -16,114 +16,103 @@ import type {
   UndefinedInitialDataOptions,
   UseQueryOptions,
   UseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 
-import * as axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import * as axios from 'axios'
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 
-import type { VirshSandboxInternalRestHealthResponse } from ".././model";
+import type { VirshSandboxInternalRestHealthResponse } from '.././model'
 
 /**
  * Returns service health status
  * @summary Health check
  */
 export const getHealth = (
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalRestHealthResponse>> => {
-  return axios.default.get(`/v1/health`, options);
-};
+  return axios.default.get(`/v1/health`, options)
+}
 
 export const getGetHealthQueryKey = () => {
-  return [`/v1/health`] as const;
-};
+  return [`/v1/health`] as const
+}
 
 export const getGetHealthQueryOptions = <
   TData = Awaited<ReturnType<typeof getHealth>>,
   TError = AxiosError<unknown>,
 >(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>
-  >;
-  axios?: AxiosRequestConfig;
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>
+  axios?: AxiosRequestConfig
 }) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetHealthQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetHealthQueryKey()
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getHealth>>> = ({
-    signal,
-  }) => getHealth({ signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getHealth>>> = ({ signal }) =>
+    getHealth({ signal, ...axiosOptions })
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getHealth>>,
     TError,
     TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-export type GetHealthQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getHealth>>
->;
-export type GetHealthQueryError = AxiosError<unknown>;
+export type GetHealthQueryResult = NonNullable<Awaited<ReturnType<typeof getHealth>>>
+export type GetHealthQueryError = AxiosError<unknown>
 
 export function useGetHealth<
   TData = Awaited<ReturnType<typeof getHealth>>,
   TError = AxiosError<unknown>,
 >(
   options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>
-    > &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getHealth>>,
           TError,
           Awaited<ReturnType<typeof getHealth>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useGetHealth<
   TData = Awaited<ReturnType<typeof getHealth>>,
   TError = AxiosError<unknown>,
 >(
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>
-    > &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getHealth>>,
           TError,
           Awaited<ReturnType<typeof getHealth>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useGetHealth<
   TData = Awaited<ReturnType<typeof getHealth>>,
   TError = AxiosError<unknown>,
 >(
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary Health check
  */
@@ -133,23 +122,20 @@ export function useGetHealth<
   TError = AxiosError<unknown>,
 >(
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getGetHealthQueryOptions(options);
+  const queryOptions = getGetHealthQueryOptions(options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }

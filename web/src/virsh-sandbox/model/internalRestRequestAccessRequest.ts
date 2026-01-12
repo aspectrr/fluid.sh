@@ -8,11 +8,11 @@
 
 export interface InternalRestRequestAccessRequest {
   /** PublicKey is the user's SSH public key in OpenSSH format. */
-  public_key?: string;
+  public_key?: string
   /** SandboxID is the target sandbox. */
-  sandbox_id?: string;
+  sandbox_id?: string
   /** TTLMinutes is the requested access duration (1-10 minutes). */
-  ttl_minutes?: number;
+  ttl_minutes?: number
   /** UserID identifies the requesting user. */
-  user_id?: string;
+  user_id?: string
 }

@@ -10,5 +10,5 @@
  * module-specific parameters
  */
 export type VirshSandboxInternalStorePlaybookTaskParams = {
-  [key: string]: unknown;
-};
+  [key: string]: unknown
+}

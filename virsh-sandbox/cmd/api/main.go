@@ -12,6 +12,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/joho/godotenv"
+
 	"virsh-sandbox/internal/ansible"
 	"virsh-sandbox/internal/libvirt"
 	"virsh-sandbox/internal/rest"
@@ -43,6 +45,9 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
+	// Load .env file if present
+	_ = godotenv.Load()
+
 	// Logging setup
 	logger := setupLogger()
 	slog.SetDefault(logger)
@@ -62,10 +67,10 @@ func main() {
 	sshProxyJump := getenv("SSH_PROXY_JUMP", "")
 
 	// Ansible configuration
-	ansibleInventoryPath := getenv("ANSIBLE_INVENTORY_PATH", "/Users/collinpfeifer/GitHub/fluid.sh/.ansible/inventory")
+	ansibleInventoryPath := getenv("ANSIBLE_INVENTORY_PATH", ".ansible/inventory/")
 	ansibleImage := getenv("ANSIBLE_IMAGE", "ansible-sandbox")
 	ansiblePlaybooks := strings.Split(getenv("ANSIBLE_ALLOWED_PLAYBOOKS", "ping.yml"), ",")
-	ansiblePlaybooksDir := getenv("ANSIBLE_PLAYBOOKS_DIR", "/Users/collinpfeifer/GitHub/fluid.sh/.ansible/playbooks")
+	ansiblePlaybooksDir := getenv("ANSIBLE_PLAYBOOKS_DIR", ".ansible/playbooks/")
 
 	logger.Info("starting virsh-sandbox API",
 		"addr", apiAddr,

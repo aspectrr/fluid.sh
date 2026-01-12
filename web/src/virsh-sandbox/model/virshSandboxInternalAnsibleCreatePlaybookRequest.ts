@@ -7,7 +7,7 @@
  */
 
 export interface VirshSandboxInternalAnsibleCreatePlaybookRequest {
-  become?: boolean;
-  hosts?: string;
-  name?: string;
+  become?: boolean
+  hosts?: string
+  name?: string
 }

@@ -5,8 +5,8 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { VirshSandboxInternalStoreDiff } from "./virshSandboxInternalStoreDiff";
+import type { VirshSandboxInternalStoreDiff } from './virshSandboxInternalStoreDiff'
 
 export interface VirshSandboxInternalRestDiffResponse {
-  diff?: VirshSandboxInternalStoreDiff;
+  diff?: VirshSandboxInternalStoreDiff
 }

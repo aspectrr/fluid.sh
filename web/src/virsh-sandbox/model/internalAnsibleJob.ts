@@ -5,12 +5,12 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { InternalAnsibleJobStatus } from "./internalAnsibleJobStatus";
+import type { InternalAnsibleJobStatus } from './internalAnsibleJobStatus'
 
 export interface InternalAnsibleJob {
-  check?: boolean;
-  id?: string;
-  playbook?: string;
-  status?: InternalAnsibleJobStatus;
-  vm_name?: string;
+  check?: boolean
+  id?: string
+  playbook?: string
+  status?: InternalAnsibleJobStatus
+  vm_name?: string
 }

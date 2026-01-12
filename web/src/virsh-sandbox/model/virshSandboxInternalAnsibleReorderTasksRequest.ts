@@ -7,5 +7,5 @@
  */
 
 export interface VirshSandboxInternalAnsibleReorderTasksRequest {
-  task_ids?: string[];
+  task_ids?: string[]
 }

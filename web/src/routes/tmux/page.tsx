@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { TmuxSessionTable } from "~/components/tmux-session-table";
+import { createFileRoute } from '@tanstack/react-router'
+import { TmuxSessionTable } from '~/components/tmux-session-table'
 
-export const Route = createFileRoute("/tmux/page")({
+export const Route = createFileRoute('/tmux/page')({
   component: TmuxSessionTable,
-});
+})

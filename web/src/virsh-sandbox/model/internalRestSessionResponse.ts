@@ -7,15 +7,15 @@
  */
 
 export interface InternalRestSessionResponse {
-  certificate_id?: string;
-  duration_seconds?: number;
-  ended_at?: string;
-  id?: string;
-  sandbox_id?: string;
-  source_ip?: string;
-  started_at?: string;
-  status?: string;
-  user_id?: string;
-  vm_id?: string;
-  vm_ip_address?: string;
+  certificate_id?: string
+  duration_seconds?: number
+  ended_at?: string
+  id?: string
+  sandbox_id?: string
+  source_ip?: string
+  started_at?: string
+  status?: string
+  user_id?: string
+  vm_id?: string
+  vm_ip_address?: string
 }

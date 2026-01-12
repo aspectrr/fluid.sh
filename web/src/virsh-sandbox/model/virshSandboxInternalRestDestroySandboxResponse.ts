@@ -5,11 +5,11 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { VirshSandboxInternalStoreSandboxState } from "./virshSandboxInternalStoreSandboxState";
+import type { VirshSandboxInternalStoreSandboxState } from './virshSandboxInternalStoreSandboxState'
 
 export interface VirshSandboxInternalRestDestroySandboxResponse {
-  base_image?: string;
-  sandbox_name?: string;
-  state?: VirshSandboxInternalStoreSandboxState;
-  ttl_seconds?: number;
+  base_image?: string
+  sandbox_name?: string
+  state?: VirshSandboxInternalStoreSandboxState
+  ttl_seconds?: number
 }

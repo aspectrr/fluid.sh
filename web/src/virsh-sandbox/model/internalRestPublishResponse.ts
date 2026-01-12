@@ -7,6 +7,6 @@
  */
 
 export interface InternalRestPublishResponse {
-  message?: string;
-  note?: string;
+  message?: string
+  note?: string
 }

@@ -7,10 +7,10 @@
  */
 
 export type VirshSandboxInternalStoreSnapshotKind =
-  (typeof VirshSandboxInternalStoreSnapshotKind)[keyof typeof VirshSandboxInternalStoreSnapshotKind];
+  (typeof VirshSandboxInternalStoreSnapshotKind)[keyof typeof VirshSandboxInternalStoreSnapshotKind]
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const VirshSandboxInternalStoreSnapshotKind = {
-  SnapshotKindInternal: "INTERNAL",
-  SnapshotKindExternal: "EXTERNAL",
-} as const;
+  SnapshotKindInternal: 'INTERNAL',
+  SnapshotKindExternal: 'EXTERNAL',
+} as const

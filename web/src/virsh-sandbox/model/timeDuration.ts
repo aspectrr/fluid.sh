@@ -6,7 +6,7 @@
  * OpenAPI spec version: 0.0.1-beta
  */
 
-export type TimeDuration = (typeof TimeDuration)[keyof typeof TimeDuration];
+export type TimeDuration = (typeof TimeDuration)[keyof typeof TimeDuration]
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const TimeDuration = {
@@ -18,4 +18,4 @@ export const TimeDuration = {
   Second: 1000000000,
   Minute: 60000000000,
   Hour: 3600000000000,
-} as const;
+} as const

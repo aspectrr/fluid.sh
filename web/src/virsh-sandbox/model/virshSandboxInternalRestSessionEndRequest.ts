@@ -7,6 +7,6 @@
  */
 
 export interface VirshSandboxInternalRestSessionEndRequest {
-  reason?: string;
-  session_id?: string;
+  reason?: string
+  session_id?: string
 }

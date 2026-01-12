@@ -1,22 +1,22 @@
-import { defineConfig } from "orval";
+import { defineConfig } from 'orval'
 
 export default defineConfig({
-  "virsh-sandbox-api": {
+  'virsh-sandbox-api': {
     output: {
-      client: "react-query",
-      mode: "tags-split",
+      client: 'react-query',
+      mode: 'tags-split',
       clean: true,
       prettier: true,
-      target: "src/virsh-sandbox",
-      schemas: "src/virsh-sandbox/model",
+      target: 'src/virsh-sandbox',
+      schemas: 'src/virsh-sandbox/model',
       override: {
         operationName: (operation) => {
-          return operation.operationId || "";
+          return operation.operationId || ''
         },
       },
     },
     input: {
-      target: "../virsh-sandbox/docs/openapi.yaml",
+      target: '../virsh-sandbox/docs/openapi.yaml',
     },
   },
-});
+})

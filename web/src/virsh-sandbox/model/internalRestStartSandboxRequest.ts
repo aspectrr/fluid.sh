@@ -8,5 +8,5 @@
 
 export interface InternalRestStartSandboxRequest {
   /** optional; default false */
-  wait_for_ip?: boolean;
+  wait_for_ip?: boolean
 }

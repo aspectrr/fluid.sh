@@ -7,5 +7,5 @@
  */
 
 export interface InternalAnsibleExportPlaybookResponse {
-  yaml?: string;
+  yaml?: string
 }

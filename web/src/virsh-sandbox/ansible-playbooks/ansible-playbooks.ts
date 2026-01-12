@@ -5,7 +5,7 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from '@tanstack/react-query'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -19,10 +19,10 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 
-import * as axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import * as axios from 'axios'
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 import type {
   VirshSandboxInternalAnsibleAddTaskRequest,
@@ -36,109 +36,98 @@ import type {
   VirshSandboxInternalAnsibleUpdateTaskRequest,
   VirshSandboxInternalAnsibleUpdateTaskResponse,
   VirshSandboxInternalErrorErrorResponse,
-} from ".././model";
+} from '.././model'
 
 /**
  * Lists all Ansible playbooks
  * @summary List playbooks
  */
 export const listPlaybooks = (
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalAnsibleListPlaybooksResponse>> => {
-  return axios.default.get(`/v1/ansible/playbooks`, options);
-};
+  return axios.default.get(`/v1/ansible/playbooks`, options)
+}
 
 export const getListPlaybooksQueryKey = () => {
-  return [`/v1/ansible/playbooks`] as const;
-};
+  return [`/v1/ansible/playbooks`] as const
+}
 
 export const getListPlaybooksQueryOptions = <
   TData = Awaited<ReturnType<typeof listPlaybooks>>,
   TError = AxiosError<unknown>,
 >(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof listPlaybooks>>, TError, TData>
-  >;
-  axios?: AxiosRequestConfig;
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlaybooks>>, TError, TData>>
+  axios?: AxiosRequestConfig
 }) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getListPlaybooksQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getListPlaybooksQueryKey()
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof listPlaybooks>>> = ({
-    signal,
-  }) => listPlaybooks({ signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listPlaybooks>>> = ({ signal }) =>
+    listPlaybooks({ signal, ...axiosOptions })
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof listPlaybooks>>,
     TError,
     TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-export type ListPlaybooksQueryResult = NonNullable<
-  Awaited<ReturnType<typeof listPlaybooks>>
->;
-export type ListPlaybooksQueryError = AxiosError<unknown>;
+export type ListPlaybooksQueryResult = NonNullable<Awaited<ReturnType<typeof listPlaybooks>>>
+export type ListPlaybooksQueryError = AxiosError<unknown>
 
 export function useListPlaybooks<
   TData = Awaited<ReturnType<typeof listPlaybooks>>,
   TError = AxiosError<unknown>,
 >(
   options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listPlaybooks>>, TError, TData>
-    > &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlaybooks>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof listPlaybooks>>,
           TError,
           Awaited<ReturnType<typeof listPlaybooks>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useListPlaybooks<
   TData = Awaited<ReturnType<typeof listPlaybooks>>,
   TError = AxiosError<unknown>,
 >(
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listPlaybooks>>, TError, TData>
-    > &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlaybooks>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof listPlaybooks>>,
           TError,
           Awaited<ReturnType<typeof listPlaybooks>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useListPlaybooks<
   TData = Awaited<ReturnType<typeof listPlaybooks>>,
   TError = AxiosError<unknown>,
 >(
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listPlaybooks>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlaybooks>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary List playbooks
  */
@@ -148,25 +137,22 @@ export function useListPlaybooks<
   TError = AxiosError<unknown>,
 >(
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listPlaybooks>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPlaybooks>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getListPlaybooksQueryOptions(options);
+  const queryOptions = getListPlaybooksQueryOptions(options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }
 
 /**
@@ -175,16 +161,14 @@ export function useListPlaybooks<
  */
 export const createPlaybook = (
   virshSandboxInternalAnsibleCreatePlaybookRequest: VirshSandboxInternalAnsibleCreatePlaybookRequest,
-  options?: AxiosRequestConfig,
-): Promise<
-  AxiosResponse<VirshSandboxInternalAnsibleCreatePlaybookResponse>
-> => {
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<VirshSandboxInternalAnsibleCreatePlaybookResponse>> => {
   return axios.default.post(
     `/v1/ansible/playbooks`,
     virshSandboxInternalAnsibleCreatePlaybookRequest,
-    options,
-  );
-};
+    options
+  )
+}
 
 export const getCreatePlaybookMutationOptions = <
   TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
@@ -195,42 +179,36 @@ export const getCreatePlaybookMutationOptions = <
     TError,
     { data: VirshSandboxInternalAnsibleCreatePlaybookRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createPlaybook>>,
   TError,
   { data: VirshSandboxInternalAnsibleCreatePlaybookRequest },
   TContext
 > => {
-  const mutationKey = ["createPlaybook"];
+  const mutationKey = ['createPlaybook']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createPlaybook>>,
     { data: VirshSandboxInternalAnsibleCreatePlaybookRequest }
   > = (props) => {
-    const { data } = props ?? {};
+    const { data } = props ?? {}
 
-    return createPlaybook(data, axiosOptions);
-  };
+    return createPlaybook(data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
-export type CreatePlaybookMutationResult = NonNullable<
-  Awaited<ReturnType<typeof createPlaybook>>
->;
-export type CreatePlaybookMutationBody =
-  VirshSandboxInternalAnsibleCreatePlaybookRequest;
-export type CreatePlaybookMutationError =
-  AxiosError<VirshSandboxInternalErrorErrorResponse>;
+export type CreatePlaybookMutationResult = NonNullable<Awaited<ReturnType<typeof createPlaybook>>>
+export type CreatePlaybookMutationBody = VirshSandboxInternalAnsibleCreatePlaybookRequest
+export type CreatePlaybookMutationError = AxiosError<VirshSandboxInternalErrorErrorResponse>
 
 /**
  * @summary Create playbook
@@ -245,30 +223,30 @@ export const useCreatePlaybook = <
       TError,
       { data: VirshSandboxInternalAnsibleCreatePlaybookRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof createPlaybook>>,
   TError,
   { data: VirshSandboxInternalAnsibleCreatePlaybookRequest },
   TContext
 > => {
-  const mutationOptions = getCreatePlaybookMutationOptions(options);
+  const mutationOptions = getCreatePlaybookMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Deletes a playbook and all its tasks
  * @summary Delete playbook
  */
 export const deletePlaybook = (
   playbookName: string,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<unknown>> => {
-  return axios.default.delete(`/v1/ansible/playbooks/${playbookName}`, options);
-};
+  return axios.default.delete(`/v1/ansible/playbooks/${playbookName}`, options)
+}
 
 export const getDeletePlaybookMutationOptions = <
   TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
@@ -279,41 +257,36 @@ export const getDeletePlaybookMutationOptions = <
     TError,
     { playbookName: string },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deletePlaybook>>,
   TError,
   { playbookName: string },
   TContext
 > => {
-  const mutationKey = ["deletePlaybook"];
+  const mutationKey = ['deletePlaybook']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deletePlaybook>>,
     { playbookName: string }
   > = (props) => {
-    const { playbookName } = props ?? {};
+    const { playbookName } = props ?? {}
 
-    return deletePlaybook(playbookName, axiosOptions);
-  };
+    return deletePlaybook(playbookName, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
-export type DeletePlaybookMutationResult = NonNullable<
-  Awaited<ReturnType<typeof deletePlaybook>>
->;
+export type DeletePlaybookMutationResult = NonNullable<Awaited<ReturnType<typeof deletePlaybook>>>
 
-export type DeletePlaybookMutationError =
-  AxiosError<VirshSandboxInternalErrorErrorResponse>;
+export type DeletePlaybookMutationError = AxiosError<VirshSandboxInternalErrorErrorResponse>
 
 /**
  * @summary Delete playbook
@@ -328,34 +301,34 @@ export const useDeletePlaybook = <
       TError,
       { playbookName: string },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof deletePlaybook>>,
   TError,
   { playbookName: string },
   TContext
 > => {
-  const mutationOptions = getDeletePlaybookMutationOptions(options);
+  const mutationOptions = getDeletePlaybookMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Gets a playbook and its tasks by name
  * @summary Get playbook
  */
 export const getPlaybook = (
   playbookName: string,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalAnsibleGetPlaybookResponse>> => {
-  return axios.default.get(`/v1/ansible/playbooks/${playbookName}`, options);
-};
+  return axios.default.get(`/v1/ansible/playbooks/${playbookName}`, options)
+}
 
 export const getGetPlaybookQueryKey = (playbookName?: string) => {
-  return [`/v1/ansible/playbooks/${playbookName}`] as const;
-};
+  return [`/v1/ansible/playbooks/${playbookName}`] as const
+}
 
 export const getGetPlaybookQueryOptions = <
   TData = Awaited<ReturnType<typeof getPlaybook>>,
@@ -363,38 +336,29 @@ export const getGetPlaybookQueryOptions = <
 >(
   playbookName: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPlaybook>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
-  },
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlaybook>>, TError, TData>>
+    axios?: AxiosRequestConfig
+  }
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGetPlaybookQueryKey(playbookName);
+  const queryKey = queryOptions?.queryKey ?? getGetPlaybookQueryKey(playbookName)
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPlaybook>>> = ({
-    signal,
-  }) => getPlaybook(playbookName, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPlaybook>>> = ({ signal }) =>
+    getPlaybook(playbookName, { signal, ...axiosOptions })
 
   return {
     queryKey,
     queryFn,
     enabled: !!playbookName,
     ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof getPlaybook>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  } as UseQueryOptions<Awaited<ReturnType<typeof getPlaybook>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+}
 
-export type GetPlaybookQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getPlaybook>>
->;
-export type GetPlaybookQueryError =
-  AxiosError<VirshSandboxInternalErrorErrorResponse>;
+export type GetPlaybookQueryResult = NonNullable<Awaited<ReturnType<typeof getPlaybook>>>
+export type GetPlaybookQueryError = AxiosError<VirshSandboxInternalErrorErrorResponse>
 
 export function useGetPlaybook<
   TData = Awaited<ReturnType<typeof getPlaybook>>,
@@ -402,61 +366,55 @@ export function useGetPlaybook<
 >(
   playbookName: string,
   options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPlaybook>>, TError, TData>
-    > &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlaybook>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getPlaybook>>,
           TError,
           Awaited<ReturnType<typeof getPlaybook>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useGetPlaybook<
   TData = Awaited<ReturnType<typeof getPlaybook>>,
   TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
 >(
   playbookName: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPlaybook>>, TError, TData>
-    > &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlaybook>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getPlaybook>>,
           TError,
           Awaited<ReturnType<typeof getPlaybook>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useGetPlaybook<
   TData = Awaited<ReturnType<typeof getPlaybook>>,
   TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
 >(
   playbookName: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPlaybook>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlaybook>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary Get playbook
  */
@@ -467,25 +425,22 @@ export function useGetPlaybook<
 >(
   playbookName: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPlaybook>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlaybook>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getGetPlaybookQueryOptions(playbookName, options);
+  const queryOptions = getGetPlaybookQueryOptions(playbookName, options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }
 
 /**
@@ -494,19 +449,14 @@ export function useGetPlaybook<
  */
 export const exportPlaybook = (
   playbookName: string,
-  options?: AxiosRequestConfig,
-): Promise<
-  AxiosResponse<VirshSandboxInternalAnsibleExportPlaybookResponse>
-> => {
-  return axios.default.get(
-    `/v1/ansible/playbooks/${playbookName}/export`,
-    options,
-  );
-};
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<VirshSandboxInternalAnsibleExportPlaybookResponse>> => {
+  return axios.default.get(`/v1/ansible/playbooks/${playbookName}/export`, options)
+}
 
 export const getExportPlaybookQueryKey = (playbookName?: string) => {
-  return [`/v1/ansible/playbooks/${playbookName}/export`] as const;
-};
+  return [`/v1/ansible/playbooks/${playbookName}/export`] as const
+}
 
 export const getExportPlaybookQueryOptions = <
   TData = Awaited<ReturnType<typeof exportPlaybook>>,
@@ -514,38 +464,29 @@ export const getExportPlaybookQueryOptions = <
 >(
   playbookName: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof exportPlaybook>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
-  },
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof exportPlaybook>>, TError, TData>>
+    axios?: AxiosRequestConfig
+  }
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey =
-    queryOptions?.queryKey ?? getExportPlaybookQueryKey(playbookName);
+  const queryKey = queryOptions?.queryKey ?? getExportPlaybookQueryKey(playbookName)
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof exportPlaybook>>> = ({
-    signal,
-  }) => exportPlaybook(playbookName, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof exportPlaybook>>> = ({ signal }) =>
+    exportPlaybook(playbookName, { signal, ...axiosOptions })
 
   return {
     queryKey,
     queryFn,
     enabled: !!playbookName,
     ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof exportPlaybook>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  } as UseQueryOptions<Awaited<ReturnType<typeof exportPlaybook>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+}
 
-export type ExportPlaybookQueryResult = NonNullable<
-  Awaited<ReturnType<typeof exportPlaybook>>
->;
-export type ExportPlaybookQueryError =
-  AxiosError<VirshSandboxInternalErrorErrorResponse>;
+export type ExportPlaybookQueryResult = NonNullable<Awaited<ReturnType<typeof exportPlaybook>>>
+export type ExportPlaybookQueryError = AxiosError<VirshSandboxInternalErrorErrorResponse>
 
 export function useExportPlaybook<
   TData = Awaited<ReturnType<typeof exportPlaybook>>,
@@ -553,61 +494,55 @@ export function useExportPlaybook<
 >(
   playbookName: string,
   options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof exportPlaybook>>, TError, TData>
-    > &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof exportPlaybook>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof exportPlaybook>>,
           TError,
           Awaited<ReturnType<typeof exportPlaybook>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useExportPlaybook<
   TData = Awaited<ReturnType<typeof exportPlaybook>>,
   TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
 >(
   playbookName: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof exportPlaybook>>, TError, TData>
-    > &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof exportPlaybook>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof exportPlaybook>>,
           TError,
           Awaited<ReturnType<typeof exportPlaybook>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useExportPlaybook<
   TData = Awaited<ReturnType<typeof exportPlaybook>>,
   TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
 >(
   playbookName: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof exportPlaybook>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof exportPlaybook>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary Export playbook
  */
@@ -618,25 +553,22 @@ export function useExportPlaybook<
 >(
   playbookName: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof exportPlaybook>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof exportPlaybook>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getExportPlaybookQueryOptions(playbookName, options);
+  const queryOptions = getExportPlaybookQueryOptions(playbookName, options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }
 
 /**
@@ -646,14 +578,14 @@ export function useExportPlaybook<
 export const addPlaybookTask = (
   playbookName: string,
   virshSandboxInternalAnsibleAddTaskRequest: VirshSandboxInternalAnsibleAddTaskRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalAnsibleAddTaskResponse>> => {
   return axios.default.post(
     `/v1/ansible/playbooks/${playbookName}/tasks`,
     virshSandboxInternalAnsibleAddTaskRequest,
-    options,
-  );
-};
+    options
+  )
+}
 
 export const getAddPlaybookTaskMutationOptions = <
   TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
@@ -664,42 +596,36 @@ export const getAddPlaybookTaskMutationOptions = <
     TError,
     { playbookName: string; data: VirshSandboxInternalAnsibleAddTaskRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof addPlaybookTask>>,
   TError,
   { playbookName: string; data: VirshSandboxInternalAnsibleAddTaskRequest },
   TContext
 > => {
-  const mutationKey = ["addPlaybookTask"];
+  const mutationKey = ['addPlaybookTask']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof addPlaybookTask>>,
     { playbookName: string; data: VirshSandboxInternalAnsibleAddTaskRequest }
   > = (props) => {
-    const { playbookName, data } = props ?? {};
+    const { playbookName, data } = props ?? {}
 
-    return addPlaybookTask(playbookName, data, axiosOptions);
-  };
+    return addPlaybookTask(playbookName, data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
-export type AddPlaybookTaskMutationResult = NonNullable<
-  Awaited<ReturnType<typeof addPlaybookTask>>
->;
-export type AddPlaybookTaskMutationBody =
-  VirshSandboxInternalAnsibleAddTaskRequest;
-export type AddPlaybookTaskMutationError =
-  AxiosError<VirshSandboxInternalErrorErrorResponse>;
+export type AddPlaybookTaskMutationResult = NonNullable<Awaited<ReturnType<typeof addPlaybookTask>>>
+export type AddPlaybookTaskMutationBody = VirshSandboxInternalAnsibleAddTaskRequest
+export type AddPlaybookTaskMutationError = AxiosError<VirshSandboxInternalErrorErrorResponse>
 
 /**
  * @summary Add task to playbook
@@ -714,20 +640,20 @@ export const useAddPlaybookTask = <
       TError,
       { playbookName: string; data: VirshSandboxInternalAnsibleAddTaskRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof addPlaybookTask>>,
   TError,
   { playbookName: string; data: VirshSandboxInternalAnsibleAddTaskRequest },
   TContext
 > => {
-  const mutationOptions = getAddPlaybookTaskMutationOptions(options);
+  const mutationOptions = getAddPlaybookTaskMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Removes a task from a playbook
  * @summary Delete task
@@ -735,13 +661,10 @@ export const useAddPlaybookTask = <
 export const deletePlaybookTask = (
   playbookName: string,
   taskId: string,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<unknown>> => {
-  return axios.default.delete(
-    `/v1/ansible/playbooks/${playbookName}/tasks/${taskId}`,
-    options,
-  );
-};
+  return axios.default.delete(`/v1/ansible/playbooks/${playbookName}/tasks/${taskId}`, options)
+}
 
 export const getDeletePlaybookTaskMutationOptions = <
   TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
@@ -752,41 +675,38 @@ export const getDeletePlaybookTaskMutationOptions = <
     TError,
     { playbookName: string; taskId: string },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deletePlaybookTask>>,
   TError,
   { playbookName: string; taskId: string },
   TContext
 > => {
-  const mutationKey = ["deletePlaybookTask"];
+  const mutationKey = ['deletePlaybookTask']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deletePlaybookTask>>,
     { playbookName: string; taskId: string }
   > = (props) => {
-    const { playbookName, taskId } = props ?? {};
+    const { playbookName, taskId } = props ?? {}
 
-    return deletePlaybookTask(playbookName, taskId, axiosOptions);
-  };
+    return deletePlaybookTask(playbookName, taskId, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
 export type DeletePlaybookTaskMutationResult = NonNullable<
   Awaited<ReturnType<typeof deletePlaybookTask>>
->;
+>
 
-export type DeletePlaybookTaskMutationError =
-  AxiosError<VirshSandboxInternalErrorErrorResponse>;
+export type DeletePlaybookTaskMutationError = AxiosError<VirshSandboxInternalErrorErrorResponse>
 
 /**
  * @summary Delete task
@@ -801,20 +721,20 @@ export const useDeletePlaybookTask = <
       TError,
       { playbookName: string; taskId: string },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof deletePlaybookTask>>,
   TError,
   { playbookName: string; taskId: string },
   TContext
 > => {
-  const mutationOptions = getDeletePlaybookTaskMutationOptions(options);
+  const mutationOptions = getDeletePlaybookTaskMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Updates an existing task in a playbook
  * @summary Update task
@@ -823,14 +743,14 @@ export const updatePlaybookTask = (
   playbookName: string,
   taskId: string,
   virshSandboxInternalAnsibleUpdateTaskRequest: VirshSandboxInternalAnsibleUpdateTaskRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalAnsibleUpdateTaskResponse>> => {
   return axios.default.put(
     `/v1/ansible/playbooks/${playbookName}/tasks/${taskId}`,
     virshSandboxInternalAnsibleUpdateTaskRequest,
-    options,
-  );
-};
+    options
+  )
+}
 
 export const getUpdatePlaybookTaskMutationOptions = <
   TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
@@ -840,55 +760,51 @@ export const getUpdatePlaybookTaskMutationOptions = <
     Awaited<ReturnType<typeof updatePlaybookTask>>,
     TError,
     {
-      playbookName: string;
-      taskId: string;
-      data: VirshSandboxInternalAnsibleUpdateTaskRequest;
+      playbookName: string
+      taskId: string
+      data: VirshSandboxInternalAnsibleUpdateTaskRequest
     },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updatePlaybookTask>>,
   TError,
   {
-    playbookName: string;
-    taskId: string;
-    data: VirshSandboxInternalAnsibleUpdateTaskRequest;
+    playbookName: string
+    taskId: string
+    data: VirshSandboxInternalAnsibleUpdateTaskRequest
   },
   TContext
 > => {
-  const mutationKey = ["updatePlaybookTask"];
+  const mutationKey = ['updatePlaybookTask']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updatePlaybookTask>>,
     {
-      playbookName: string;
-      taskId: string;
-      data: VirshSandboxInternalAnsibleUpdateTaskRequest;
+      playbookName: string
+      taskId: string
+      data: VirshSandboxInternalAnsibleUpdateTaskRequest
     }
   > = (props) => {
-    const { playbookName, taskId, data } = props ?? {};
+    const { playbookName, taskId, data } = props ?? {}
 
-    return updatePlaybookTask(playbookName, taskId, data, axiosOptions);
-  };
+    return updatePlaybookTask(playbookName, taskId, data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
 export type UpdatePlaybookTaskMutationResult = NonNullable<
   Awaited<ReturnType<typeof updatePlaybookTask>>
->;
-export type UpdatePlaybookTaskMutationBody =
-  VirshSandboxInternalAnsibleUpdateTaskRequest;
-export type UpdatePlaybookTaskMutationError =
-  AxiosError<VirshSandboxInternalErrorErrorResponse>;
+>
+export type UpdatePlaybookTaskMutationBody = VirshSandboxInternalAnsibleUpdateTaskRequest
+export type UpdatePlaybookTaskMutationError = AxiosError<VirshSandboxInternalErrorErrorResponse>
 
 /**
  * @summary Update task
@@ -902,29 +818,29 @@ export const useUpdatePlaybookTask = <
       Awaited<ReturnType<typeof updatePlaybookTask>>,
       TError,
       {
-        playbookName: string;
-        taskId: string;
-        data: VirshSandboxInternalAnsibleUpdateTaskRequest;
+        playbookName: string
+        taskId: string
+        data: VirshSandboxInternalAnsibleUpdateTaskRequest
       },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof updatePlaybookTask>>,
   TError,
   {
-    playbookName: string;
-    taskId: string;
-    data: VirshSandboxInternalAnsibleUpdateTaskRequest;
+    playbookName: string
+    taskId: string
+    data: VirshSandboxInternalAnsibleUpdateTaskRequest
   },
   TContext
 > => {
-  const mutationOptions = getUpdatePlaybookTaskMutationOptions(options);
+  const mutationOptions = getUpdatePlaybookTaskMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Reorders tasks in a playbook
  * @summary Reorder tasks
@@ -932,14 +848,14 @@ export const useUpdatePlaybookTask = <
 export const reorderPlaybookTasks = (
   playbookName: string,
   virshSandboxInternalAnsibleReorderTasksRequest: VirshSandboxInternalAnsibleReorderTasksRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<unknown>> => {
   return axios.default.patch(
     `/v1/ansible/playbooks/${playbookName}/tasks/reorder`,
     virshSandboxInternalAnsibleReorderTasksRequest,
-    options,
-  );
-};
+    options
+  )
+}
 
 export const getReorderPlaybookTasksMutationOptions = <
   TError = AxiosError<VirshSandboxInternalErrorErrorResponse>,
@@ -949,52 +865,48 @@ export const getReorderPlaybookTasksMutationOptions = <
     Awaited<ReturnType<typeof reorderPlaybookTasks>>,
     TError,
     {
-      playbookName: string;
-      data: VirshSandboxInternalAnsibleReorderTasksRequest;
+      playbookName: string
+      data: VirshSandboxInternalAnsibleReorderTasksRequest
     },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof reorderPlaybookTasks>>,
   TError,
   {
-    playbookName: string;
-    data: VirshSandboxInternalAnsibleReorderTasksRequest;
+    playbookName: string
+    data: VirshSandboxInternalAnsibleReorderTasksRequest
   },
   TContext
 > => {
-  const mutationKey = ["reorderPlaybookTasks"];
+  const mutationKey = ['reorderPlaybookTasks']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof reorderPlaybookTasks>>,
     {
-      playbookName: string;
-      data: VirshSandboxInternalAnsibleReorderTasksRequest;
+      playbookName: string
+      data: VirshSandboxInternalAnsibleReorderTasksRequest
     }
   > = (props) => {
-    const { playbookName, data } = props ?? {};
+    const { playbookName, data } = props ?? {}
 
-    return reorderPlaybookTasks(playbookName, data, axiosOptions);
-  };
+    return reorderPlaybookTasks(playbookName, data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
 export type ReorderPlaybookTasksMutationResult = NonNullable<
   Awaited<ReturnType<typeof reorderPlaybookTasks>>
->;
-export type ReorderPlaybookTasksMutationBody =
-  VirshSandboxInternalAnsibleReorderTasksRequest;
-export type ReorderPlaybookTasksMutationError =
-  AxiosError<VirshSandboxInternalErrorErrorResponse>;
+>
+export type ReorderPlaybookTasksMutationBody = VirshSandboxInternalAnsibleReorderTasksRequest
+export type ReorderPlaybookTasksMutationError = AxiosError<VirshSandboxInternalErrorErrorResponse>
 
 /**
  * @summary Reorder tasks
@@ -1008,24 +920,24 @@ export const useReorderPlaybookTasks = <
       Awaited<ReturnType<typeof reorderPlaybookTasks>>,
       TError,
       {
-        playbookName: string;
-        data: VirshSandboxInternalAnsibleReorderTasksRequest;
+        playbookName: string
+        data: VirshSandboxInternalAnsibleReorderTasksRequest
       },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof reorderPlaybookTasks>>,
   TError,
   {
-    playbookName: string;
-    data: VirshSandboxInternalAnsibleReorderTasksRequest;
+    playbookName: string
+    data: VirshSandboxInternalAnsibleReorderTasksRequest
   },
   TContext
 > => {
-  const mutationOptions = getReorderPlaybookTasksMutationOptions(options);
+  const mutationOptions = getReorderPlaybookTasksMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}

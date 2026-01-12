@@ -8,7 +8,7 @@
 
 export interface InternalRestSnapshotRequest {
   /** optional; default false (internal snapshot) */
-  external?: boolean;
+  external?: boolean
   /** required */
-  name?: string;
+  name?: string
 }

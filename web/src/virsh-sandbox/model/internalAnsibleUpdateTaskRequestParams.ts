@@ -6,4 +6,4 @@
  * OpenAPI spec version: 0.0.1-beta
  */
 
-export type InternalAnsibleUpdateTaskRequestParams = { [key: string]: unknown };
+export type InternalAnsibleUpdateTaskRequestParams = { [key: string]: unknown }

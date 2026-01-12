@@ -7,7 +7,7 @@
  */
 
 export interface InternalRestErrorResponse {
-  code?: number;
-  details?: string;
-  error?: string;
+  code?: number
+  details?: string
+  error?: string
 }

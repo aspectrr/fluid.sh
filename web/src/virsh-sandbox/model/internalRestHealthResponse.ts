@@ -7,5 +7,5 @@
  */
 
 export interface InternalRestHealthResponse {
-  status?: string;
+  status?: string
 }

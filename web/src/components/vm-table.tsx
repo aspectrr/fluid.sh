@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -6,7 +6,7 @@ import {
   flexRender,
   type ColumnDef,
   type SortingState,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table'
 import {
   Table,
   TableBody,
@@ -14,63 +14,59 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table";
-import { Button } from "~/components/ui/button";
-import { useListVirtualMachines } from "~/virsh-sandbox/vms/vms";
-import { useCreateSandbox } from "~/virsh-sandbox/sandbox/sandbox";
-import { type InternalRestVmInfo } from "~/virsh-sandbox/model";
+} from '~/components/ui/table'
+import { Button } from '~/components/ui/button'
+import { useListVirtualMachines } from '~/virsh-sandbox/vms/vms'
+import { useCreateSandbox } from '~/virsh-sandbox/sandbox/sandbox'
+import { type InternalRestVmInfo } from '~/virsh-sandbox/model'
 
 export function VMTable() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [cloningId, setCloningId] = React.useState<string | null>(null);
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [cloningId, setCloningId] = React.useState<string | null>(null)
 
   // Fetch VMs using React Query
-  const { data: response, isLoading, isError } = useListVirtualMachines();
-  const vms = response?.data?.vms ?? [];
+  const { data: response, isLoading, isError } = useListVirtualMachines()
+  const vms = response?.data?.vms ?? []
 
   // Clone VM mutation
-  const cloneMutation = useCreateSandbox();
+  const cloneMutation = useCreateSandbox()
 
   // Define columns
   const columns: ColumnDef<InternalRestVmInfo>[] = [
     {
-      accessorKey: "name",
-      header: "Name",
+      accessorKey: 'name',
+      header: 'Name',
+      cell: ({ row }) => <div className="font-medium">{row.getValue('name')}</div>,
+    },
+    {
+      accessorKey: 'ipAddress',
+      header: 'IP Address',
       cell: ({ row }) => (
-        <div className="font-medium">{row.getValue("name")}</div>
+        <div className="text-muted-foreground font-mono">{row.getValue('ipAddress')}</div>
       ),
     },
     {
-      accessorKey: "ipAddress",
-      header: "IP Address",
-      cell: ({ row }) => (
-        <div className="font-mono text-muted-foreground">
-          {row.getValue("ipAddress")}
-        </div>
-      ),
-    },
-    {
-      id: "actions",
-      header: "Actions",
+      id: 'actions',
+      header: 'Actions',
       cell: ({ row }) => {
-        const isCloning = cloningId === row.original.uuid;
+        const isCloning = cloningId === row.original.uuid
         return (
           <Button
             size="sm"
             onClick={() => {
-              setCloningId(row?.original?.uuid ?? null);
+              setCloningId(row?.original?.uuid ?? null)
               cloneMutation.mutate({
                 data: { source_vm_name: row?.original?.name },
-              });
+              })
             }}
             disabled={isCloning}
           >
-            {isCloning ? "Cloning..." : "Clone"}
+            {isCloning ? 'Cloning...' : 'Clone'}
           </Button>
-        );
+        )
       },
     },
-  ];
+  ]
 
   // Create table instance
   const table = useReactTable({
@@ -82,14 +78,14 @@ export function VMTable() {
     state: {
       sorting,
     },
-  });
+  })
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
         <p className="text-muted-foreground">Loading VMs...</p>
       </div>
-    );
+    )
   }
 
   if (isError) {
@@ -97,11 +93,11 @@ export function VMTable() {
       <div className="flex items-center justify-center p-8">
         <p className="text-destructive">Failed to load VMs</p>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="rounded-lg border bg-card">
+    <div className="bg-card rounded-lg border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -110,10 +106,7 @@ export function VMTable() {
                 <TableHead key={header.id}>
                   {header.isPlaceholder
                     ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                    : flexRender(header.column.columnDef.header, header.getContext())}
                 </TableHead>
               ))}
             </TableRow>
@@ -122,10 +115,7 @@ export function VMTable() {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
+              <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -143,5 +133,5 @@ export function VMTable() {
         </TableBody>
       </Table>
     </div>
-  );
+  )
 }

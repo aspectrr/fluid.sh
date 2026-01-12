@@ -7,6 +7,6 @@
  */
 
 export interface InternalAnsibleJobResponse {
-  job_id?: string;
-  ws_url?: string;
+  job_id?: string
+  ws_url?: string
 }

@@ -7,5 +7,5 @@
  */
 
 export interface InternalRestDiscoverIPResponse {
-  ip_address?: string;
+  ip_address?: string
 }

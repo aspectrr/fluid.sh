@@ -7,6 +7,6 @@
  */
 
 export interface VirshSandboxInternalRestGenerateResponse {
-  message?: string;
-  note?: string;
+  message?: string
+  note?: string
 }

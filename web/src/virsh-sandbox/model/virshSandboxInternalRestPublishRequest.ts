@@ -8,9 +8,9 @@
 
 export interface VirshSandboxInternalRestPublishRequest {
   /** required */
-  job_id?: string;
+  job_id?: string
   /** optional commit/PR message */
-  message?: string;
+  message?: string
   /** optional */
-  reviewers?: string[];
+  reviewers?: string[]
 }

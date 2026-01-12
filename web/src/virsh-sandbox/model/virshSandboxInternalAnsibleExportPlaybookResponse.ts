@@ -7,5 +7,5 @@
  */
 
 export interface VirshSandboxInternalAnsibleExportPlaybookResponse {
-  yaml?: string;
+  yaml?: string
 }

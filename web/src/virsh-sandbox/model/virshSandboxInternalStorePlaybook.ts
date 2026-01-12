@@ -8,14 +8,14 @@
 
 export interface VirshSandboxInternalStorePlaybook {
   /** whether to use privilege escalation */
-  become?: boolean;
-  created_at?: string;
+  become?: boolean
+  created_at?: string
   /** rendered YAML file path */
-  file_path?: string;
+  file_path?: string
   /** target hosts pattern (e.g., "all", "webservers") */
-  hosts?: string;
-  id?: string;
+  hosts?: string
+  id?: string
   /** unique playbook name */
-  name?: string;
-  updated_at?: string;
+  name?: string
+  updated_at?: string
 }

@@ -7,7 +7,7 @@
  */
 
 export interface VirshSandboxInternalStoreCommandSummary {
-  at?: string;
-  cmd?: string;
-  exit_code?: number;
+  at?: string
+  cmd?: string
+  exit_code?: number
 }

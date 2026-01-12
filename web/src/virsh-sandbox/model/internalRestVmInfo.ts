@@ -7,9 +7,9 @@
  */
 
 export interface InternalRestVmInfo {
-  disk_path?: string;
-  name?: string;
-  persistent?: boolean;
-  state?: string;
-  uuid?: string;
+  disk_path?: string
+  name?: string
+  persistent?: boolean
+  state?: string
+  uuid?: string
 }

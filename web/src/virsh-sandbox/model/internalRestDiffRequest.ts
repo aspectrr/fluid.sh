@@ -8,7 +8,7 @@
 
 export interface InternalRestDiffRequest {
   /** required */
-  from_snapshot?: string;
+  from_snapshot?: string
   /** required */
-  to_snapshot?: string;
+  to_snapshot?: string
 }

@@ -8,7 +8,7 @@
 
 export interface VirshSandboxInternalRestInjectSSHKeyRequest {
   /** required */
-  public_key?: string;
+  public_key?: string
   /** required (explicit); typical: "ubuntu" or "centos" */
-  username?: string;
+  username?: string
 }

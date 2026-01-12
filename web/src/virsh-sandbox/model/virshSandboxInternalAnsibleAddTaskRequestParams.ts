@@ -7,5 +7,5 @@
  */
 
 export type VirshSandboxInternalAnsibleAddTaskRequestParams = {
-  [key: string]: unknown;
-};
+  [key: string]: unknown
+}

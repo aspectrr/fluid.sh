@@ -7,7 +7,7 @@
  */
 
 export interface InternalAnsibleCreatePlaybookRequest {
-  become?: boolean;
-  hosts?: string;
-  name?: string;
+  become?: boolean
+  hosts?: string
+  name?: string
 }

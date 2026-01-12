@@ -7,6 +7,6 @@
  */
 
 export interface VirshSandboxInternalRestRevokeCertificateResponse {
-  id?: string;
-  message?: string;
+  id?: string
+  message?: string
 }

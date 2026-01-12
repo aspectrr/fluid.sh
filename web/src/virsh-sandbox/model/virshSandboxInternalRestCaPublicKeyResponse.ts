@@ -8,7 +8,7 @@
 
 export interface VirshSandboxInternalRestCaPublicKeyResponse {
   /** PublicKey is the CA public key in OpenSSH format. */
-  public_key?: string;
+  public_key?: string
   /** Usage explains how to use this key. */
-  usage?: string;
+  usage?: string
 }

@@ -7,5 +7,5 @@
  */
 
 export interface VirshSandboxInternalRestStartSandboxResponse {
-  ip_address?: string;
+  ip_address?: string
 }

@@ -1,5 +1,5 @@
-import * as React from "react";
-import { useNavigate } from "@tanstack/react-router";
+import * as React from 'react'
+import { useNavigate } from '@tanstack/react-router'
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,7 +7,7 @@ import {
   flexRender,
   type ColumnDef,
   type SortingState,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table'
 import {
   Table,
   TableBody,
@@ -15,106 +15,100 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table";
-import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
-import { useListSandboxes } from "~/virsh-sandbox/sandbox/sandbox";
-import type { InternalRestSandboxInfo } from "~/virsh-sandbox/model";
+} from '~/components/ui/table'
+import { Button } from '~/components/ui/button'
+import { Badge } from '~/components/ui/badge'
+import { useListSandboxes } from '~/virsh-sandbox/sandbox/sandbox'
+import type { InternalRestSandboxInfo } from '~/virsh-sandbox/model'
 
 function getStateBadgeVariant(
   state: string | undefined
-): "default" | "secondary" | "destructive" | "outline" {
+): 'default' | 'secondary' | 'destructive' | 'outline' {
   switch (state) {
-    case "RUNNING":
-      return "default";
-    case "CREATED":
-    case "STARTING":
-      return "secondary";
-    case "ERROR":
-    case "DESTROYED":
-      return "destructive";
+    case 'RUNNING':
+      return 'default'
+    case 'CREATED':
+    case 'STARTING':
+      return 'secondary'
+    case 'ERROR':
+    case 'DESTROYED':
+      return 'destructive'
     default:
-      return "outline";
+      return 'outline'
   }
 }
 
 export function SandboxTable() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const navigate = useNavigate();
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const navigate = useNavigate()
 
-  const { data: response, isLoading, isError } = useListSandboxes();
-  const sandboxes = response?.data?.sandboxes ?? [];
+  const { data: response, isLoading, isError } = useListSandboxes()
+  const sandboxes = response?.data?.sandboxes ?? []
 
   const columns: ColumnDef<InternalRestSandboxInfo>[] = [
     {
-      accessorKey: "id",
-      header: "ID",
-      cell: ({ row }) => (
-        <div className="font-mono text-sm">{row.getValue("id")}</div>
-      ),
+      accessorKey: 'id',
+      header: 'ID',
+      cell: ({ row }) => <div className="font-mono text-sm">{row.getValue('id')}</div>,
     },
     {
-      accessorKey: "sandbox_name",
-      header: "Name",
-      cell: ({ row }) => (
-        <div className="font-medium">{row.getValue("sandbox_name")}</div>
-      ),
+      accessorKey: 'sandbox_name',
+      header: 'Name',
+      cell: ({ row }) => <div className="font-medium">{row.getValue('sandbox_name')}</div>,
     },
     {
-      accessorKey: "state",
-      header: "State",
+      accessorKey: 'state',
+      header: 'State',
       cell: ({ row }) => {
-        const state = row.getValue("state") as string;
-        return <Badge variant={getStateBadgeVariant(state)}>{state}</Badge>;
+        const state = row.getValue('state') as string
+        return <Badge variant={getStateBadgeVariant(state)}>{state}</Badge>
       },
     },
     {
-      accessorKey: "ip_address",
-      header: "IP Address",
+      accessorKey: 'ip_address',
+      header: 'IP Address',
       cell: ({ row }) => (
-        <div className="font-mono text-sm text-muted-foreground">
-          {row.getValue("ip_address") || "-"}
+        <div className="text-muted-foreground font-mono text-sm">
+          {row.getValue('ip_address') || '-'}
         </div>
       ),
     },
     {
-      accessorKey: "base_image",
-      header: "Base Image",
+      accessorKey: 'base_image',
+      header: 'Base Image',
       cell: ({ row }) => (
-        <div className="text-sm text-muted-foreground">
-          {row.getValue("base_image")}
-        </div>
+        <div className="text-muted-foreground text-sm">{row.getValue('base_image')}</div>
       ),
     },
     {
-      accessorKey: "created_at",
-      header: "Created",
+      accessorKey: 'created_at',
+      header: 'Created',
       cell: ({ row }) => {
-        const date = row.getValue("created_at") as string;
+        const date = row.getValue('created_at') as string
         return (
-          <div className="text-sm text-muted-foreground">
-            {date ? new Date(date).toLocaleString() : "-"}
+          <div className="text-muted-foreground text-sm">
+            {date ? new Date(date).toLocaleString() : '-'}
           </div>
-        );
+        )
       },
     },
     {
-      id: "actions",
-      header: "Actions",
+      id: 'actions',
+      header: 'Actions',
       cell: ({ row }) => {
         return (
           <Button
             size="sm"
             onClick={() => {
-              navigate({ to: `/sandboxes/${row.original.id}` });
+              navigate({ to: `/sandboxes/${row.original.id}` })
             }}
           >
             View Details
           </Button>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const table = useReactTable({
     data: sandboxes as InternalRestSandboxInfo[],
@@ -125,14 +119,14 @@ export function SandboxTable() {
     state: {
       sorting,
     },
-  });
+  })
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
         <p className="text-muted-foreground">Loading sandboxes...</p>
       </div>
-    );
+    )
   }
 
   if (isError) {
@@ -140,11 +134,11 @@ export function SandboxTable() {
       <div className="flex items-center justify-center p-8">
         <p className="text-destructive">Failed to load sandboxes</p>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="rounded-lg border bg-card">
+    <div className="bg-card rounded-lg border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -153,10 +147,7 @@ export function SandboxTable() {
                 <TableHead key={header.id}>
                   {header.isPlaceholder
                     ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                    : flexRender(header.column.columnDef.header, header.getContext())}
                 </TableHead>
               ))}
             </TableRow>
@@ -165,10 +156,7 @@ export function SandboxTable() {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
+              <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -186,5 +174,5 @@ export function SandboxTable() {
         </TableBody>
       </Table>
     </div>
-  );
+  )
 }

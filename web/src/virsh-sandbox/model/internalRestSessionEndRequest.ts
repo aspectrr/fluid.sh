@@ -7,6 +7,6 @@
  */
 
 export interface InternalRestSessionEndRequest {
-  reason?: string;
-  session_id?: string;
+  reason?: string
+  session_id?: string
 }

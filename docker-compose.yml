@@ -83,22 +83,6 @@ services:
       timeout: 5s
       retries: 5
 
-  tmux-client:
-    container_name: virsh-sandbox-tmux-client
-    build:
-      context: ./tmux-client
-      dockerfile: Dockerfile
-    depends_on:
-      - postgres
-    restart: unless-stopped
-    ports:
-      - "8081:8081"
-    healthcheck:
-      test: ["CMD", "curl", "-fsSL", "http://127.0.0.1:8081/v1/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-
   postgres:
     image: postgres:18
     container_name: virsh-sandbox-postgres
@@ -126,7 +110,6 @@ services:
     restart: unless-stopped
     depends_on:
       - virsh-sandbox
-      - tmux-client
     ports:
       - "5173:5173"
 

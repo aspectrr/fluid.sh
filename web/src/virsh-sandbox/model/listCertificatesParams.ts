@@ -10,25 +10,25 @@ export type ListCertificatesParams = {
   /**
    * Filter by sandbox ID
    */
-  sandbox_id?: string;
+  sandbox_id?: string
   /**
    * Filter by user ID
    */
-  user_id?: string;
+  user_id?: string
   /**
    * Filter by status (ACTIVE, EXPIRED, REVOKED)
    */
-  status?: string;
+  status?: string
   /**
    * Only show active, non-expired certificates
    */
-  active_only?: boolean;
+  active_only?: boolean
   /**
    * Maximum results to return
    */
-  limit?: number;
+  limit?: number
   /**
    * Offset for pagination
    */
-  offset?: number;
-};
+  offset?: number
+}

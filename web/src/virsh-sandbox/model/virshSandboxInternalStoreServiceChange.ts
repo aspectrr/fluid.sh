@@ -7,8 +7,8 @@
  */
 
 export interface VirshSandboxInternalStoreServiceChange {
-  enabled?: boolean;
-  name?: string;
+  enabled?: boolean
+  name?: string
   /** started|stopped|restarted|reloaded */
-  state?: string;
+  state?: string
 }

@@ -5,7 +5,7 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from '@tanstack/react-query'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -19,10 +19,10 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 
-import * as axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import * as axios from 'axios'
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 import type {
   GetSandboxParams,
@@ -48,7 +48,7 @@ import type {
   VirshSandboxInternalRestSnapshotResponse,
   VirshSandboxInternalRestStartSandboxRequest,
   VirshSandboxInternalRestStartSandboxResponse,
-} from ".././model";
+} from '.././model'
 
 /**
  * Lists all sandboxes with optional filtering by agent_id, job_id, base_image, state, or vm_name
@@ -56,17 +56,17 @@ import type {
  */
 export const listSandboxes = (
   params?: ListSandboxesParams,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalRestListSandboxesResponse>> => {
   return axios.default.get(`/v1/sandboxes`, {
     ...options,
     params: { ...params, ...options?.params },
-  });
-};
+  })
+}
 
 export const getListSandboxesQueryKey = (params?: ListSandboxesParams) => {
-  return [`/v1/sandboxes`, ...(params ? [params] : [])] as const;
-};
+  return [`/v1/sandboxes`, ...(params ? [params] : [])] as const
+}
 
 export const getListSandboxesQueryOptions = <
   TData = Awaited<ReturnType<typeof listSandboxes>>,
@@ -74,32 +74,26 @@ export const getListSandboxesQueryOptions = <
 >(
   params?: ListSandboxesParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listSandboxes>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
-  },
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSandboxes>>, TError, TData>>
+    axios?: AxiosRequestConfig
+  }
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getListSandboxesQueryKey(params);
+  const queryKey = queryOptions?.queryKey ?? getListSandboxesQueryKey(params)
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof listSandboxes>>> = ({
-    signal,
-  }) => listSandboxes(params, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listSandboxes>>> = ({ signal }) =>
+    listSandboxes(params, { signal, ...axiosOptions })
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof listSandboxes>>,
     TError,
     TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-export type ListSandboxesQueryResult = NonNullable<
-  Awaited<ReturnType<typeof listSandboxes>>
->;
-export type ListSandboxesQueryError =
-  AxiosError<VirshSandboxInternalRestErrorResponse>;
+export type ListSandboxesQueryResult = NonNullable<Awaited<ReturnType<typeof listSandboxes>>>
+export type ListSandboxesQueryError = AxiosError<VirshSandboxInternalRestErrorResponse>
 
 export function useListSandboxes<
   TData = Awaited<ReturnType<typeof listSandboxes>>,
@@ -107,61 +101,55 @@ export function useListSandboxes<
 >(
   params: undefined | ListSandboxesParams,
   options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listSandboxes>>, TError, TData>
-    > &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSandboxes>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof listSandboxes>>,
           TError,
           Awaited<ReturnType<typeof listSandboxes>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useListSandboxes<
   TData = Awaited<ReturnType<typeof listSandboxes>>,
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
 >(
   params?: ListSandboxesParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listSandboxes>>, TError, TData>
-    > &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSandboxes>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof listSandboxes>>,
           TError,
           Awaited<ReturnType<typeof listSandboxes>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useListSandboxes<
   TData = Awaited<ReturnType<typeof listSandboxes>>,
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
 >(
   params?: ListSandboxesParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listSandboxes>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSandboxes>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary List sandboxes
  */
@@ -172,25 +160,22 @@ export function useListSandboxes<
 >(
   params?: ListSandboxesParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listSandboxes>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSandboxes>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getListSandboxesQueryOptions(params, options);
+  const queryOptions = getListSandboxesQueryOptions(params, options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }
 
 /**
@@ -199,14 +184,10 @@ export function useListSandboxes<
  */
 export const createSandbox = (
   virshSandboxInternalRestCreateSandboxRequest: VirshSandboxInternalRestCreateSandboxRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalRestCreateSandboxResponse>> => {
-  return axios.default.post(
-    `/v1/sandboxes`,
-    virshSandboxInternalRestCreateSandboxRequest,
-    options,
-  );
-};
+  return axios.default.post(`/v1/sandboxes`, virshSandboxInternalRestCreateSandboxRequest, options)
+}
 
 export const getCreateSandboxMutationOptions = <
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
@@ -217,42 +198,36 @@ export const getCreateSandboxMutationOptions = <
     TError,
     { data: VirshSandboxInternalRestCreateSandboxRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createSandbox>>,
   TError,
   { data: VirshSandboxInternalRestCreateSandboxRequest },
   TContext
 > => {
-  const mutationKey = ["createSandbox"];
+  const mutationKey = ['createSandbox']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createSandbox>>,
     { data: VirshSandboxInternalRestCreateSandboxRequest }
   > = (props) => {
-    const { data } = props ?? {};
+    const { data } = props ?? {}
 
-    return createSandbox(data, axiosOptions);
-  };
+    return createSandbox(data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
-export type CreateSandboxMutationResult = NonNullable<
-  Awaited<ReturnType<typeof createSandbox>>
->;
-export type CreateSandboxMutationBody =
-  VirshSandboxInternalRestCreateSandboxRequest;
-export type CreateSandboxMutationError =
-  AxiosError<VirshSandboxInternalRestErrorResponse>;
+export type CreateSandboxMutationResult = NonNullable<Awaited<ReturnType<typeof createSandbox>>>
+export type CreateSandboxMutationBody = VirshSandboxInternalRestCreateSandboxRequest
+export type CreateSandboxMutationError = AxiosError<VirshSandboxInternalRestErrorResponse>
 
 /**
  * @summary Create a new sandbox
@@ -267,30 +242,30 @@ export const useCreateSandbox = <
       TError,
       { data: VirshSandboxInternalRestCreateSandboxRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof createSandbox>>,
   TError,
   { data: VirshSandboxInternalRestCreateSandboxRequest },
   TContext
 > => {
-  const mutationOptions = getCreateSandboxMutationOptions(options);
+  const mutationOptions = getCreateSandboxMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Destroys the sandbox and cleans up resources
  * @summary Destroy sandbox
  */
 export const destroySandbox = (
   id: string,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalRestDestroySandboxResponse>> => {
-  return axios.default.delete(`/v1/sandboxes/${id}`, options);
-};
+  return axios.default.delete(`/v1/sandboxes/${id}`, options)
+}
 
 export const getDestroySandboxMutationOptions = <
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
@@ -301,41 +276,35 @@ export const getDestroySandboxMutationOptions = <
     TError,
     { id: string },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof destroySandbox>>,
   TError,
   { id: string },
   TContext
 > => {
-  const mutationKey = ["destroySandbox"];
+  const mutationKey = ['destroySandbox']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof destroySandbox>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof destroySandbox>>, { id: string }> = (
+    props
+  ) => {
+    const { id } = props ?? {}
 
-    return destroySandbox(id, axiosOptions);
-  };
+    return destroySandbox(id, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
-export type DestroySandboxMutationResult = NonNullable<
-  Awaited<ReturnType<typeof destroySandbox>>
->;
+export type DestroySandboxMutationResult = NonNullable<Awaited<ReturnType<typeof destroySandbox>>>
 
-export type DestroySandboxMutationError =
-  AxiosError<VirshSandboxInternalRestErrorResponse>;
+export type DestroySandboxMutationError = AxiosError<VirshSandboxInternalRestErrorResponse>
 
 /**
  * @summary Destroy sandbox
@@ -350,20 +319,20 @@ export const useDestroySandbox = <
       TError,
       { id: string },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof destroySandbox>>,
   TError,
   { id: string },
   TContext
 > => {
-  const mutationOptions = getDestroySandboxMutationOptions(options);
+  const mutationOptions = getDestroySandboxMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Returns detailed information about a specific sandbox including recent commands
  * @summary Get sandbox details
@@ -371,20 +340,17 @@ export const useDestroySandbox = <
 export const getSandbox = (
   id: string,
   params?: GetSandboxParams,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalRestGetSandboxResponse>> => {
   return axios.default.get(`/v1/sandboxes/${id}`, {
     ...options,
     params: { ...params, ...options?.params },
-  });
-};
+  })
+}
 
-export const getGetSandboxQueryKey = (
-  id?: string,
-  params?: GetSandboxParams,
-) => {
-  return [`/v1/sandboxes/${id}`, ...(params ? [params] : [])] as const;
-};
+export const getGetSandboxQueryKey = (id?: string, params?: GetSandboxParams) => {
+  return [`/v1/sandboxes/${id}`, ...(params ? [params] : [])] as const
+}
 
 export const getGetSandboxQueryOptions = <
   TData = Awaited<ReturnType<typeof getSandbox>>,
@@ -393,37 +359,29 @@ export const getGetSandboxQueryOptions = <
   id: string,
   params?: GetSandboxParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getSandbox>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
-  },
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSandbox>>, TError, TData>>
+    axios?: AxiosRequestConfig
+  }
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetSandboxQueryKey(id, params);
+  const queryKey = queryOptions?.queryKey ?? getGetSandboxQueryKey(id, params)
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getSandbox>>> = ({
-    signal,
-  }) => getSandbox(id, params, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getSandbox>>> = ({ signal }) =>
+    getSandbox(id, params, { signal, ...axiosOptions })
 
   return {
     queryKey,
     queryFn,
     enabled: !!id,
     ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof getSandbox>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  } as UseQueryOptions<Awaited<ReturnType<typeof getSandbox>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+}
 
-export type GetSandboxQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getSandbox>>
->;
-export type GetSandboxQueryError =
-  AxiosError<VirshSandboxInternalRestErrorResponse>;
+export type GetSandboxQueryResult = NonNullable<Awaited<ReturnType<typeof getSandbox>>>
+export type GetSandboxQueryError = AxiosError<VirshSandboxInternalRestErrorResponse>
 
 export function useGetSandbox<
   TData = Awaited<ReturnType<typeof getSandbox>>,
@@ -432,23 +390,21 @@ export function useGetSandbox<
   id: string,
   params: undefined | GetSandboxParams,
   options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getSandbox>>, TError, TData>
-    > &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSandbox>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getSandbox>>,
           TError,
           Awaited<ReturnType<typeof getSandbox>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useGetSandbox<
   TData = Awaited<ReturnType<typeof getSandbox>>,
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
@@ -456,23 +412,21 @@ export function useGetSandbox<
   id: string,
   params?: GetSandboxParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getSandbox>>, TError, TData>
-    > &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSandbox>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getSandbox>>,
           TError,
           Awaited<ReturnType<typeof getSandbox>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useGetSandbox<
   TData = Awaited<ReturnType<typeof getSandbox>>,
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
@@ -480,15 +434,13 @@ export function useGetSandbox<
   id: string,
   params?: GetSandboxParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getSandbox>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSandbox>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary Get sandbox details
  */
@@ -500,25 +452,22 @@ export function useGetSandbox<
   id: string,
   params?: GetSandboxParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getSandbox>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSandbox>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getGetSandboxQueryOptions(id, params, options);
+  const queryOptions = getGetSandboxQueryOptions(id, params, options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }
 
 /**
@@ -528,22 +477,17 @@ export function useGetSandbox<
 export const listSandboxCommands = (
   id: string,
   params?: ListSandboxCommandsParams,
-  options?: AxiosRequestConfig,
-): Promise<
-  AxiosResponse<VirshSandboxInternalRestListSandboxCommandsResponse>
-> => {
+  options?: AxiosRequestConfig
+): Promise<AxiosResponse<VirshSandboxInternalRestListSandboxCommandsResponse>> => {
   return axios.default.get(`/v1/sandboxes/${id}/commands`, {
     ...options,
     params: { ...params, ...options?.params },
-  });
-};
+  })
+}
 
-export const getListSandboxCommandsQueryKey = (
-  id?: string,
-  params?: ListSandboxCommandsParams,
-) => {
-  return [`/v1/sandboxes/${id}/commands`, ...(params ? [params] : [])] as const;
-};
+export const getListSandboxCommandsQueryKey = (id?: string, params?: ListSandboxCommandsParams) => {
+  return [`/v1/sandboxes/${id}/commands`, ...(params ? [params] : [])] as const
+}
 
 export const getListSandboxCommandsQueryOptions = <
   TData = Awaited<ReturnType<typeof listSandboxCommands>>,
@@ -552,43 +496,31 @@ export const getListSandboxCommandsQueryOptions = <
   id: string,
   params?: ListSandboxCommandsParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof listSandboxCommands>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
-  },
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSandboxCommands>>, TError, TData>>
+    axios?: AxiosRequestConfig
+  }
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey =
-    queryOptions?.queryKey ?? getListSandboxCommandsQueryKey(id, params);
+  const queryKey = queryOptions?.queryKey ?? getListSandboxCommandsQueryKey(id, params)
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof listSandboxCommands>>
-  > = ({ signal }) =>
-    listSandboxCommands(id, params, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listSandboxCommands>>> = ({ signal }) =>
+    listSandboxCommands(id, params, { signal, ...axiosOptions })
 
   return {
     queryKey,
     queryFn,
     enabled: !!id,
     ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof listSandboxCommands>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  } as UseQueryOptions<Awaited<ReturnType<typeof listSandboxCommands>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+}
 
 export type ListSandboxCommandsQueryResult = NonNullable<
   Awaited<ReturnType<typeof listSandboxCommands>>
->;
-export type ListSandboxCommandsQueryError =
-  AxiosError<VirshSandboxInternalRestErrorResponse>;
+>
+export type ListSandboxCommandsQueryError = AxiosError<VirshSandboxInternalRestErrorResponse>
 
 export function useListSandboxCommands<
   TData = Awaited<ReturnType<typeof listSandboxCommands>>,
@@ -598,11 +530,7 @@ export function useListSandboxCommands<
   params: undefined | ListSandboxCommandsParams,
   options: {
     query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof listSandboxCommands>>,
-        TError,
-        TData
-      >
+      UseQueryOptions<Awaited<ReturnType<typeof listSandboxCommands>>, TError, TData>
     > &
       Pick<
         DefinedInitialDataOptions<
@@ -610,14 +538,14 @@ export function useListSandboxCommands<
           TError,
           Awaited<ReturnType<typeof listSandboxCommands>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useListSandboxCommands<
   TData = Awaited<ReturnType<typeof listSandboxCommands>>,
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
@@ -626,11 +554,7 @@ export function useListSandboxCommands<
   params?: ListSandboxCommandsParams,
   options?: {
     query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof listSandboxCommands>>,
-        TError,
-        TData
-      >
+      UseQueryOptions<Awaited<ReturnType<typeof listSandboxCommands>>, TError, TData>
     > &
       Pick<
         UndefinedInitialDataOptions<
@@ -638,14 +562,14 @@ export function useListSandboxCommands<
           TError,
           Awaited<ReturnType<typeof listSandboxCommands>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useListSandboxCommands<
   TData = Awaited<ReturnType<typeof listSandboxCommands>>,
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
@@ -653,19 +577,13 @@ export function useListSandboxCommands<
   id: string,
   params?: ListSandboxCommandsParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof listSandboxCommands>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSandboxCommands>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary List sandbox commands
  */
@@ -677,29 +595,22 @@ export function useListSandboxCommands<
   id: string,
   params?: ListSandboxCommandsParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof listSandboxCommands>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSandboxCommands>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getListSandboxCommandsQueryOptions(id, params, options);
+  const queryOptions = getListSandboxCommandsQueryOptions(id, params, options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }
 
 /**
@@ -709,14 +620,14 @@ export function useListSandboxCommands<
 export const diffSnapshots = (
   id: string,
   virshSandboxInternalRestDiffRequest: VirshSandboxInternalRestDiffRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalRestDiffResponse>> => {
   return axios.default.post(
     `/v1/sandboxes/${id}/diff`,
     virshSandboxInternalRestDiffRequest,
-    options,
-  );
-};
+    options
+  )
+}
 
 export const getDiffSnapshotsMutationOptions = <
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
@@ -727,41 +638,36 @@ export const getDiffSnapshotsMutationOptions = <
     TError,
     { id: string; data: VirshSandboxInternalRestDiffRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof diffSnapshots>>,
   TError,
   { id: string; data: VirshSandboxInternalRestDiffRequest },
   TContext
 > => {
-  const mutationKey = ["diffSnapshots"];
+  const mutationKey = ['diffSnapshots']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof diffSnapshots>>,
     { id: string; data: VirshSandboxInternalRestDiffRequest }
   > = (props) => {
-    const { id, data } = props ?? {};
+    const { id, data } = props ?? {}
 
-    return diffSnapshots(id, data, axiosOptions);
-  };
+    return diffSnapshots(id, data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
-export type DiffSnapshotsMutationResult = NonNullable<
-  Awaited<ReturnType<typeof diffSnapshots>>
->;
-export type DiffSnapshotsMutationBody = VirshSandboxInternalRestDiffRequest;
-export type DiffSnapshotsMutationError =
-  AxiosError<VirshSandboxInternalRestErrorResponse>;
+export type DiffSnapshotsMutationResult = NonNullable<Awaited<ReturnType<typeof diffSnapshots>>>
+export type DiffSnapshotsMutationBody = VirshSandboxInternalRestDiffRequest
+export type DiffSnapshotsMutationError = AxiosError<VirshSandboxInternalRestErrorResponse>
 
 /**
  * @summary Diff snapshots
@@ -776,20 +682,20 @@ export const useDiffSnapshots = <
       TError,
       { id: string; data: VirshSandboxInternalRestDiffRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof diffSnapshots>>,
   TError,
   { id: string; data: VirshSandboxInternalRestDiffRequest },
   TContext
 > => {
-  const mutationOptions = getDiffSnapshotsMutationOptions(options);
+  const mutationOptions = getDiffSnapshotsMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Generates Ansible or Puppet configuration from sandbox changes
  * @summary Generate configuration
@@ -797,19 +703,14 @@ export const useDiffSnapshots = <
 export const generateConfiguration = (
   id: string,
   tool: string,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<unknown>> => {
-  return axios.default.post(
-    `/v1/sandboxes/${id}/generate/${tool}`,
-    undefined,
-    options,
-  );
-};
+  return axios.default.post(`/v1/sandboxes/${id}/generate/${tool}`, undefined, options)
+}
 
 export const getGenerateConfigurationMutationOptions = <
   TError = AxiosError<
-    | VirshSandboxInternalRestErrorResponse
-    | VirshSandboxInternalRestGenerateResponse
+    VirshSandboxInternalRestErrorResponse | VirshSandboxInternalRestGenerateResponse
   >,
   TContext = unknown,
 >(options?: {
@@ -818,51 +719,47 @@ export const getGenerateConfigurationMutationOptions = <
     TError,
     { id: string; tool: string },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof generateConfiguration>>,
   TError,
   { id: string; tool: string },
   TContext
 > => {
-  const mutationKey = ["generateConfiguration"];
+  const mutationKey = ['generateConfiguration']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof generateConfiguration>>,
     { id: string; tool: string }
   > = (props) => {
-    const { id, tool } = props ?? {};
+    const { id, tool } = props ?? {}
 
-    return generateConfiguration(id, tool, axiosOptions);
-  };
+    return generateConfiguration(id, tool, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
 export type GenerateConfigurationMutationResult = NonNullable<
   Awaited<ReturnType<typeof generateConfiguration>>
->;
+>
 
 export type GenerateConfigurationMutationError = AxiosError<
-  | VirshSandboxInternalRestErrorResponse
-  | VirshSandboxInternalRestGenerateResponse
->;
+  VirshSandboxInternalRestErrorResponse | VirshSandboxInternalRestGenerateResponse
+>
 
 /**
  * @summary Generate configuration
  */
 export const useGenerateConfiguration = <
   TError = AxiosError<
-    | VirshSandboxInternalRestErrorResponse
-    | VirshSandboxInternalRestGenerateResponse
+    VirshSandboxInternalRestErrorResponse | VirshSandboxInternalRestGenerateResponse
   >,
   TContext = unknown,
 >(
@@ -872,34 +769,34 @@ export const useGenerateConfiguration = <
       TError,
       { id: string; tool: string },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof generateConfiguration>>,
   TError,
   { id: string; tool: string },
   TContext
 > => {
-  const mutationOptions = getGenerateConfigurationMutationOptions(options);
+  const mutationOptions = getGenerateConfigurationMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Discovers and returns the IP address for a running sandbox. Use this for async workflows where wait_for_ip was false during start.
  * @summary Discover sandbox IP
  */
 export const discoverSandboxIP = (
   id: string,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalRestDiscoverIPResponse>> => {
-  return axios.default.get(`/v1/sandboxes/${id}/ip`, options);
-};
+  return axios.default.get(`/v1/sandboxes/${id}/ip`, options)
+}
 
 export const getDiscoverSandboxIPQueryKey = (id?: string) => {
-  return [`/v1/sandboxes/${id}/ip`] as const;
-};
+  return [`/v1/sandboxes/${id}/ip`] as const
+}
 
 export const getDiscoverSandboxIPQueryOptions = <
   TData = Awaited<ReturnType<typeof discoverSandboxIP>>,
@@ -907,41 +804,31 @@ export const getDiscoverSandboxIPQueryOptions = <
 >(
   id: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoverSandboxIP>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
-  },
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof discoverSandboxIP>>, TError, TData>>
+    axios?: AxiosRequestConfig
+  }
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getDiscoverSandboxIPQueryKey(id);
+  const queryKey = queryOptions?.queryKey ?? getDiscoverSandboxIPQueryKey(id)
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof discoverSandboxIP>>
-  > = ({ signal }) => discoverSandboxIP(id, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof discoverSandboxIP>>> = ({ signal }) =>
+    discoverSandboxIP(id, { signal, ...axiosOptions })
 
   return {
     queryKey,
     queryFn,
     enabled: !!id,
     ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof discoverSandboxIP>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  } as UseQueryOptions<Awaited<ReturnType<typeof discoverSandboxIP>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+}
 
 export type DiscoverSandboxIPQueryResult = NonNullable<
   Awaited<ReturnType<typeof discoverSandboxIP>>
->;
-export type DiscoverSandboxIPQueryError =
-  AxiosError<VirshSandboxInternalRestErrorResponse>;
+>
+export type DiscoverSandboxIPQueryError = AxiosError<VirshSandboxInternalRestErrorResponse>
 
 export function useDiscoverSandboxIP<
   TData = Awaited<ReturnType<typeof discoverSandboxIP>>,
@@ -949,73 +836,55 @@ export function useDiscoverSandboxIP<
 >(
   id: string,
   options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoverSandboxIP>>,
-        TError,
-        TData
-      >
-    > &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof discoverSandboxIP>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof discoverSandboxIP>>,
           TError,
           Awaited<ReturnType<typeof discoverSandboxIP>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useDiscoverSandboxIP<
   TData = Awaited<ReturnType<typeof discoverSandboxIP>>,
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
 >(
   id: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoverSandboxIP>>,
-        TError,
-        TData
-      >
-    > &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof discoverSandboxIP>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof discoverSandboxIP>>,
           TError,
           Awaited<ReturnType<typeof discoverSandboxIP>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useDiscoverSandboxIP<
   TData = Awaited<ReturnType<typeof discoverSandboxIP>>,
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
 >(
   id: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoverSandboxIP>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof discoverSandboxIP>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary Discover sandbox IP
  */
@@ -1026,29 +895,22 @@ export function useDiscoverSandboxIP<
 >(
   id: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof discoverSandboxIP>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof discoverSandboxIP>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getDiscoverSandboxIPQueryOptions(id, options);
+  const queryOptions = getDiscoverSandboxIPQueryOptions(id, options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }
 
 /**
@@ -1058,19 +920,18 @@ export function useDiscoverSandboxIP<
 export const publishChanges = (
   id: string,
   virshSandboxInternalRestPublishRequest: VirshSandboxInternalRestPublishRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<unknown>> => {
   return axios.default.post(
     `/v1/sandboxes/${id}/publish`,
     virshSandboxInternalRestPublishRequest,
-    options,
-  );
-};
+    options
+  )
+}
 
 export const getPublishChangesMutationOptions = <
   TError = AxiosError<
-    | VirshSandboxInternalRestErrorResponse
-    | VirshSandboxInternalRestPublishResponse
+    VirshSandboxInternalRestErrorResponse | VirshSandboxInternalRestPublishResponse
   >,
   TContext = unknown,
 >(options?: {
@@ -1079,51 +940,45 @@ export const getPublishChangesMutationOptions = <
     TError,
     { id: string; data: VirshSandboxInternalRestPublishRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof publishChanges>>,
   TError,
   { id: string; data: VirshSandboxInternalRestPublishRequest },
   TContext
 > => {
-  const mutationKey = ["publishChanges"];
+  const mutationKey = ['publishChanges']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof publishChanges>>,
     { id: string; data: VirshSandboxInternalRestPublishRequest }
   > = (props) => {
-    const { id, data } = props ?? {};
+    const { id, data } = props ?? {}
 
-    return publishChanges(id, data, axiosOptions);
-  };
+    return publishChanges(id, data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
-export type PublishChangesMutationResult = NonNullable<
-  Awaited<ReturnType<typeof publishChanges>>
->;
-export type PublishChangesMutationBody = VirshSandboxInternalRestPublishRequest;
+export type PublishChangesMutationResult = NonNullable<Awaited<ReturnType<typeof publishChanges>>>
+export type PublishChangesMutationBody = VirshSandboxInternalRestPublishRequest
 export type PublishChangesMutationError = AxiosError<
-  | VirshSandboxInternalRestErrorResponse
-  | VirshSandboxInternalRestPublishResponse
->;
+  VirshSandboxInternalRestErrorResponse | VirshSandboxInternalRestPublishResponse
+>
 
 /**
  * @summary Publish changes
  */
 export const usePublishChanges = <
   TError = AxiosError<
-    | VirshSandboxInternalRestErrorResponse
-    | VirshSandboxInternalRestPublishResponse
+    VirshSandboxInternalRestErrorResponse | VirshSandboxInternalRestPublishResponse
   >,
   TContext = unknown,
 >(
@@ -1133,20 +988,20 @@ export const usePublishChanges = <
       TError,
       { id: string; data: VirshSandboxInternalRestPublishRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof publishChanges>>,
   TError,
   { id: string; data: VirshSandboxInternalRestPublishRequest },
   TContext
 > => {
-  const mutationOptions = getPublishChangesMutationOptions(options);
+  const mutationOptions = getPublishChangesMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Executes a command inside the sandbox via SSH. If private_key_path is omitted and SSH CA is configured, managed credentials will be used automatically.
  * @summary Run command in sandbox
@@ -1154,14 +1009,14 @@ export const usePublishChanges = <
 export const runSandboxCommand = (
   id: string,
   virshSandboxInternalRestRunCommandRequest: VirshSandboxInternalRestRunCommandRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalRestRunCommandResponse>> => {
   return axios.default.post(
     `/v1/sandboxes/${id}/run`,
     virshSandboxInternalRestRunCommandRequest,
-    options,
-  );
-};
+    options
+  )
+}
 
 export const getRunSandboxCommandMutationOptions = <
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
@@ -1172,42 +1027,38 @@ export const getRunSandboxCommandMutationOptions = <
     TError,
     { id: string; data: VirshSandboxInternalRestRunCommandRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof runSandboxCommand>>,
   TError,
   { id: string; data: VirshSandboxInternalRestRunCommandRequest },
   TContext
 > => {
-  const mutationKey = ["runSandboxCommand"];
+  const mutationKey = ['runSandboxCommand']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof runSandboxCommand>>,
     { id: string; data: VirshSandboxInternalRestRunCommandRequest }
   > = (props) => {
-    const { id, data } = props ?? {};
+    const { id, data } = props ?? {}
 
-    return runSandboxCommand(id, data, axiosOptions);
-  };
+    return runSandboxCommand(id, data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
 export type RunSandboxCommandMutationResult = NonNullable<
   Awaited<ReturnType<typeof runSandboxCommand>>
->;
-export type RunSandboxCommandMutationBody =
-  VirshSandboxInternalRestRunCommandRequest;
-export type RunSandboxCommandMutationError =
-  AxiosError<VirshSandboxInternalRestErrorResponse>;
+>
+export type RunSandboxCommandMutationBody = VirshSandboxInternalRestRunCommandRequest
+export type RunSandboxCommandMutationError = AxiosError<VirshSandboxInternalRestErrorResponse>
 
 /**
  * @summary Run command in sandbox
@@ -1222,20 +1073,20 @@ export const useRunSandboxCommand = <
       TError,
       { id: string; data: VirshSandboxInternalRestRunCommandRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof runSandboxCommand>>,
   TError,
   { id: string; data: VirshSandboxInternalRestRunCommandRequest },
   TContext
 > => {
-  const mutationOptions = getRunSandboxCommandMutationOptions(options);
+  const mutationOptions = getRunSandboxCommandMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Creates a snapshot of the sandbox
  * @summary Create snapshot
@@ -1243,14 +1094,14 @@ export const useRunSandboxCommand = <
 export const createSnapshot = (
   id: string,
   virshSandboxInternalRestSnapshotRequest: VirshSandboxInternalRestSnapshotRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalRestSnapshotResponse>> => {
   return axios.default.post(
     `/v1/sandboxes/${id}/snapshot`,
     virshSandboxInternalRestSnapshotRequest,
-    options,
-  );
-};
+    options
+  )
+}
 
 export const getCreateSnapshotMutationOptions = <
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
@@ -1261,42 +1112,36 @@ export const getCreateSnapshotMutationOptions = <
     TError,
     { id: string; data: VirshSandboxInternalRestSnapshotRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createSnapshot>>,
   TError,
   { id: string; data: VirshSandboxInternalRestSnapshotRequest },
   TContext
 > => {
-  const mutationKey = ["createSnapshot"];
+  const mutationKey = ['createSnapshot']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createSnapshot>>,
     { id: string; data: VirshSandboxInternalRestSnapshotRequest }
   > = (props) => {
-    const { id, data } = props ?? {};
+    const { id, data } = props ?? {}
 
-    return createSnapshot(id, data, axiosOptions);
-  };
+    return createSnapshot(id, data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
-export type CreateSnapshotMutationResult = NonNullable<
-  Awaited<ReturnType<typeof createSnapshot>>
->;
-export type CreateSnapshotMutationBody =
-  VirshSandboxInternalRestSnapshotRequest;
-export type CreateSnapshotMutationError =
-  AxiosError<VirshSandboxInternalRestErrorResponse>;
+export type CreateSnapshotMutationResult = NonNullable<Awaited<ReturnType<typeof createSnapshot>>>
+export type CreateSnapshotMutationBody = VirshSandboxInternalRestSnapshotRequest
+export type CreateSnapshotMutationError = AxiosError<VirshSandboxInternalRestErrorResponse>
 
 /**
  * @summary Create snapshot
@@ -1311,20 +1156,20 @@ export const useCreateSnapshot = <
       TError,
       { id: string; data: VirshSandboxInternalRestSnapshotRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof createSnapshot>>,
   TError,
   { id: string; data: VirshSandboxInternalRestSnapshotRequest },
   TContext
 > => {
-  const mutationOptions = getCreateSnapshotMutationOptions(options);
+  const mutationOptions = getCreateSnapshotMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Injects a public SSH key for a user in the sandbox
  * @summary Inject SSH key into sandbox
@@ -1332,14 +1177,14 @@ export const useCreateSnapshot = <
 export const injectSshKey = (
   id: string,
   virshSandboxInternalRestInjectSSHKeyRequest: VirshSandboxInternalRestInjectSSHKeyRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<unknown>> => {
   return axios.default.post(
     `/v1/sandboxes/${id}/sshkey`,
     virshSandboxInternalRestInjectSSHKeyRequest,
-    options,
-  );
-};
+    options
+  )
+}
 
 export const getInjectSshKeyMutationOptions = <
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
@@ -1350,42 +1195,36 @@ export const getInjectSshKeyMutationOptions = <
     TError,
     { id: string; data: VirshSandboxInternalRestInjectSSHKeyRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof injectSshKey>>,
   TError,
   { id: string; data: VirshSandboxInternalRestInjectSSHKeyRequest },
   TContext
 > => {
-  const mutationKey = ["injectSshKey"];
+  const mutationKey = ['injectSshKey']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof injectSshKey>>,
     { id: string; data: VirshSandboxInternalRestInjectSSHKeyRequest }
   > = (props) => {
-    const { id, data } = props ?? {};
+    const { id, data } = props ?? {}
 
-    return injectSshKey(id, data, axiosOptions);
-  };
+    return injectSshKey(id, data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
-export type InjectSshKeyMutationResult = NonNullable<
-  Awaited<ReturnType<typeof injectSshKey>>
->;
-export type InjectSshKeyMutationBody =
-  VirshSandboxInternalRestInjectSSHKeyRequest;
-export type InjectSshKeyMutationError =
-  AxiosError<VirshSandboxInternalRestErrorResponse>;
+export type InjectSshKeyMutationResult = NonNullable<Awaited<ReturnType<typeof injectSshKey>>>
+export type InjectSshKeyMutationBody = VirshSandboxInternalRestInjectSSHKeyRequest
+export type InjectSshKeyMutationError = AxiosError<VirshSandboxInternalRestErrorResponse>
 
 /**
  * @summary Inject SSH key into sandbox
@@ -1400,20 +1239,20 @@ export const useInjectSshKey = <
       TError,
       { id: string; data: VirshSandboxInternalRestInjectSSHKeyRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof injectSshKey>>,
   TError,
   { id: string; data: VirshSandboxInternalRestInjectSSHKeyRequest },
   TContext
 > => {
-  const mutationOptions = getInjectSshKeyMutationOptions(options);
+  const mutationOptions = getInjectSshKeyMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Starts the virtual machine sandbox
  * @summary Start sandbox
@@ -1421,14 +1260,14 @@ export const useInjectSshKey = <
 export const startSandbox = (
   id: string,
   virshSandboxInternalRestStartSandboxRequest?: VirshSandboxInternalRestStartSandboxRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<VirshSandboxInternalRestStartSandboxResponse>> => {
   return axios.default.post(
     `/v1/sandboxes/${id}/start`,
     virshSandboxInternalRestStartSandboxRequest,
-    options,
-  );
-};
+    options
+  )
+}
 
 export const getStartSandboxMutationOptions = <
   TError = AxiosError<VirshSandboxInternalRestErrorResponse>,
@@ -1439,42 +1278,36 @@ export const getStartSandboxMutationOptions = <
     TError,
     { id: string; data: VirshSandboxInternalRestStartSandboxRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof startSandbox>>,
   TError,
   { id: string; data: VirshSandboxInternalRestStartSandboxRequest },
   TContext
 > => {
-  const mutationKey = ["startSandbox"];
+  const mutationKey = ['startSandbox']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof startSandbox>>,
     { id: string; data: VirshSandboxInternalRestStartSandboxRequest }
   > = (props) => {
-    const { id, data } = props ?? {};
+    const { id, data } = props ?? {}
 
-    return startSandbox(id, data, axiosOptions);
-  };
+    return startSandbox(id, data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
-export type StartSandboxMutationResult = NonNullable<
-  Awaited<ReturnType<typeof startSandbox>>
->;
-export type StartSandboxMutationBody =
-  VirshSandboxInternalRestStartSandboxRequest;
-export type StartSandboxMutationError =
-  AxiosError<VirshSandboxInternalRestErrorResponse>;
+export type StartSandboxMutationResult = NonNullable<Awaited<ReturnType<typeof startSandbox>>>
+export type StartSandboxMutationBody = VirshSandboxInternalRestStartSandboxRequest
+export type StartSandboxMutationError = AxiosError<VirshSandboxInternalRestErrorResponse>
 
 /**
  * @summary Start sandbox
@@ -1489,34 +1322,34 @@ export const useStartSandbox = <
       TError,
       { id: string; data: VirshSandboxInternalRestStartSandboxRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof startSandbox>>,
   TError,
   { id: string; data: VirshSandboxInternalRestStartSandboxRequest },
   TContext
 > => {
-  const mutationOptions = getStartSandboxMutationOptions(options);
+  const mutationOptions = getStartSandboxMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Connects via WebSocket to stream realtime sandbox activity (commands, file changes)
  * @summary Stream sandbox activity
  */
 export const streamSandboxActivity = (
   id: string,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<unknown>> => {
-  return axios.default.get(`/v1/sandboxes/${id}/stream`, options);
-};
+  return axios.default.get(`/v1/sandboxes/${id}/stream`, options)
+}
 
 export const getStreamSandboxActivityQueryKey = (id?: string) => {
-  return [`/v1/sandboxes/${id}/stream`] as const;
-};
+  return [`/v1/sandboxes/${id}/stream`] as const
+}
 
 export const getStreamSandboxActivityQueryOptions = <
   TData = Awaited<ReturnType<typeof streamSandboxActivity>>,
@@ -1525,40 +1358,32 @@ export const getStreamSandboxActivityQueryOptions = <
   id: string,
   options?: {
     query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof streamSandboxActivity>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
-  },
+      UseQueryOptions<Awaited<ReturnType<typeof streamSandboxActivity>>, TError, TData>
+    >
+    axios?: AxiosRequestConfig
+  }
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey =
-    queryOptions?.queryKey ?? getStreamSandboxActivityQueryKey(id);
+  const queryKey = queryOptions?.queryKey ?? getStreamSandboxActivityQueryKey(id)
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof streamSandboxActivity>>
-  > = ({ signal }) => streamSandboxActivity(id, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof streamSandboxActivity>>> = ({ signal }) =>
+    streamSandboxActivity(id, { signal, ...axiosOptions })
 
   return {
     queryKey,
     queryFn,
     enabled: !!id,
     ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof streamSandboxActivity>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  } as UseQueryOptions<Awaited<ReturnType<typeof streamSandboxActivity>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+}
 
 export type StreamSandboxActivityQueryResult = NonNullable<
   Awaited<ReturnType<typeof streamSandboxActivity>>
->;
-export type StreamSandboxActivityQueryError = AxiosError<string>;
+>
+export type StreamSandboxActivityQueryError = AxiosError<string>
 
 export function useStreamSandboxActivity<
   TData = Awaited<ReturnType<typeof streamSandboxActivity>>,
@@ -1567,11 +1392,7 @@ export function useStreamSandboxActivity<
   id: string,
   options: {
     query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof streamSandboxActivity>>,
-        TError,
-        TData
-      >
+      UseQueryOptions<Awaited<ReturnType<typeof streamSandboxActivity>>, TError, TData>
     > &
       Pick<
         DefinedInitialDataOptions<
@@ -1579,14 +1400,14 @@ export function useStreamSandboxActivity<
           TError,
           Awaited<ReturnType<typeof streamSandboxActivity>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useStreamSandboxActivity<
   TData = Awaited<ReturnType<typeof streamSandboxActivity>>,
   TError = AxiosError<string>,
@@ -1594,11 +1415,7 @@ export function useStreamSandboxActivity<
   id: string,
   options?: {
     query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof streamSandboxActivity>>,
-        TError,
-        TData
-      >
+      UseQueryOptions<Awaited<ReturnType<typeof streamSandboxActivity>>, TError, TData>
     > &
       Pick<
         UndefinedInitialDataOptions<
@@ -1606,14 +1423,14 @@ export function useStreamSandboxActivity<
           TError,
           Awaited<ReturnType<typeof streamSandboxActivity>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useStreamSandboxActivity<
   TData = Awaited<ReturnType<typeof streamSandboxActivity>>,
   TError = AxiosError<string>,
@@ -1621,18 +1438,14 @@ export function useStreamSandboxActivity<
   id: string,
   options?: {
     query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof streamSandboxActivity>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
+      UseQueryOptions<Awaited<ReturnType<typeof streamSandboxActivity>>, TError, TData>
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary Stream sandbox activity
  */
@@ -1644,26 +1457,21 @@ export function useStreamSandboxActivity<
   id: string,
   options?: {
     query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof streamSandboxActivity>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
+      UseQueryOptions<Awaited<ReturnType<typeof streamSandboxActivity>>, TError, TData>
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getStreamSandboxActivityQueryOptions(id, options);
+  const queryOptions = getStreamSandboxActivityQueryOptions(id, options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }

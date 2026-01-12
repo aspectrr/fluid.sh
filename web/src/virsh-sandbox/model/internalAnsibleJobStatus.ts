@@ -7,12 +7,12 @@
  */
 
 export type InternalAnsibleJobStatus =
-  (typeof InternalAnsibleJobStatus)[keyof typeof InternalAnsibleJobStatus];
+  (typeof InternalAnsibleJobStatus)[keyof typeof InternalAnsibleJobStatus]
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const InternalAnsibleJobStatus = {
-  JobStatusPending: "pending",
-  JobStatusRunning: "running",
-  JobStatusFinished: "finished",
-  JobStatusFailed: "failed",
-} as const;
+  JobStatusPending: 'pending',
+  JobStatusRunning: 'running',
+  JobStatusFinished: 'finished',
+  JobStatusFailed: 'failed',
+} as const

@@ -7,5 +7,5 @@
  */
 
 export interface InternalAnsibleReorderTasksRequest {
-  task_ids?: string[];
+  task_ids?: string[]
 }

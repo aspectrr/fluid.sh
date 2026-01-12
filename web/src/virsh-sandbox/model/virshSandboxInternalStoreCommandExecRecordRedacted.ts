@@ -10,5 +10,5 @@
  * placeholders for secrets redaction
  */
 export type VirshSandboxInternalStoreCommandExecRecordRedacted = {
-  [key: string]: string;
-};
+  [key: string]: string
+}

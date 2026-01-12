@@ -7,7 +7,7 @@
  */
 
 export interface VirshSandboxInternalRestErrorResponse {
-  code?: number;
-  details?: string;
-  error?: string;
+  code?: number
+  details?: string
+  error?: string
 }

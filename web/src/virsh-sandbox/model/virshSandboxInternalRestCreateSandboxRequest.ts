@@ -8,19 +8,19 @@
 
 export interface VirshSandboxInternalRestCreateSandboxRequest {
   /** required */
-  agent_id?: string;
+  agent_id?: string
   /** optional; if true, start the VM immediately after creation */
-  auto_start?: boolean;
+  auto_start?: boolean
   /** optional; default from service config if <=0 */
-  cpu?: number;
+  cpu?: number
   /** optional; default from service config if <=0 */
-  memory_mb?: number;
+  memory_mb?: number
   /** required; name of existing VM in libvirt to clone from */
-  source_vm_name?: string;
+  source_vm_name?: string
   /** optional; TTL for auto garbage collection */
-  ttl_seconds?: number;
+  ttl_seconds?: number
   /** optional; generated if empty */
-  vm_name?: string;
+  vm_name?: string
   /** optional; if true and auto_start, wait for IP discovery */
-  wait_for_ip?: boolean;
+  wait_for_ip?: boolean
 }

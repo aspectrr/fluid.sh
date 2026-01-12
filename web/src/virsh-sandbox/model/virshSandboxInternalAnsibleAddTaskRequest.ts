@@ -5,10 +5,10 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { VirshSandboxInternalAnsibleAddTaskRequestParams } from "./virshSandboxInternalAnsibleAddTaskRequestParams";
+import type { VirshSandboxInternalAnsibleAddTaskRequestParams } from './virshSandboxInternalAnsibleAddTaskRequestParams'
 
 export interface VirshSandboxInternalAnsibleAddTaskRequest {
-  module?: string;
-  name?: string;
-  params?: VirshSandboxInternalAnsibleAddTaskRequestParams;
+  module?: string
+  name?: string
+  params?: VirshSandboxInternalAnsibleAddTaskRequestParams
 }

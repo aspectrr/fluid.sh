@@ -5,8 +5,8 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { VirshSandboxInternalStorePlaybook } from "./virshSandboxInternalStorePlaybook";
+import type { VirshSandboxInternalStorePlaybook } from './virshSandboxInternalStorePlaybook'
 
 export interface InternalAnsibleCreatePlaybookResponse {
-  playbook?: VirshSandboxInternalStorePlaybook;
+  playbook?: VirshSandboxInternalStorePlaybook
 }

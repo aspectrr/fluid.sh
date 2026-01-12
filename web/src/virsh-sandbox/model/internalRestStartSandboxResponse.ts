@@ -7,5 +7,5 @@
  */
 
 export interface InternalRestStartSandboxResponse {
-  ip_address?: string;
+  ip_address?: string
 }

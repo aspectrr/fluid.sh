@@ -5,28 +5,28 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { VirshSandboxInternalStoreSandboxState } from "./virshSandboxInternalStoreSandboxState";
+import type { VirshSandboxInternalStoreSandboxState } from './virshSandboxInternalStoreSandboxState'
 
 export interface VirshSandboxInternalStoreSandbox {
   /** requesting agent identity */
-  agent_id?: string;
+  agent_id?: string
   /** base qcow2 filename */
-  base_image?: string;
+  base_image?: string
   /** Metadata */
-  created_at?: string;
-  deleted_at?: string;
+  created_at?: string
+  deleted_at?: string
   /** e.g., "SBX-0001" */
-  id?: string;
+  id?: string
   /** discovered IP (if any) */
-  ip_address?: string;
+  ip_address?: string
   /** correlation id for the end-to-end change set */
-  job_id?: string;
+  job_id?: string
   /** libvirt network name */
-  network?: string;
+  network?: string
   /** libvirt domain name */
-  sandbox_name?: string;
-  state?: VirshSandboxInternalStoreSandboxState;
+  sandbox_name?: string
+  state?: VirshSandboxInternalStoreSandboxState
   /** optional TTL for auto GC */
-  ttl_seconds?: number;
-  updated_at?: string;
+  ttl_seconds?: number
+  updated_at?: string
 }

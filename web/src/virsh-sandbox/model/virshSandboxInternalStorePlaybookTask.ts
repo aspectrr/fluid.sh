@@ -5,18 +5,18 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { VirshSandboxInternalStorePlaybookTaskParams } from "./virshSandboxInternalStorePlaybookTaskParams";
+import type { VirshSandboxInternalStorePlaybookTaskParams } from './virshSandboxInternalStorePlaybookTaskParams'
 
 export interface VirshSandboxInternalStorePlaybookTask {
-  created_at?: string;
-  id?: string;
+  created_at?: string
+  id?: string
   /** ansible module (apt, shell, copy, etc.) */
-  module?: string;
+  module?: string
   /** task name/description */
-  name?: string;
+  name?: string
   /** module-specific parameters */
-  params?: VirshSandboxInternalStorePlaybookTaskParams;
-  playbook_id?: string;
+  params?: VirshSandboxInternalStorePlaybookTaskParams
+  playbook_id?: string
   /** ordering within playbook */
-  position?: number;
+  position?: number
 }

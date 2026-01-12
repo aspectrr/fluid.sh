@@ -7,5 +7,5 @@
  */
 
 export interface VirshSandboxInternalRestSessionStartResponse {
-  session_id?: string;
+  session_id?: string
 }

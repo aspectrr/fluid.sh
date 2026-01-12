@@ -5,7 +5,7 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from '@tanstack/react-query'
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -19,10 +19,10 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query'
 
-import * as axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import * as axios from 'axios'
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 import type {
   InternalRestAccessErrorResponse,
@@ -40,110 +40,98 @@ import type {
   InternalRestSessionStartResponse,
   ListCertificatesParams,
   ListSessionsParams,
-} from ".././model";
+} from '.././model'
 
 /**
  * Returns the CA public key that should be trusted by VMs
  * @summary Get the SSH CA public key
  */
 export const getCAPublicKey = (
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<InternalRestCaPublicKeyResponse>> => {
-  return axios.default.get(`/v1/access/ca-pubkey`, options);
-};
+  return axios.default.get(`/v1/access/ca-pubkey`, options)
+}
 
 export const getGetCAPublicKeyQueryKey = () => {
-  return [`/v1/access/ca-pubkey`] as const;
-};
+  return [`/v1/access/ca-pubkey`] as const
+}
 
 export const getGetCAPublicKeyQueryOptions = <
   TData = Awaited<ReturnType<typeof getCAPublicKey>>,
   TError = AxiosError<InternalRestAccessErrorResponse>,
 >(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof getCAPublicKey>>, TError, TData>
-  >;
-  axios?: AxiosRequestConfig;
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCAPublicKey>>, TError, TData>>
+  axios?: AxiosRequestConfig
 }) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetCAPublicKeyQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetCAPublicKeyQueryKey()
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCAPublicKey>>> = ({
-    signal,
-  }) => getCAPublicKey({ signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCAPublicKey>>> = ({ signal }) =>
+    getCAPublicKey({ signal, ...axiosOptions })
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getCAPublicKey>>,
     TError,
     TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-export type GetCAPublicKeyQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getCAPublicKey>>
->;
-export type GetCAPublicKeyQueryError =
-  AxiosError<InternalRestAccessErrorResponse>;
+export type GetCAPublicKeyQueryResult = NonNullable<Awaited<ReturnType<typeof getCAPublicKey>>>
+export type GetCAPublicKeyQueryError = AxiosError<InternalRestAccessErrorResponse>
 
 export function useGetCAPublicKey<
   TData = Awaited<ReturnType<typeof getCAPublicKey>>,
   TError = AxiosError<InternalRestAccessErrorResponse>,
 >(
   options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getCAPublicKey>>, TError, TData>
-    > &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCAPublicKey>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCAPublicKey>>,
           TError,
           Awaited<ReturnType<typeof getCAPublicKey>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useGetCAPublicKey<
   TData = Awaited<ReturnType<typeof getCAPublicKey>>,
   TError = AxiosError<InternalRestAccessErrorResponse>,
 >(
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getCAPublicKey>>, TError, TData>
-    > &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCAPublicKey>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCAPublicKey>>,
           TError,
           Awaited<ReturnType<typeof getCAPublicKey>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useGetCAPublicKey<
   TData = Awaited<ReturnType<typeof getCAPublicKey>>,
   TError = AxiosError<InternalRestAccessErrorResponse>,
 >(
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getCAPublicKey>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCAPublicKey>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary Get the SSH CA public key
  */
@@ -153,25 +141,22 @@ export function useGetCAPublicKey<
   TError = AxiosError<InternalRestAccessErrorResponse>,
 >(
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getCAPublicKey>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCAPublicKey>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getGetCAPublicKeyQueryOptions(options);
+  const queryOptions = getGetCAPublicKeyQueryOptions(options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }
 
 /**
@@ -181,13 +166,13 @@ export function useGetCAPublicKey<
 export const revokeCertificate = (
   certID: string,
   internalRestRevokeCertificateRequest?: InternalRestRevokeCertificateRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<InternalRestRevokeCertificateResponse>> => {
   return axios.default.delete(`/v1/access/certificate/${certID}`, {
     data: internalRestRevokeCertificateRequest,
     ...options,
-  });
-};
+  })
+}
 
 export const getRevokeCertificateMutationOptions = <
   TError = AxiosError<InternalRestAccessErrorResponse>,
@@ -198,42 +183,38 @@ export const getRevokeCertificateMutationOptions = <
     TError,
     { certID: string; data: InternalRestRevokeCertificateRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof revokeCertificate>>,
   TError,
   { certID: string; data: InternalRestRevokeCertificateRequest },
   TContext
 > => {
-  const mutationKey = ["revokeCertificate"];
+  const mutationKey = ['revokeCertificate']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof revokeCertificate>>,
     { certID: string; data: InternalRestRevokeCertificateRequest }
   > = (props) => {
-    const { certID, data } = props ?? {};
+    const { certID, data } = props ?? {}
 
-    return revokeCertificate(certID, data, axiosOptions);
-  };
+    return revokeCertificate(certID, data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
 export type RevokeCertificateMutationResult = NonNullable<
   Awaited<ReturnType<typeof revokeCertificate>>
->;
-export type RevokeCertificateMutationBody =
-  InternalRestRevokeCertificateRequest;
-export type RevokeCertificateMutationError =
-  AxiosError<InternalRestAccessErrorResponse>;
+>
+export type RevokeCertificateMutationBody = InternalRestRevokeCertificateRequest
+export type RevokeCertificateMutationError = AxiosError<InternalRestAccessErrorResponse>
 
 /**
  * @summary Revoke a certificate
@@ -248,34 +229,34 @@ export const useRevokeCertificate = <
       TError,
       { certID: string; data: InternalRestRevokeCertificateRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof revokeCertificate>>,
   TError,
   { certID: string; data: InternalRestRevokeCertificateRequest },
   TContext
 > => {
-  const mutationOptions = getRevokeCertificateMutationOptions(options);
+  const mutationOptions = getRevokeCertificateMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Returns details about an issued certificate
  * @summary Get certificate details
  */
 export const getCertificate = (
   certID: string,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<InternalRestCertificateResponse>> => {
-  return axios.default.get(`/v1/access/certificate/${certID}`, options);
-};
+  return axios.default.get(`/v1/access/certificate/${certID}`, options)
+}
 
 export const getGetCertificateQueryKey = (certID?: string) => {
-  return [`/v1/access/certificate/${certID}`] as const;
-};
+  return [`/v1/access/certificate/${certID}`] as const
+}
 
 export const getGetCertificateQueryOptions = <
   TData = Awaited<ReturnType<typeof getCertificate>>,
@@ -283,37 +264,29 @@ export const getGetCertificateQueryOptions = <
 >(
   certID: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getCertificate>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
-  },
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCertificate>>, TError, TData>>
+    axios?: AxiosRequestConfig
+  }
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetCertificateQueryKey(certID);
+  const queryKey = queryOptions?.queryKey ?? getGetCertificateQueryKey(certID)
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCertificate>>> = ({
-    signal,
-  }) => getCertificate(certID, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCertificate>>> = ({ signal }) =>
+    getCertificate(certID, { signal, ...axiosOptions })
 
   return {
     queryKey,
     queryFn,
     enabled: !!certID,
     ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof getCertificate>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  } as UseQueryOptions<Awaited<ReturnType<typeof getCertificate>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+}
 
-export type GetCertificateQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getCertificate>>
->;
-export type GetCertificateQueryError =
-  AxiosError<InternalRestAccessErrorResponse>;
+export type GetCertificateQueryResult = NonNullable<Awaited<ReturnType<typeof getCertificate>>>
+export type GetCertificateQueryError = AxiosError<InternalRestAccessErrorResponse>
 
 export function useGetCertificate<
   TData = Awaited<ReturnType<typeof getCertificate>>,
@@ -321,61 +294,55 @@ export function useGetCertificate<
 >(
   certID: string,
   options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getCertificate>>, TError, TData>
-    > &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCertificate>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCertificate>>,
           TError,
           Awaited<ReturnType<typeof getCertificate>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useGetCertificate<
   TData = Awaited<ReturnType<typeof getCertificate>>,
   TError = AxiosError<InternalRestAccessErrorResponse>,
 >(
   certID: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getCertificate>>, TError, TData>
-    > &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCertificate>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCertificate>>,
           TError,
           Awaited<ReturnType<typeof getCertificate>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useGetCertificate<
   TData = Awaited<ReturnType<typeof getCertificate>>,
   TError = AxiosError<InternalRestAccessErrorResponse>,
 >(
   certID: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getCertificate>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCertificate>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary Get certificate details
  */
@@ -386,25 +353,22 @@ export function useGetCertificate<
 >(
   certID: string,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getCertificate>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCertificate>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getGetCertificateQueryOptions(certID, options);
+  const queryOptions = getGetCertificateQueryOptions(certID, options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }
 
 /**
@@ -413,19 +377,17 @@ export function useGetCertificate<
  */
 export const listCertificates = (
   params?: ListCertificatesParams,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<InternalRestListCertificatesResponse>> => {
   return axios.default.get(`/v1/access/certificates`, {
     ...options,
     params: { ...params, ...options?.params },
-  });
-};
+  })
+}
 
-export const getListCertificatesQueryKey = (
-  params?: ListCertificatesParams,
-) => {
-  return [`/v1/access/certificates`, ...(params ? [params] : [])] as const;
-};
+export const getListCertificatesQueryKey = (params?: ListCertificatesParams) => {
+  return [`/v1/access/certificates`, ...(params ? [params] : [])] as const
+}
 
 export const getListCertificatesQueryOptions = <
   TData = Awaited<ReturnType<typeof listCertificates>>,
@@ -433,37 +395,26 @@ export const getListCertificatesQueryOptions = <
 >(
   params?: ListCertificatesParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof listCertificates>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
-  },
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listCertificates>>, TError, TData>>
+    axios?: AxiosRequestConfig
+  }
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey =
-    queryOptions?.queryKey ?? getListCertificatesQueryKey(params);
+  const queryKey = queryOptions?.queryKey ?? getListCertificatesQueryKey(params)
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof listCertificates>>
-  > = ({ signal }) => listCertificates(params, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listCertificates>>> = ({ signal }) =>
+    listCertificates(params, { signal, ...axiosOptions })
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof listCertificates>>,
     TError,
     TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-export type ListCertificatesQueryResult = NonNullable<
-  Awaited<ReturnType<typeof listCertificates>>
->;
-export type ListCertificatesQueryError =
-  AxiosError<InternalRestAccessErrorResponse>;
+export type ListCertificatesQueryResult = NonNullable<Awaited<ReturnType<typeof listCertificates>>>
+export type ListCertificatesQueryError = AxiosError<InternalRestAccessErrorResponse>
 
 export function useListCertificates<
   TData = Awaited<ReturnType<typeof listCertificates>>,
@@ -471,73 +422,55 @@ export function useListCertificates<
 >(
   params: undefined | ListCertificatesParams,
   options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof listCertificates>>,
-        TError,
-        TData
-      >
-    > &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listCertificates>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof listCertificates>>,
           TError,
           Awaited<ReturnType<typeof listCertificates>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useListCertificates<
   TData = Awaited<ReturnType<typeof listCertificates>>,
   TError = AxiosError<InternalRestAccessErrorResponse>,
 >(
   params?: ListCertificatesParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof listCertificates>>,
-        TError,
-        TData
-      >
-    > &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listCertificates>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof listCertificates>>,
           TError,
           Awaited<ReturnType<typeof listCertificates>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useListCertificates<
   TData = Awaited<ReturnType<typeof listCertificates>>,
   TError = AxiosError<InternalRestAccessErrorResponse>,
 >(
   params?: ListCertificatesParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof listCertificates>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listCertificates>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary List certificates
  */
@@ -548,29 +481,22 @@ export function useListCertificates<
 >(
   params?: ListCertificatesParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof listCertificates>>,
-        TError,
-        TData
-      >
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listCertificates>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getListCertificatesQueryOptions(params, options);
+  const queryOptions = getListCertificatesQueryOptions(params, options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }
 
 /**
@@ -579,14 +505,10 @@ export function useListCertificates<
  */
 export const requestAccess = (
   internalRestRequestAccessRequest: InternalRestRequestAccessRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<InternalRestRequestAccessResponse>> => {
-  return axios.default.post(
-    `/v1/access/request`,
-    internalRestRequestAccessRequest,
-    options,
-  );
-};
+  return axios.default.post(`/v1/access/request`, internalRestRequestAccessRequest, options)
+}
 
 export const getRequestAccessMutationOptions = <
   TError = AxiosError<InternalRestAccessErrorResponse>,
@@ -597,41 +519,36 @@ export const getRequestAccessMutationOptions = <
     TError,
     { data: InternalRestRequestAccessRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof requestAccess>>,
   TError,
   { data: InternalRestRequestAccessRequest },
   TContext
 > => {
-  const mutationKey = ["requestAccess"];
+  const mutationKey = ['requestAccess']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof requestAccess>>,
     { data: InternalRestRequestAccessRequest }
   > = (props) => {
-    const { data } = props ?? {};
+    const { data } = props ?? {}
 
-    return requestAccess(data, axiosOptions);
-  };
+    return requestAccess(data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
-export type RequestAccessMutationResult = NonNullable<
-  Awaited<ReturnType<typeof requestAccess>>
->;
-export type RequestAccessMutationBody = InternalRestRequestAccessRequest;
-export type RequestAccessMutationError =
-  AxiosError<InternalRestAccessErrorResponse>;
+export type RequestAccessMutationResult = NonNullable<Awaited<ReturnType<typeof requestAccess>>>
+export type RequestAccessMutationBody = InternalRestRequestAccessRequest
+export type RequestAccessMutationError = AxiosError<InternalRestAccessErrorResponse>
 
 /**
  * @summary Request SSH access to a sandbox
@@ -646,34 +563,30 @@ export const useRequestAccess = <
       TError,
       { data: InternalRestRequestAccessRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof requestAccess>>,
   TError,
   { data: InternalRestRequestAccessRequest },
   TContext
 > => {
-  const mutationOptions = getRequestAccessMutationOptions(options);
+  const mutationOptions = getRequestAccessMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Records the end of an SSH session
  * @summary Record session end
  */
 export const recordSessionEnd = (
   internalRestSessionEndRequest: InternalRestSessionEndRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<InternalRestSessionEndResponse>> => {
-  return axios.default.post(
-    `/v1/access/session/end`,
-    internalRestSessionEndRequest,
-    options,
-  );
-};
+  return axios.default.post(`/v1/access/session/end`, internalRestSessionEndRequest, options)
+}
 
 export const getRecordSessionEndMutationOptions = <
   TError = AxiosError<InternalRestAccessErrorResponse>,
@@ -684,41 +597,38 @@ export const getRecordSessionEndMutationOptions = <
     TError,
     { data: InternalRestSessionEndRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof recordSessionEnd>>,
   TError,
   { data: InternalRestSessionEndRequest },
   TContext
 > => {
-  const mutationKey = ["recordSessionEnd"];
+  const mutationKey = ['recordSessionEnd']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof recordSessionEnd>>,
     { data: InternalRestSessionEndRequest }
   > = (props) => {
-    const { data } = props ?? {};
+    const { data } = props ?? {}
 
-    return recordSessionEnd(data, axiosOptions);
-  };
+    return recordSessionEnd(data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
 export type RecordSessionEndMutationResult = NonNullable<
   Awaited<ReturnType<typeof recordSessionEnd>>
->;
-export type RecordSessionEndMutationBody = InternalRestSessionEndRequest;
-export type RecordSessionEndMutationError =
-  AxiosError<InternalRestAccessErrorResponse>;
+>
+export type RecordSessionEndMutationBody = InternalRestSessionEndRequest
+export type RecordSessionEndMutationError = AxiosError<InternalRestAccessErrorResponse>
 
 /**
  * @summary Record session end
@@ -733,34 +643,30 @@ export const useRecordSessionEnd = <
       TError,
       { data: InternalRestSessionEndRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof recordSessionEnd>>,
   TError,
   { data: InternalRestSessionEndRequest },
   TContext
 > => {
-  const mutationOptions = getRecordSessionEndMutationOptions(options);
+  const mutationOptions = getRecordSessionEndMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Records the start of an SSH session (called by VM or auth service)
  * @summary Record session start
  */
 export const recordSessionStart = (
   internalRestSessionStartRequest: InternalRestSessionStartRequest,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<InternalRestSessionStartResponse>> => {
-  return axios.default.post(
-    `/v1/access/session/start`,
-    internalRestSessionStartRequest,
-    options,
-  );
-};
+  return axios.default.post(`/v1/access/session/start`, internalRestSessionStartRequest, options)
+}
 
 export const getRecordSessionStartMutationOptions = <
   TError = AxiosError<InternalRestAccessErrorResponse>,
@@ -771,41 +677,38 @@ export const getRecordSessionStartMutationOptions = <
     TError,
     { data: InternalRestSessionStartRequest },
     TContext
-  >;
-  axios?: AxiosRequestConfig;
+  >
+  axios?: AxiosRequestConfig
 }): UseMutationOptions<
   Awaited<ReturnType<typeof recordSessionStart>>,
   TError,
   { data: InternalRestSessionStartRequest },
   TContext
 > => {
-  const mutationKey = ["recordSessionStart"];
+  const mutationKey = ['recordSessionStart']
   const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, axios: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof recordSessionStart>>,
     { data: InternalRestSessionStartRequest }
   > = (props) => {
-    const { data } = props ?? {};
+    const { data } = props ?? {}
 
-    return recordSessionStart(data, axiosOptions);
-  };
+    return recordSessionStart(data, axiosOptions)
+  }
 
-  return { mutationFn, ...mutationOptions };
-};
+  return { mutationFn, ...mutationOptions }
+}
 
 export type RecordSessionStartMutationResult = NonNullable<
   Awaited<ReturnType<typeof recordSessionStart>>
->;
-export type RecordSessionStartMutationBody = InternalRestSessionStartRequest;
-export type RecordSessionStartMutationError =
-  AxiosError<InternalRestAccessErrorResponse>;
+>
+export type RecordSessionStartMutationBody = InternalRestSessionStartRequest
+export type RecordSessionStartMutationError = AxiosError<InternalRestAccessErrorResponse>
 
 /**
  * @summary Record session start
@@ -820,37 +723,37 @@ export const useRecordSessionStart = <
       TError,
       { data: InternalRestSessionStartRequest },
       TContext
-    >;
-    axios?: AxiosRequestConfig;
+    >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseMutationResult<
   Awaited<ReturnType<typeof recordSessionStart>>,
   TError,
   { data: InternalRestSessionStartRequest },
   TContext
 > => {
-  const mutationOptions = getRecordSessionStartMutationOptions(options);
+  const mutationOptions = getRecordSessionStartMutationOptions(options)
 
-  return useMutation(mutationOptions, queryClient);
-};
+  return useMutation(mutationOptions, queryClient)
+}
 /**
  * Lists access sessions with optional filtering
  * @summary List sessions
  */
 export const listSessions = (
   params?: ListSessionsParams,
-  options?: AxiosRequestConfig,
+  options?: AxiosRequestConfig
 ): Promise<AxiosResponse<InternalRestListSessionsResponse>> => {
   return axios.default.get(`/v1/access/sessions`, {
     ...options,
     params: { ...params, ...options?.params },
-  });
-};
+  })
+}
 
 export const getListSessionsQueryKey = (params?: ListSessionsParams) => {
-  return [`/v1/access/sessions`, ...(params ? [params] : [])] as const;
-};
+  return [`/v1/access/sessions`, ...(params ? [params] : [])] as const
+}
 
 export const getListSessionsQueryOptions = <
   TData = Awaited<ReturnType<typeof listSessions>>,
@@ -858,32 +761,26 @@ export const getListSessionsQueryOptions = <
 >(
   params?: ListSessionsParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listSessions>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
-  },
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSessions>>, TError, TData>>
+    axios?: AxiosRequestConfig
+  }
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getListSessionsQueryKey(params);
+  const queryKey = queryOptions?.queryKey ?? getListSessionsQueryKey(params)
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof listSessions>>> = ({
-    signal,
-  }) => listSessions(params, { signal, ...axiosOptions });
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listSessions>>> = ({ signal }) =>
+    listSessions(params, { signal, ...axiosOptions })
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof listSessions>>,
     TError,
     TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
 
-export type ListSessionsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof listSessions>>
->;
-export type ListSessionsQueryError =
-  AxiosError<InternalRestAccessErrorResponse>;
+export type ListSessionsQueryResult = NonNullable<Awaited<ReturnType<typeof listSessions>>>
+export type ListSessionsQueryError = AxiosError<InternalRestAccessErrorResponse>
 
 export function useListSessions<
   TData = Awaited<ReturnType<typeof listSessions>>,
@@ -891,61 +788,55 @@ export function useListSessions<
 >(
   params: undefined | ListSessionsParams,
   options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listSessions>>, TError, TData>
-    > &
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSessions>>, TError, TData>> &
       Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof listSessions>>,
           TError,
           Awaited<ReturnType<typeof listSessions>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useListSessions<
   TData = Awaited<ReturnType<typeof listSessions>>,
   TError = AxiosError<InternalRestAccessErrorResponse>,
 >(
   params?: ListSessionsParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listSessions>>, TError, TData>
-    > &
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSessions>>, TError, TData>> &
       Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof listSessions>>,
           TError,
           Awaited<ReturnType<typeof listSessions>>
         >,
-        "initialData"
-      >;
-    axios?: AxiosRequestConfig;
+        'initialData'
+      >
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 export function useListSessions<
   TData = Awaited<ReturnType<typeof listSessions>>,
   TError = AxiosError<InternalRestAccessErrorResponse>,
 >(
   params?: ListSessionsParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listSessions>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSessions>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+  queryKey: DataTag<QueryKey, TData, TError>
+}
 /**
  * @summary List sessions
  */
@@ -956,23 +847,20 @@ export function useListSessions<
 >(
   params?: ListSessionsParams,
   options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof listSessions>>, TError, TData>
-    >;
-    axios?: AxiosRequestConfig;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listSessions>>, TError, TData>>
+    axios?: AxiosRequestConfig
   },
-  queryClient?: QueryClient,
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
+  queryKey: DataTag<QueryKey, TData, TError>
 } {
-  const queryOptions = getListSessionsQueryOptions(params, options);
+  const queryOptions = getListSessionsQueryOptions(params, options)
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
 
-  query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey
 
-  return query;
+  return query
 }
