@@ -42,9 +42,7 @@ class TestVirshSandboxInternalAnsibleAddTaskRequest(unittest.TestCase):
             return VirshSandboxInternalAnsibleAddTaskRequest(
                 module = '',
                 name = '',
-                params = {
-                    'key' : None
-                    }
+                params = None
             )
         else:
             return VirshSandboxInternalAnsibleAddTaskRequest(

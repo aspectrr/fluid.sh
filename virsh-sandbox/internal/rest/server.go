@@ -95,7 +95,7 @@ func (s *Server) routes() {
 			fmt.Printf("%v", err)
 		}
 
-		fmt.Fprintln(w, htmlContent)
+		_, _ = fmt.Fprintln(w, htmlContent)
 	})
 
 	// API v1 routes
@@ -714,7 +714,7 @@ func (s *Server) handleDestroySandbox(w http.ResponseWriter, r *http.Request) {
 		serverError.RespondError(w, http.StatusInternalServerError, fmt.Errorf("destroy sandbox: %w", err))
 		return
 	}
-	serverJSON.RespondJSON(w, http.StatusOK, destroySandboxResponse{
+	_ = serverJSON.RespondJSON(w, http.StatusOK, destroySandboxResponse{
 		State:       sb.State,
 		BaseImage:   sb.BaseImage,
 		SandboxName: sb.SandboxName,
@@ -914,7 +914,7 @@ func (s *Server) handleSandboxStream(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 
 	// Set a reasonable deadline
 	if err := conn.SetWriteDeadline(time.Now().Add(10 * time.Minute)); err != nil {

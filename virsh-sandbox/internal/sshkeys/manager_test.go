@@ -25,7 +25,7 @@ func testCA(t *testing.T) (*sshca.CA, func()) {
 
 	// Generate CA keypair.
 	if err := sshca.GenerateCA(keyPath, "test-ca"); err != nil {
-		os.RemoveAll(tempDir)
+		_ = os.RemoveAll(tempDir)
 		t.Fatalf("failed to generate CA: %v", err)
 	}
 
@@ -41,17 +41,17 @@ func testCA(t *testing.T) (*sshca.CA, func()) {
 
 	ca, err := sshca.NewCA(cfg)
 	if err != nil {
-		os.RemoveAll(tempDir)
+		_ = os.RemoveAll(tempDir)
 		t.Fatalf("failed to create CA: %v", err)
 	}
 
 	if err := ca.Initialize(context.Background()); err != nil {
-		os.RemoveAll(tempDir)
+		_ = os.RemoveAll(tempDir)
 		t.Fatalf("failed to initialize CA: %v", err)
 	}
 
 	return ca, func() {
-		os.RemoveAll(tempDir)
+		_ = os.RemoveAll(tempDir)
 	}
 }
 
@@ -63,7 +63,7 @@ func TestNewKeyManager(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	cfg := Config{
 		KeyDir:          tempDir,
@@ -76,7 +76,7 @@ func TestNewKeyManager(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewKeyManager failed: %v", err)
 	}
-	defer km.Close()
+	defer func() { _ = km.Close() }()
 
 	if km.ca == nil {
 		t.Error("CA is nil")
@@ -101,14 +101,14 @@ func TestNewKeyManager_DefaultConfig(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	// Empty config should use defaults.
 	km, err := NewKeyManager(ca, Config{KeyDir: tempDir}, nil)
 	if err != nil {
 		t.Fatalf("NewKeyManager failed: %v", err)
 	}
-	defer km.Close()
+	defer func() { _ = km.Close() }()
 
 	defaults := DefaultConfig()
 	if km.cfg.CertificateTTL != defaults.CertificateTTL {
@@ -130,13 +130,13 @@ func TestGetCredentials_GeneratesNewKeys(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	km, err := NewKeyManager(ca, Config{KeyDir: tempDir, CertificateTTL: 5 * time.Minute}, nil)
 	if err != nil {
 		t.Fatalf("NewKeyManager failed: %v", err)
 	}
-	defer km.Close()
+	defer func() { _ = km.Close() }()
 
 	ctx := context.Background()
 	creds, err := km.GetCredentials(ctx, "SBX-123", "sandbox")
@@ -178,13 +178,13 @@ func TestGetCredentials_ReturnsCached(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	km, err := NewKeyManager(ca, Config{KeyDir: tempDir, CertificateTTL: 5 * time.Minute}, nil)
 	if err != nil {
 		t.Fatalf("NewKeyManager failed: %v", err)
 	}
-	defer km.Close()
+	defer func() { _ = km.Close() }()
 
 	ctx := context.Background()
 
@@ -214,7 +214,7 @@ func TestGetCredentials_RegeneratesOnExpiry(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	km, err := NewKeyManager(ca, Config{
 		KeyDir:         tempDir,
@@ -224,10 +224,9 @@ func TestGetCredentials_RegeneratesOnExpiry(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewKeyManager failed: %v", err)
 	}
-	defer km.Close()
+	defer func() { _ = km.Close() }()
 
 	ctx := context.Background()
-
 	// First call generates.
 	creds1, err := km.GetCredentials(ctx, "SBX-123", "sandbox")
 	if err != nil {
@@ -268,7 +267,7 @@ func TestGetCredentials_DefaultUsername(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	km, err := NewKeyManager(ca, Config{
 		KeyDir:          tempDir,
@@ -277,7 +276,7 @@ func TestGetCredentials_DefaultUsername(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewKeyManager failed: %v", err)
 	}
-	defer km.Close()
+	defer func() { _ = km.Close() }()
 
 	ctx := context.Background()
 
@@ -300,13 +299,13 @@ func TestGetCredentials_ConcurrentSafety(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	km, err := NewKeyManager(ca, Config{KeyDir: tempDir}, nil)
 	if err != nil {
 		t.Fatalf("NewKeyManager failed: %v", err)
 	}
-	defer km.Close()
+	defer func() { _ = km.Close() }()
 
 	ctx := context.Background()
 	sandboxID := "SBX-CONCURRENT"
@@ -357,13 +356,13 @@ func TestCleanupSandbox_RemovesFiles(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	km, err := NewKeyManager(ca, Config{KeyDir: tempDir}, nil)
 	if err != nil {
 		t.Fatalf("NewKeyManager failed: %v", err)
 	}
-	defer km.Close()
+	defer func() { _ = km.Close() }()
 
 	ctx := context.Background()
 
@@ -408,13 +407,13 @@ func TestCleanupSandbox_EmptySandboxID(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	km, err := NewKeyManager(ca, Config{KeyDir: tempDir}, nil)
 	if err != nil {
 		t.Fatalf("NewKeyManager failed: %v", err)
 	}
-	defer km.Close()
+	defer func() { _ = km.Close() }()
 
 	err = km.CleanupSandbox(context.Background(), "")
 	if err == nil {
@@ -430,13 +429,13 @@ func TestKeyFilePermissions(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() { _ = os.RemoveAll(tempDir) }()
 
 	km, err := NewKeyManager(ca, Config{KeyDir: tempDir}, nil)
 	if err != nil {
 		t.Fatalf("NewKeyManager failed: %v", err)
 	}
-	defer km.Close()
+	defer func() { _ = km.Close() }()
 
 	ctx := context.Background()
 	creds, err := km.GetCredentials(ctx, "SBX-PERM", "sandbox")

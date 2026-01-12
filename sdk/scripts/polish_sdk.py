@@ -24,7 +24,6 @@ def simplify_type_name(verbose_name: str) -> str:
     Examples:
         VirshSandboxInternalRestCreateSandboxResponseDict -> CreateSandboxResponse
         VirshSandboxInternalStoreSandboxDict -> Sandbox
-        TmuxClientInternalTypesRunCommandResponseDict -> RunCommandResponse
         InternalAnsibleJobDict -> AnsibleJob
     """
     name = verbose_name
@@ -39,10 +38,6 @@ def simplify_type_name(verbose_name: str) -> str:
         "VirshSandboxInternalStore",
         "VirshSandboxInternal",
         "VirshSandbox",
-        "TmuxClientInternalTypes",
-        "TmuxClientInternalApi",
-        "TmuxClientInternal",
-        "TmuxClient",
         "InternalRest",
         "InternalApi",
         "InternalStore",
@@ -780,17 +775,6 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     apis = discover_apis(sdk_dir)
     models = discover_models(sdk_dir)
 
-    # Which APIs use tmux host
-    tmux_api_properties = {
-        "command",
-        "file",
-        "tmux",
-        "audit",
-        "health",
-        "human",
-        "plan",
-    }
-
     # Collect imports
     api_imports = []
     model_imports = set()
@@ -950,10 +934,7 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     output_lines.append('    """Unified client for the virsh-sandbox API.')
     output_lines.append("")
     output_lines.append(
-        "    This class provides a single entry point for all virsh-sandbox API operations,"
-    )
-    output_lines.append(
-        "    with support for separate hosts for the main API and tmux API."
+        "    This class provides a single entry point for all virsh-sandbox API operations."
     )
     output_lines.append(
         "    All methods use flattened parameters instead of request objects."
@@ -961,9 +942,6 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     output_lines.append("")
     output_lines.append("    Args:")
     output_lines.append("        host: Base URL for the main virsh-sandbox API")
-    output_lines.append(
-        "        tmux_host: Base URL for the tmux API (defaults to host)"
-    )
     output_lines.append("        api_key: Optional API key for authentication")
     output_lines.append("        verify_ssl: Whether to verify SSL certificates")
     output_lines.append("")
@@ -984,7 +962,6 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     output_lines.append("    def __init__(")
     output_lines.append("        self,")
     output_lines.append('        host: str = "http://localhost:8080",')
-    output_lines.append("        tmux_host: Optional[str] = None,")
     output_lines.append("        api_key: Optional[str] = None,")
     output_lines.append("        access_token: Optional[str] = None,")
     output_lines.append("        username: Optional[str] = None,")
@@ -1010,27 +987,6 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
         "        self._main_api_client = ApiClient(configuration=self._main_config)"
     )
     output_lines.append("")
-    output_lines.append("        tmux_host = tmux_host or host")
-    output_lines.append("        if tmux_host != host:")
-    output_lines.append("            self._tmux_config = Configuration(")
-    output_lines.append("                host=tmux_host,")
-    output_lines.append(
-        '                api_key={"Authorization": api_key} if api_key else None,'
-    )
-    output_lines.append("                access_token=access_token,")
-    output_lines.append("                username=username,")
-    output_lines.append("                password=password,")
-    output_lines.append("                ssl_ca_cert=ssl_ca_cert,")
-    output_lines.append("                retries=retries,")
-    output_lines.append("            )")
-    output_lines.append("            self._tmux_config.verify_ssl = verify_ssl")
-    output_lines.append(
-        "            self._tmux_api_client = ApiClient(configuration=self._tmux_config)"
-    )
-    output_lines.append("        else:")
-    output_lines.append("            self._tmux_config = self._main_config")
-    output_lines.append("            self._tmux_api_client = self._main_api_client")
-    output_lines.append("")
 
     # Lazy init fields
     for api in apis:
@@ -1045,11 +1001,7 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
         prop = api["property_name"]
         wrapper_name = api["class_name"].replace("Api", "Operations")
         api_class = api["class_name"]
-        client_var = (
-            "self._tmux_api_client"
-            if prop in tmux_api_properties
-            else "self._main_api_client"
-        )
+        client_var = "self._main_api_client"
 
         output_lines.append("    @property")
         output_lines.append(f"    def {prop}(self) -> {wrapper_name}:")
@@ -1066,16 +1018,9 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
     output_lines.append('        """Get the main API configuration."""')
     output_lines.append("        return self._main_config")
     output_lines.append("")
-    output_lines.append("    @property")
-    output_lines.append("    def tmux_configuration(self) -> Configuration:")
-    output_lines.append('        """Get the tmux API configuration."""')
-    output_lines.append("        return self._tmux_config")
-    output_lines.append("")
     output_lines.append("    def set_debug(self, debug: bool) -> None:")
     output_lines.append('        """Enable or disable debug mode."""')
     output_lines.append("        self._main_config.debug = debug")
-    output_lines.append("        if self._tmux_config is not self._main_config:")
-    output_lines.append("            self._tmux_config.debug = debug")
     output_lines.append("")
 
     if use_async:
@@ -1086,15 +1031,6 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
         )
         output_lines.append(
             "            await self._main_api_client.rest_client.close()"
-        )
-        output_lines.append(
-            "        if self._tmux_api_client is not self._main_api_client:"
-        )
-        output_lines.append(
-            "            if hasattr(self._tmux_api_client.rest_client, 'close'):"
-        )
-        output_lines.append(
-            "                await self._tmux_api_client.rest_client.close()"
         )
         output_lines.append("")
         output_lines.append('    async def __aenter__(self) -> "VirshSandbox":')
@@ -1113,13 +1049,6 @@ def generate_unified_client(sdk_dir: Path, package_name: str = "virsh_sandbox"):
             "        if hasattr(self._main_api_client.rest_client, 'close'):"
         )
         output_lines.append("            self._main_api_client.rest_client.close()")
-        output_lines.append(
-            "        if self._tmux_api_client is not self._main_api_client:"
-        )
-        output_lines.append(
-            "            if hasattr(self._tmux_api_client.rest_client, 'close'):"
-        )
-        output_lines.append("                self._tmux_api_client.rest_client.close()")
         output_lines.append("")
         output_lines.append('    def __enter__(self) -> "VirshSandbox":')
         output_lines.append('        """Context manager entry."""')

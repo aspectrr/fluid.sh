@@ -43,7 +43,7 @@ class TestVirshSandboxInternalStoreCommandExecRecord(unittest.TestCase):
                 redacted = {
                     'key' : ''
                     },
-                timeout = ERROR_TO_EXAMPLE_VALUE,
+                timeout = -9223372036854775808,
                 user = '',
                 work_dir = ''
             )

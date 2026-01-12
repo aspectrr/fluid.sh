@@ -14,13 +14,13 @@
 
 import unittest
 
-from virsh_sandbox.models.internal_ansible_update_task_request import (
-    InternalAnsibleUpdateTaskRequest,
+from virsh_sandbox.models.internal_rest_health_response import (
+    InternalRestHealthResponse,
 )
 
 
-class TestInternalAnsibleUpdateTaskRequest(unittest.TestCase):
-    """InternalAnsibleUpdateTaskRequest unit test stubs"""
+class TestInternalRestHealthResponse(unittest.TestCase):
+    """InternalRestHealthResponse unit test stubs"""
 
     def setUp(self):
         pass
@@ -28,27 +28,25 @@ class TestInternalAnsibleUpdateTaskRequest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def make_instance(self, include_optional) -> InternalAnsibleUpdateTaskRequest:
-        """Test InternalAnsibleUpdateTaskRequest
+    def make_instance(self, include_optional) -> InternalRestHealthResponse:
+        """Test InternalRestHealthResponse
         include_optional is a boolean, when False only required
         params are included, when True both required and
         optional params are included"""
-        # uncomment below to create an instance of `InternalAnsibleUpdateTaskRequest`
+        # uncomment below to create an instance of `InternalRestHealthResponse`
         """
-        model = InternalAnsibleUpdateTaskRequest()
+        model = InternalRestHealthResponse()
         if include_optional:
-            return InternalAnsibleUpdateTaskRequest(
-                module = '',
-                name = '',
-                params = None
+            return InternalRestHealthResponse(
+                status = ''
             )
         else:
-            return InternalAnsibleUpdateTaskRequest(
+            return InternalRestHealthResponse(
         )
         """
 
-    def testInternalAnsibleUpdateTaskRequest(self):
-        """Test InternalAnsibleUpdateTaskRequest"""
+    def testInternalRestHealthResponse(self):
+        """Test InternalRestHealthResponse"""
         # inst_req_only = self.make_instance(include_optional=False)
         # inst_req_and_optional = self.make_instance(include_optional=True)
 

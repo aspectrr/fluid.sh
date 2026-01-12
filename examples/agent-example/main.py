@@ -13,7 +13,6 @@ from virsh_sandbox import VirshSandbox, ApiException
 from openai import OpenAI
 from dotenv import load_dotenv
 from pprint import pprint
-from uuid import uuid4
 from tools import TOOLS
 from loader_bar import run_blocking_with_loader
 

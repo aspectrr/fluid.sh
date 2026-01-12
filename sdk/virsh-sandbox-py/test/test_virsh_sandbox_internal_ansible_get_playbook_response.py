@@ -42,7 +42,7 @@ class TestVirshSandboxInternalAnsibleGetPlaybookResponse(unittest.TestCase):
             return VirshSandboxInternalAnsibleGetPlaybookResponse(
                 playbook = {"file_path":"file_path","updated_at":"updated_at","hosts":"hosts","name":"name","created_at":"created_at","id":"id","become":true},
                 tasks = [
-                    {"module":"module","name":"name","created_at":"created_at","id":"id","position":0,"params":{"key":"{}"},"playbook_id":"playbook_id"}
+                    {"module":"module","name":"name","created_at":"created_at","id":"id","position":0,"params":"{}","playbook_id":"playbook_id"}
                     ]
             )
         else:

@@ -166,141 +166,79 @@ Class | Method | HTTP request | Description
 *AnsiblePlaybooksApi* | [**list_playbooks**](docs/AnsiblePlaybooksApi.md#list_playbooks) | **GET** /v1/ansible/playbooks | List playbooks
 *AnsiblePlaybooksApi* | [**reorder_playbook_tasks**](docs/AnsiblePlaybooksApi.md#reorder_playbook_tasks) | **PATCH** /v1/ansible/playbooks/{playbook_name}/tasks/reorder | Reorder tasks
 *AnsiblePlaybooksApi* | [**update_playbook_task**](docs/AnsiblePlaybooksApi.md#update_playbook_task) | **PUT** /v1/ansible/playbooks/{playbook_name}/tasks/{task_id} | Update task
-*AuditApi* | [**get_audit_stats**](docs/AuditApi.md#get_audit_stats) | **GET** /v1/audit/stats | Get audit stats
-*AuditApi* | [**query_audit_log**](docs/AuditApi.md#query_audit_log) | **POST** /v1/audit/query | Query audit log
-*CommandApi* | [**get_allowed_commands**](docs/CommandApi.md#get_allowed_commands) | **GET** /v1/command/allowed | Get allowed commands
-*CommandApi* | [**run_command**](docs/CommandApi.md#run_command) | **POST** /v1/command/run | Run command
-*FileApi* | [**check_file_exists**](docs/FileApi.md#check_file_exists) | **POST** /v1/file/exists | Check if file exists
-*FileApi* | [**copy_file**](docs/FileApi.md#copy_file) | **POST** /v1/file/copy | Copy file
-*FileApi* | [**delete_file**](docs/FileApi.md#delete_file) | **POST** /v1/file/delete | Delete file
-*FileApi* | [**edit_file**](docs/FileApi.md#edit_file) | **POST** /v1/file/edit | Edit file
-*FileApi* | [**get_file_hash**](docs/FileApi.md#get_file_hash) | **POST** /v1/file/hash | Get file hash
-*FileApi* | [**list_directory**](docs/FileApi.md#list_directory) | **POST** /v1/file/list | List directory contents
-*FileApi* | [**read_file**](docs/FileApi.md#read_file) | **POST** /v1/file/read | Read file
-*FileApi* | [**write_file**](docs/FileApi.md#write_file) | **POST** /v1/file/write | Write file
-*HealthApi* | [**get_health**](docs/HealthApi.md#get_health) | **GET** /v1/health | Get health status
-*HumanApi* | [**ask_human**](docs/HumanApi.md#ask_human) | **POST** /v1/human/ask | Request human approval
-*HumanApi* | [**ask_human_async**](docs/HumanApi.md#ask_human_async) | **POST** /v1/human/ask-async | Request human approval asynchronously
-*HumanApi* | [**cancel_approval**](docs/HumanApi.md#cancel_approval) | **DELETE** /v1/human/pending/{requestID} | Cancel approval
-*HumanApi* | [**get_pending_approval**](docs/HumanApi.md#get_pending_approval) | **GET** /v1/human/pending/{requestID} | Get pending approval
-*HumanApi* | [**list_pending_approvals**](docs/HumanApi.md#list_pending_approvals) | **GET** /v1/human/pending | List pending approvals
-*HumanApi* | [**respond_to_approval**](docs/HumanApi.md#respond_to_approval) | **POST** /v1/human/respond | Respond to approval
-*PlanApi* | [**abort_plan**](docs/PlanApi.md#abort_plan) | **POST** /v1/plan/{planID}/abort | Abort plan
-*PlanApi* | [**advance_plan_step**](docs/PlanApi.md#advance_plan_step) | **POST** /v1/plan/{planID}/advance | Advance plan step
-*PlanApi* | [**create_plan**](docs/PlanApi.md#create_plan) | **POST** /v1/plan/create | Create plan
-*PlanApi* | [**delete_plan**](docs/PlanApi.md#delete_plan) | **DELETE** /v1/plan/{planID} | Delete plan
-*PlanApi* | [**get_plan**](docs/PlanApi.md#get_plan) | **GET** /v1/plan/{planID} | Get plan
-*PlanApi* | [**list_plans**](docs/PlanApi.md#list_plans) | **GET** /v1/plan/ | List plans
-*PlanApi* | [**update_plan**](docs/PlanApi.md#update_plan) | **POST** /v1/plan/update | Update plan
+*HealthApi* | [**get_health**](docs/HealthApi.md#get_health) | **GET** /v1/health | Health check
 *SandboxApi* | [**create_sandbox**](docs/SandboxApi.md#create_sandbox) | **POST** /v1/sandboxes | Create a new sandbox
-*SandboxApi* | [**create_sandbox_session**](docs/SandboxApi.md#create_sandbox_session) | **POST** /v1/sandbox/sessions/create | Create sandbox session
 *SandboxApi* | [**create_snapshot**](docs/SandboxApi.md#create_snapshot) | **POST** /v1/sandboxes/{id}/snapshot | Create snapshot
 *SandboxApi* | [**destroy_sandbox**](docs/SandboxApi.md#destroy_sandbox) | **DELETE** /v1/sandboxes/{id} | Destroy sandbox
 *SandboxApi* | [**diff_snapshots**](docs/SandboxApi.md#diff_snapshots) | **POST** /v1/sandboxes/{id}/diff | Diff snapshots
 *SandboxApi* | [**discover_sandbox_ip**](docs/SandboxApi.md#discover_sandbox_ip) | **GET** /v1/sandboxes/{id}/ip | Discover sandbox IP
 *SandboxApi* | [**generate_configuration**](docs/SandboxApi.md#generate_configuration) | **POST** /v1/sandboxes/{id}/generate/{tool} | Generate configuration
 *SandboxApi* | [**get_sandbox**](docs/SandboxApi.md#get_sandbox) | **GET** /v1/sandboxes/{id} | Get sandbox details
-*SandboxApi* | [**get_sandbox_session**](docs/SandboxApi.md#get_sandbox_session) | **GET** /v1/sandbox/sessions/{sessionName} | Get sandbox session
 *SandboxApi* | [**inject_ssh_key**](docs/SandboxApi.md#inject_ssh_key) | **POST** /v1/sandboxes/{id}/sshkey | Inject SSH key into sandbox
-*SandboxApi* | [**kill_sandbox_session**](docs/SandboxApi.md#kill_sandbox_session) | **DELETE** /v1/sandbox/sessions/{sessionName} | Kill sandbox session
 *SandboxApi* | [**list_sandbox_commands**](docs/SandboxApi.md#list_sandbox_commands) | **GET** /v1/sandboxes/{id}/commands | List sandbox commands
-*SandboxApi* | [**list_sandbox_sessions**](docs/SandboxApi.md#list_sandbox_sessions) | **GET** /v1/sandbox/sessions | List sandbox sessions
 *SandboxApi* | [**list_sandboxes**](docs/SandboxApi.md#list_sandboxes) | **GET** /v1/sandboxes | List sandboxes
 *SandboxApi* | [**publish_changes**](docs/SandboxApi.md#publish_changes) | **POST** /v1/sandboxes/{id}/publish | Publish changes
 *SandboxApi* | [**run_sandbox_command**](docs/SandboxApi.md#run_sandbox_command) | **POST** /v1/sandboxes/{id}/run | Run command in sandbox
-*SandboxApi* | [**sandbox_api_health**](docs/SandboxApi.md#sandbox_api_health) | **GET** /v1/sandbox/health | Check sandbox API health
 *SandboxApi* | [**start_sandbox**](docs/SandboxApi.md#start_sandbox) | **POST** /v1/sandboxes/{id}/start | Start sandbox
 *SandboxApi* | [**stream_sandbox_activity**](docs/SandboxApi.md#stream_sandbox_activity) | **GET** /v1/sandboxes/{id}/stream | Stream sandbox activity
-*TmuxApi* | [**create_tmux_pane**](docs/TmuxApi.md#create_tmux_pane) | **POST** /v1/tmux/panes/create | Create tmux pane
-*TmuxApi* | [**create_tmux_session**](docs/TmuxApi.md#create_tmux_session) | **POST** /v1/tmux/sessions/create | Create tmux session
-*TmuxApi* | [**kill_tmux_pane**](docs/TmuxApi.md#kill_tmux_pane) | **DELETE** /v1/tmux/panes/{paneID} | Kill tmux pane
-*TmuxApi* | [**kill_tmux_session**](docs/TmuxApi.md#kill_tmux_session) | **DELETE** /v1/tmux/sessions/{sessionName} | Kill tmux session
-*TmuxApi* | [**list_tmux_panes**](docs/TmuxApi.md#list_tmux_panes) | **GET** /v1/tmux/panes | List tmux panes
-*TmuxApi* | [**list_tmux_sessions**](docs/TmuxApi.md#list_tmux_sessions) | **GET** /v1/tmux/sessions | List tmux sessions
-*TmuxApi* | [**list_tmux_windows**](docs/TmuxApi.md#list_tmux_windows) | **GET** /v1/tmux/windows | List tmux windows
-*TmuxApi* | [**read_tmux_pane**](docs/TmuxApi.md#read_tmux_pane) | **POST** /v1/tmux/panes/read | Read tmux pane
-*TmuxApi* | [**release_tmux_session**](docs/TmuxApi.md#release_tmux_session) | **POST** /v1/tmux/sessions/{sessionId}/release | Release tmux session
-*TmuxApi* | [**send_keys_to_pane**](docs/TmuxApi.md#send_keys_to_pane) | **POST** /v1/tmux/panes/send-keys | Send keys to tmux pane
-*TmuxApi* | [**switch_tmux_pane**](docs/TmuxApi.md#switch_tmux_pane) | **POST** /v1/tmux/panes/switch | Switch tmux pane
 *VMsApi* | [**list_virtual_machines**](docs/VMsApi.md#list_virtual_machines) | **GET** /v1/vms | List all VMs
 
 
 ## Documentation For Models
 
+ - [InternalAnsibleAddTaskRequest](docs/InternalAnsibleAddTaskRequest.md)
+ - [InternalAnsibleAddTaskResponse](docs/InternalAnsibleAddTaskResponse.md)
+ - [InternalAnsibleCreatePlaybookRequest](docs/InternalAnsibleCreatePlaybookRequest.md)
+ - [InternalAnsibleCreatePlaybookResponse](docs/InternalAnsibleCreatePlaybookResponse.md)
+ - [InternalAnsibleExportPlaybookResponse](docs/InternalAnsibleExportPlaybookResponse.md)
+ - [InternalAnsibleGetPlaybookResponse](docs/InternalAnsibleGetPlaybookResponse.md)
+ - [InternalAnsibleJob](docs/InternalAnsibleJob.md)
+ - [InternalAnsibleJobRequest](docs/InternalAnsibleJobRequest.md)
+ - [InternalAnsibleJobResponse](docs/InternalAnsibleJobResponse.md)
  - [InternalAnsibleJobStatus](docs/InternalAnsibleJobStatus.md)
- - [InternalApiSandboxSessionInfo](docs/InternalApiSandboxSessionInfo.md)
+ - [InternalAnsibleListPlaybooksResponse](docs/InternalAnsibleListPlaybooksResponse.md)
+ - [InternalAnsibleReorderTasksRequest](docs/InternalAnsibleReorderTasksRequest.md)
+ - [InternalAnsibleUpdateTaskRequest](docs/InternalAnsibleUpdateTaskRequest.md)
+ - [InternalAnsibleUpdateTaskResponse](docs/InternalAnsibleUpdateTaskResponse.md)
  - [InternalRestAccessErrorResponse](docs/InternalRestAccessErrorResponse.md)
  - [InternalRestCaPublicKeyResponse](docs/InternalRestCaPublicKeyResponse.md)
  - [InternalRestCertificateResponse](docs/InternalRestCertificateResponse.md)
+ - [InternalRestCreateSandboxRequest](docs/InternalRestCreateSandboxRequest.md)
+ - [InternalRestCreateSandboxResponse](docs/InternalRestCreateSandboxResponse.md)
+ - [InternalRestDestroySandboxResponse](docs/InternalRestDestroySandboxResponse.md)
+ - [InternalRestDiffRequest](docs/InternalRestDiffRequest.md)
+ - [InternalRestDiffResponse](docs/InternalRestDiffResponse.md)
+ - [InternalRestDiscoverIPResponse](docs/InternalRestDiscoverIPResponse.md)
+ - [InternalRestErrorResponse](docs/InternalRestErrorResponse.md)
+ - [InternalRestGenerateResponse](docs/InternalRestGenerateResponse.md)
+ - [InternalRestGetSandboxResponse](docs/InternalRestGetSandboxResponse.md)
+ - [InternalRestHealthResponse](docs/InternalRestHealthResponse.md)
+ - [InternalRestInjectSSHKeyRequest](docs/InternalRestInjectSSHKeyRequest.md)
  - [InternalRestListCertificatesResponse](docs/InternalRestListCertificatesResponse.md)
+ - [InternalRestListSandboxCommandsResponse](docs/InternalRestListSandboxCommandsResponse.md)
+ - [InternalRestListSandboxesResponse](docs/InternalRestListSandboxesResponse.md)
  - [InternalRestListSessionsResponse](docs/InternalRestListSessionsResponse.md)
+ - [InternalRestListVMsResponse](docs/InternalRestListVMsResponse.md)
+ - [InternalRestPublishRequest](docs/InternalRestPublishRequest.md)
+ - [InternalRestPublishResponse](docs/InternalRestPublishResponse.md)
  - [InternalRestRequestAccessRequest](docs/InternalRestRequestAccessRequest.md)
  - [InternalRestRequestAccessResponse](docs/InternalRestRequestAccessResponse.md)
  - [InternalRestRevokeCertificateRequest](docs/InternalRestRevokeCertificateRequest.md)
  - [InternalRestRevokeCertificateResponse](docs/InternalRestRevokeCertificateResponse.md)
+ - [InternalRestRunCommandRequest](docs/InternalRestRunCommandRequest.md)
+ - [InternalRestRunCommandResponse](docs/InternalRestRunCommandResponse.md)
  - [InternalRestSandboxInfo](docs/InternalRestSandboxInfo.md)
  - [InternalRestSessionEndRequest](docs/InternalRestSessionEndRequest.md)
  - [InternalRestSessionEndResponse](docs/InternalRestSessionEndResponse.md)
  - [InternalRestSessionResponse](docs/InternalRestSessionResponse.md)
  - [InternalRestSessionStartRequest](docs/InternalRestSessionStartRequest.md)
  - [InternalRestSessionStartResponse](docs/InternalRestSessionStartResponse.md)
+ - [InternalRestSnapshotRequest](docs/InternalRestSnapshotRequest.md)
+ - [InternalRestSnapshotResponse](docs/InternalRestSnapshotResponse.md)
+ - [InternalRestStartSandboxRequest](docs/InternalRestStartSandboxRequest.md)
+ - [InternalRestStartSandboxResponse](docs/InternalRestStartSandboxResponse.md)
  - [InternalRestVmInfo](docs/InternalRestVmInfo.md)
  - [TimeDuration](docs/TimeDuration.md)
- - [TmuxClientInternalApiCreateSandboxSessionRequest](docs/TmuxClientInternalApiCreateSandboxSessionRequest.md)
- - [TmuxClientInternalApiCreateSandboxSessionResponse](docs/TmuxClientInternalApiCreateSandboxSessionResponse.md)
- - [TmuxClientInternalApiListSandboxSessionsResponse](docs/TmuxClientInternalApiListSandboxSessionsResponse.md)
- - [TmuxClientInternalApiSandboxSessionInfo](docs/TmuxClientInternalApiSandboxSessionInfo.md)
- - [TmuxClientInternalTypesAPIError](docs/TmuxClientInternalTypesAPIError.md)
- - [TmuxClientInternalTypesApprovalStatus](docs/TmuxClientInternalTypesApprovalStatus.md)
- - [TmuxClientInternalTypesApproveRequest](docs/TmuxClientInternalTypesApproveRequest.md)
- - [TmuxClientInternalTypesAskHumanRequest](docs/TmuxClientInternalTypesAskHumanRequest.md)
- - [TmuxClientInternalTypesAskHumanResponse](docs/TmuxClientInternalTypesAskHumanResponse.md)
- - [TmuxClientInternalTypesAuditEntry](docs/TmuxClientInternalTypesAuditEntry.md)
- - [TmuxClientInternalTypesAuditQuery](docs/TmuxClientInternalTypesAuditQuery.md)
- - [TmuxClientInternalTypesAuditQueryResponse](docs/TmuxClientInternalTypesAuditQueryResponse.md)
- - [TmuxClientInternalTypesComponentHealth](docs/TmuxClientInternalTypesComponentHealth.md)
- - [TmuxClientInternalTypesCopyFileRequest](docs/TmuxClientInternalTypesCopyFileRequest.md)
- - [TmuxClientInternalTypesCopyFileResponse](docs/TmuxClientInternalTypesCopyFileResponse.md)
- - [TmuxClientInternalTypesCreatePaneRequest](docs/TmuxClientInternalTypesCreatePaneRequest.md)
- - [TmuxClientInternalTypesCreatePaneResponse](docs/TmuxClientInternalTypesCreatePaneResponse.md)
- - [TmuxClientInternalTypesCreatePlanRequest](docs/TmuxClientInternalTypesCreatePlanRequest.md)
- - [TmuxClientInternalTypesCreatePlanResponse](docs/TmuxClientInternalTypesCreatePlanResponse.md)
- - [TmuxClientInternalTypesDeleteFileRequest](docs/TmuxClientInternalTypesDeleteFileRequest.md)
- - [TmuxClientInternalTypesDeleteFileResponse](docs/TmuxClientInternalTypesDeleteFileResponse.md)
- - [TmuxClientInternalTypesEditFileRequest](docs/TmuxClientInternalTypesEditFileRequest.md)
- - [TmuxClientInternalTypesEditFileResponse](docs/TmuxClientInternalTypesEditFileResponse.md)
- - [TmuxClientInternalTypesFileInfo](docs/TmuxClientInternalTypesFileInfo.md)
- - [TmuxClientInternalTypesGetPlanResponse](docs/TmuxClientInternalTypesGetPlanResponse.md)
- - [TmuxClientInternalTypesHealthResponse](docs/TmuxClientInternalTypesHealthResponse.md)
- - [TmuxClientInternalTypesHealthStatus](docs/TmuxClientInternalTypesHealthStatus.md)
- - [TmuxClientInternalTypesKillSessionResponse](docs/TmuxClientInternalTypesKillSessionResponse.md)
- - [TmuxClientInternalTypesListApprovalsResponse](docs/TmuxClientInternalTypesListApprovalsResponse.md)
- - [TmuxClientInternalTypesListDirRequest](docs/TmuxClientInternalTypesListDirRequest.md)
- - [TmuxClientInternalTypesListDirResponse](docs/TmuxClientInternalTypesListDirResponse.md)
- - [TmuxClientInternalTypesListPanesResponse](docs/TmuxClientInternalTypesListPanesResponse.md)
- - [TmuxClientInternalTypesListPlansResponse](docs/TmuxClientInternalTypesListPlansResponse.md)
- - [TmuxClientInternalTypesPaneInfo](docs/TmuxClientInternalTypesPaneInfo.md)
- - [TmuxClientInternalTypesPendingApproval](docs/TmuxClientInternalTypesPendingApproval.md)
- - [TmuxClientInternalTypesPlan](docs/TmuxClientInternalTypesPlan.md)
- - [TmuxClientInternalTypesPlanStatus](docs/TmuxClientInternalTypesPlanStatus.md)
- - [TmuxClientInternalTypesPlanStep](docs/TmuxClientInternalTypesPlanStep.md)
- - [TmuxClientInternalTypesReadFileRequest](docs/TmuxClientInternalTypesReadFileRequest.md)
- - [TmuxClientInternalTypesReadFileResponse](docs/TmuxClientInternalTypesReadFileResponse.md)
- - [TmuxClientInternalTypesReadPaneRequest](docs/TmuxClientInternalTypesReadPaneRequest.md)
- - [TmuxClientInternalTypesReadPaneResponse](docs/TmuxClientInternalTypesReadPaneResponse.md)
- - [TmuxClientInternalTypesRunCommandRequest](docs/TmuxClientInternalTypesRunCommandRequest.md)
- - [TmuxClientInternalTypesRunCommandResponse](docs/TmuxClientInternalTypesRunCommandResponse.md)
- - [TmuxClientInternalTypesSendKeysRequest](docs/TmuxClientInternalTypesSendKeysRequest.md)
- - [TmuxClientInternalTypesSendKeysResponse](docs/TmuxClientInternalTypesSendKeysResponse.md)
- - [TmuxClientInternalTypesSessionInfo](docs/TmuxClientInternalTypesSessionInfo.md)
- - [TmuxClientInternalTypesStepStatus](docs/TmuxClientInternalTypesStepStatus.md)
- - [TmuxClientInternalTypesSwitchPaneRequest](docs/TmuxClientInternalTypesSwitchPaneRequest.md)
- - [TmuxClientInternalTypesSwitchPaneResponse](docs/TmuxClientInternalTypesSwitchPaneResponse.md)
- - [TmuxClientInternalTypesUpdatePlanRequest](docs/TmuxClientInternalTypesUpdatePlanRequest.md)
- - [TmuxClientInternalTypesUpdatePlanResponse](docs/TmuxClientInternalTypesUpdatePlanResponse.md)
- - [TmuxClientInternalTypesWindowInfo](docs/TmuxClientInternalTypesWindowInfo.md)
- - [TmuxClientInternalTypesWriteFileRequest](docs/TmuxClientInternalTypesWriteFileRequest.md)
- - [TmuxClientInternalTypesWriteFileResponse](docs/TmuxClientInternalTypesWriteFileResponse.md)
  - [VirshSandboxInternalAnsibleAddTaskRequest](docs/VirshSandboxInternalAnsibleAddTaskRequest.md)
  - [VirshSandboxInternalAnsibleAddTaskResponse](docs/VirshSandboxInternalAnsibleAddTaskResponse.md)
  - [VirshSandboxInternalAnsibleCreatePlaybookRequest](docs/VirshSandboxInternalAnsibleCreatePlaybookRequest.md)
@@ -316,6 +254,8 @@ Class | Method | HTTP request | Description
  - [VirshSandboxInternalAnsibleUpdateTaskRequest](docs/VirshSandboxInternalAnsibleUpdateTaskRequest.md)
  - [VirshSandboxInternalAnsibleUpdateTaskResponse](docs/VirshSandboxInternalAnsibleUpdateTaskResponse.md)
  - [VirshSandboxInternalErrorErrorResponse](docs/VirshSandboxInternalErrorErrorResponse.md)
+ - [VirshSandboxInternalRestAccessErrorResponse](docs/VirshSandboxInternalRestAccessErrorResponse.md)
+ - [VirshSandboxInternalRestCaPublicKeyResponse](docs/VirshSandboxInternalRestCaPublicKeyResponse.md)
  - [VirshSandboxInternalRestCertificateResponse](docs/VirshSandboxInternalRestCertificateResponse.md)
  - [VirshSandboxInternalRestCreateSandboxRequest](docs/VirshSandboxInternalRestCreateSandboxRequest.md)
  - [VirshSandboxInternalRestCreateSandboxResponse](docs/VirshSandboxInternalRestCreateSandboxResponse.md)
@@ -326,16 +266,27 @@ Class | Method | HTTP request | Description
  - [VirshSandboxInternalRestErrorResponse](docs/VirshSandboxInternalRestErrorResponse.md)
  - [VirshSandboxInternalRestGenerateResponse](docs/VirshSandboxInternalRestGenerateResponse.md)
  - [VirshSandboxInternalRestGetSandboxResponse](docs/VirshSandboxInternalRestGetSandboxResponse.md)
+ - [VirshSandboxInternalRestHealthResponse](docs/VirshSandboxInternalRestHealthResponse.md)
  - [VirshSandboxInternalRestInjectSSHKeyRequest](docs/VirshSandboxInternalRestInjectSSHKeyRequest.md)
+ - [VirshSandboxInternalRestListCertificatesResponse](docs/VirshSandboxInternalRestListCertificatesResponse.md)
  - [VirshSandboxInternalRestListSandboxCommandsResponse](docs/VirshSandboxInternalRestListSandboxCommandsResponse.md)
  - [VirshSandboxInternalRestListSandboxesResponse](docs/VirshSandboxInternalRestListSandboxesResponse.md)
+ - [VirshSandboxInternalRestListSessionsResponse](docs/VirshSandboxInternalRestListSessionsResponse.md)
  - [VirshSandboxInternalRestListVMsResponse](docs/VirshSandboxInternalRestListVMsResponse.md)
  - [VirshSandboxInternalRestPublishRequest](docs/VirshSandboxInternalRestPublishRequest.md)
  - [VirshSandboxInternalRestPublishResponse](docs/VirshSandboxInternalRestPublishResponse.md)
+ - [VirshSandboxInternalRestRequestAccessRequest](docs/VirshSandboxInternalRestRequestAccessRequest.md)
+ - [VirshSandboxInternalRestRequestAccessResponse](docs/VirshSandboxInternalRestRequestAccessResponse.md)
+ - [VirshSandboxInternalRestRevokeCertificateRequest](docs/VirshSandboxInternalRestRevokeCertificateRequest.md)
+ - [VirshSandboxInternalRestRevokeCertificateResponse](docs/VirshSandboxInternalRestRevokeCertificateResponse.md)
  - [VirshSandboxInternalRestRunCommandRequest](docs/VirshSandboxInternalRestRunCommandRequest.md)
  - [VirshSandboxInternalRestRunCommandResponse](docs/VirshSandboxInternalRestRunCommandResponse.md)
  - [VirshSandboxInternalRestSandboxInfo](docs/VirshSandboxInternalRestSandboxInfo.md)
+ - [VirshSandboxInternalRestSessionEndRequest](docs/VirshSandboxInternalRestSessionEndRequest.md)
+ - [VirshSandboxInternalRestSessionEndResponse](docs/VirshSandboxInternalRestSessionEndResponse.md)
  - [VirshSandboxInternalRestSessionResponse](docs/VirshSandboxInternalRestSessionResponse.md)
+ - [VirshSandboxInternalRestSessionStartRequest](docs/VirshSandboxInternalRestSessionStartRequest.md)
+ - [VirshSandboxInternalRestSessionStartResponse](docs/VirshSandboxInternalRestSessionStartResponse.md)
  - [VirshSandboxInternalRestSnapshotRequest](docs/VirshSandboxInternalRestSnapshotRequest.md)
  - [VirshSandboxInternalRestSnapshotResponse](docs/VirshSandboxInternalRestSnapshotResponse.md)
  - [VirshSandboxInternalRestStartSandboxRequest](docs/VirshSandboxInternalRestStartSandboxRequest.md)

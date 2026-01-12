@@ -40,7 +40,7 @@ class TestVirshSandboxInternalAnsibleAddTaskResponse(unittest.TestCase):
         model = VirshSandboxInternalAnsibleAddTaskResponse()
         if include_optional:
             return VirshSandboxInternalAnsibleAddTaskResponse(
-                task = {"module":"module","name":"name","created_at":"created_at","id":"id","position":0,"params":{"key":"{}"},"playbook_id":"playbook_id"}
+                task = {"module":"module","name":"name","created_at":"created_at","id":"id","position":0,"params":"{}","playbook_id":"playbook_id"}
             )
         else:
             return VirshSandboxInternalAnsibleAddTaskResponse(

@@ -9,9 +9,8 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from virsh_sandbox.api_client import ApiClient, RequestSerialized
 from virsh_sandbox.api_response import ApiResponse
-from virsh_sandbox.exceptions import ApiException
-from virsh_sandbox.models.tmux_client_internal_types_health_response import \
-    TmuxClientInternalTypesHealthResponse
+from virsh_sandbox.models.virsh_sandbox_internal_rest_health_response import \
+    VirshSandboxInternalRestHealthResponse
 
 
 class HealthApi:
@@ -29,10 +28,10 @@ class HealthApi:
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> TmuxClientInternalTypesHealthResponse:
-        """Get health status
+    ) -> VirshSandboxInternalRestHealthResponse:
+        """Health check
 
-        Retrieves the health status of the API server and its components, including the virsh-sandbox API if configured
+        Returns service health status
 
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
@@ -58,7 +57,7 @@ class HealthApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "TmuxClientInternalTypesHealthResponse",
+            "200": "VirshSandboxInternalRestHealthResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -76,10 +75,10 @@ class HealthApi:
         _content_type: Optional[str] = None,
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
-    ) -> ApiResponse[TmuxClientInternalTypesHealthResponse]:
-        """Get health status
+    ) -> ApiResponse[VirshSandboxInternalRestHealthResponse]:
+        """Health check
 
-        Retrieves the health status of the API server and its components, including the virsh-sandbox API if configured
+        Returns service health status
 
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
@@ -105,7 +104,7 @@ class HealthApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "TmuxClientInternalTypesHealthResponse",
+            "200": "VirshSandboxInternalRestHealthResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout
@@ -124,9 +123,9 @@ class HealthApi:
         _headers: Optional[Dict[str, Any]] = None,
         _host_index: int = 0,
     ) -> Any:
-        """Get health status
+        """Health check
 
-        Retrieves the health status of the API server and its components, including the virsh-sandbox API if configured
+        Returns service health status
 
         :param _request_timeout: Timeout setting for this request. If one
                                  number is provided, it will be the total request
@@ -152,7 +151,7 @@ class HealthApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "TmuxClientInternalTypesHealthResponse",
+            "200": "VirshSandboxInternalRestHealthResponse",
         }
         response_data = self.api_client.call_api(
             *_param, _request_timeout=_request_timeout

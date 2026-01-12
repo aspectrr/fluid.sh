@@ -40,9 +40,7 @@ class TestInternalAnsibleAddTaskRequest(unittest.TestCase):
             return InternalAnsibleAddTaskRequest(
                 module = '',
                 name = '',
-                params = {
-                    'key' : None
-                    }
+                params = None
             )
         else:
             return InternalAnsibleAddTaskRequest(

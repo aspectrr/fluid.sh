@@ -224,7 +224,7 @@ func main() {
 
 // setupLogger configures slog with level and format from environment.
 func setupLogger() *slog.Logger {
-	level := slog.LevelInfo
+	var level slog.Level
 	switch strings.ToLower(getenv("LOG_LEVEL", "info")) {
 	case "debug":
 		level = slog.LevelDebug

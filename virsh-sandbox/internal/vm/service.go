@@ -794,8 +794,8 @@ func (r *DefaultSSHRunner) Run(ctx context.Context, addr, user, privateKeyPath, 
 	if err != nil {
 		// Best-effort extract exit code
 		var ee *exec.ExitError
-		if errors.As(err, &ee) && ee.ProcessState != nil {
-			exitCode = ee.ProcessState.ExitCode()
+		if errors.As(err, &ee) {
+			exitCode = ee.ExitCode()
 		} else {
 			exitCode = 255
 		}
@@ -866,8 +866,8 @@ func (r *DefaultSSHRunner) RunWithCert(ctx context.Context, addr, user, privateK
 	exitCode := 0
 	if err != nil {
 		var ee *exec.ExitError
-		if errors.As(err, &ee) && ee.ProcessState != nil {
-			exitCode = ee.ProcessState.ExitCode()
+		if errors.As(err, &ee) {
+			exitCode = ee.ExitCode()
 		} else {
 			exitCode = 255
 		}

@@ -22,15 +22,13 @@ from pydantic import BaseModel, ConfigDict, StrictStr
 from typing_extensions import Self
 
 
-class InternalAnsibleAddTaskRequest(BaseModel):
+class VirshSandboxInternalRestHealthResponse(BaseModel):
     """
-    InternalAnsibleAddTaskRequest
+    VirshSandboxInternalRestHealthResponse
     """  # noqa: E501
 
-    module: Optional[StrictStr] = None
-    name: Optional[StrictStr] = None
-    params: Optional[Dict[str, Any]] = None
-    __properties: ClassVar[List[str]] = ["module", "name", "params"]
+    status: Optional[StrictStr] = None
+    __properties: ClassVar[List[str]] = ["status"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -49,7 +47,7 @@ class InternalAnsibleAddTaskRequest(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of InternalAnsibleAddTaskRequest from a JSON string"""
+        """Create an instance of VirshSandboxInternalRestHealthResponse from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -73,18 +71,12 @@ class InternalAnsibleAddTaskRequest(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of InternalAnsibleAddTaskRequest from a dict"""
+        """Create an instance of VirshSandboxInternalRestHealthResponse from a dict"""
         if obj is None:
             return None
 
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
 
-        _obj = cls.model_validate(
-            {
-                "module": obj.get("module"),
-                "name": obj.get("name"),
-                "params": obj.get("params"),
-            }
-        )
+        _obj = cls.model_validate({"status": obj.get("status")})
         return _obj

@@ -42,9 +42,7 @@ class TestVirshSandboxInternalStorePlaybookTask(unittest.TestCase):
                 id = '',
                 module = '',
                 name = '',
-                params = {
-                    'key' : None
-                    },
+                params = None,
                 playbook_id = '',
                 position = 56
             )

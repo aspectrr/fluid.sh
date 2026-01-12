@@ -133,7 +133,7 @@ func (h *Handler) HandleJobWebSocket(w http.ResponseWriter, r *http.Request) {
 		// Upgrade already sends the error response
 		return
 	}
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 
 	// Set a reasonable deadline for the entire job
 	if err := conn.SetWriteDeadline(time.Now().Add(10 * time.Minute)); err != nil {
