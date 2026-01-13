@@ -24,7 +24,6 @@ AI agents are ready to do infrastructure work, but they can't touch prod:
 - Agents can install packages, configure services, write scripts—autonomously
 - But one mistake on production and you're getting called at 3 am to fix it
 - So we limit agents to chatbots instead of letting them *do the work*
-- Containers aren't realistic enough—agents need full OS environments
 
 ## Solution
 
@@ -46,8 +45,6 @@ AI agents are ready to do infrastructure work, but they can't touch prod:
 │                    • Snapshot/restore                                   │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
-
-**The agent does real work. The human just approves.**
 
 ## Features
 
@@ -492,7 +489,6 @@ All contributions must maintain the security model and include appropriate tests
 
 MIT License - see [LICENSE](LICENSE) for details.
 
----
 
 <div align="center">
 
