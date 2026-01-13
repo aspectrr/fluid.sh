@@ -367,17 +367,17 @@ sudo usermod -aG libvirt remote-user
 
 ```
 virsh-sandbox/
-├── virsh-sandbox/          # 🔧 Main API server (Go)
+├── virsh-sandbox/          #    Main API server (Go)
 │   ├── cmd/api/            #    Entry point
 │   ├── internal/           #    Business logic
 │   └── scripts/            #    Setup scripts
-├── web/                    # 🌐 React frontend
+├── web/                    #    React frontend
 │   └── src/                #    Components, hooks, routes
-├── sdk/                    # 🐍 Python SDK
+├── sdk/                    #    Python SDK
 │   └── virsh-sandbox-py/   #    Auto-generated client
-├── examples/               # 📚 Example implementations
+├── examples/               #    Example implementations
 │   └── agent-example/      #    AI agent with OpenAI
-└── docker-compose.yml      # 🐳 Container orchestration
+└── docker-compose.yml      #    Container orchestration
 ```
 
 ## API Reference
@@ -415,7 +415,7 @@ virsh-sandbox/
 |--------|----------|-------------|
 | `POST` | `/api/v1/human/ask` | Request approval (blocking) |
 
-## 🔒 Security Model
+## Security Model
 
 ### Isolation Layers
 
@@ -426,21 +426,22 @@ virsh-sandbox/
 
 ### Safety Features
 
-- ✅ Command allowlists/denylists
-- ✅ Path restrictions for file access
-- ✅ Timeout limits on all operations
-- ✅ Output size limits
-- ✅ Full audit trail
-- ✅ Snapshot rollback
+-  Command allowlists/denylists
+-  Path restrictions for file access
+-  Timeout limits on all operations
+-  Output size limits
+-  Full audit trail
+-  Snapshot rollback
 
-## 📖 Documentation
+##  Documentation
 
+- [Docs from Previous Issues](./docs/) - Documentation on common issues working with the project
 - [Scripts Reference](./virsh-sandbox/scripts/README.md) - Setup and utility scripts
 - [SSH Certificates](./virsh-sandbox/scripts/README.md#ssh-certificate-based-access) - Ephemeral credential system
 - [Agent Connection Flow](./docs/agent-connection-flow.md) - How agents connect to sandboxes
 - [Examples](./examples/) - Working examples
 
-## 🛠️ Development
+## Development
 
 To run the API locally, first build the `virsh-sandbox` binary:
 
@@ -461,7 +462,6 @@ mprocs
 
 # Or run individual services
 cd virsh-sandbox && make run
-cd tmux-client && make run
 cd web && bun run dev
 ```
 
@@ -470,17 +470,15 @@ cd web && bun run dev
 ```bash
 # Go services
 (cd virsh-sandbox && make test)
-(cd tmux-client && make test)
 
 # Python SDK
 (cd sdk/virsh-sandbox-py && pytest)
 
 # All checks
 (cd virsh-sandbox && make check)
-(cd tmux-client && make check)
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -490,7 +488,7 @@ cd web && bun run dev
 
 All contributions must maintain the security model and include appropriate tests.
 
-## 📄 License
+## License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
@@ -500,6 +498,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 **[⬆ Back to top](#-virsh-sandbox)**
 
-Built with ❤️ for the AI agent community
+Made with ❤️
 
 </div>
