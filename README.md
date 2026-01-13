@@ -1,10 +1,10 @@
 <div align="center">
 
-# 🔒 virsh-sandbox
+# 🌊 fluid.sh 
 
 ### Autonomous AI Agents for Infrastructure
 
-**Give AI agents root access to VMs, not your production servers**
+**Make Infrastructure Safe for AI**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go)](https://go.dev)
@@ -17,18 +17,18 @@
 
 ---
 
-## 🤔 The Problem
+## Problem
 
-AI agents are ready to do sysadmin work, but **we can't give them access to production**:
+AI agents are ready to do infrastructure work, but they can't touch prod:
 
-- 🤖 Agents can install packages, configure services, write scripts—autonomously
-- 🔥 But one mistake on production and you're restoring from backups
-- 🚫 So we limit agents to "suggest mode" instead of letting them *do the work*
-- 📦 Containers aren't realistic enough—agents need full OS environments
+- Agents can install packages, configure services, write scripts—autonomously
+- But one mistake on production and you're getting called at 3 am to fix it
+- So we limit agents to chatbots instead of letting them *do the work*
+- Containers aren't realistic enough—agents need full OS environments
 
-## 💡 The Solution
+## Solution
 
-**virsh-sandbox** lets AI agents work autonomously in isolated VMs, then a human approves before anything touches production:
+**fluid.sh** lets AI agents work autonomously in isolated VMs, then a human approves before anything touches production:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -49,25 +49,25 @@ AI agents are ready to do sysadmin work, but **we can't give them access to prod
 
 **The agent does real work. The human just approves.**
 
-## ✨ Features
+## Features
 
 | Feature | Description |
 |---------|-------------|
-| 🤖 **Autonomous Execution** | Agents run commands, install packages, edit configs—no hand-holding |
-| 🖥️ **Full VM Isolation** | Each agent gets a dedicated KVM virtual machine with root access |
-| 📸 **Snapshot & Restore** | Checkpoint progress, rollback mistakes, branch experiments |
-| 👤 **Human-in-the-Loop** | Blocking approval workflow before any production changes |
-| 📋 **Diff & Audit Trail** | See exactly what changed, every action logged |
-| 🔧 **Ansible Export** | Auto-generate playbooks from agent work for production apply |
-| 🖥️ **Tmux Integration** | Watch agent work in real-time, intervene if needed |
-| 🐍 **Python SDK** | First-class SDK for building autonomous agents |
+|  **Autonomous Execution** | Agents run commands, install packages, edit configs—no hand-holding |
+|  **Full VM Isolation** | Each agent gets a dedicated KVM virtual machine with root access |
+|  **Snapshot & Restore** | Checkpoint progress, rollback mistakes, branch experiments |
+|  **Human-in-the-Loop** | Blocking approval workflow before any production changes |
+|  **Diff & Audit Trail** | See exactly what changed, every action logged |
+|  **Ansible Export** | Auto-generate playbooks from agent work for production apply |
+|  **Tmux Integration** | Watch agent work in real-time, intervene if needed |
+|  **Python SDK** | First-class SDK for building autonomous agents |
 
-## 🎬 Demo
+## Demo
 
 ```python
 from virsh_sandbox import VirshSandbox
 
-client = VirshSandbox("http://localhost:8080", "http://localhost:8081")
+client = VirshSandbox("http://localhost:8080")
 
 # Agent gets its own VM with full root access
 sandbox = client.sandbox.create_sandbox(
@@ -77,19 +77,7 @@ sandbox = client.sandbox.create_sandbox(
     wait_for_ip=True
 ).sandbox
 
-# Agent works AUTONOMOUSLY - no human in the loop yet
-client.sandbox.run_sandbox_command(sandbox.id, "apt update && apt install -y nginx")
-client.sandbox.run_sandbox_command(sandbox.id, "systemctl enable nginx")
-client.sandbox.run_sandbox_command(sandbox.id, "ufw allow 80/tcp")
-
-# Checkpoint the work
-client.sandbox.create_snapshot(sandbox.id, name="nginx-installed")
-
-# Agent continues - configures nginx, sets up SSL, etc.
-client.sandbox.run_sandbox_command(sandbox.id, "certbot --nginx -d example.com")
-
-# Final checkpoint
-client.sandbox.create_snapshot(sandbox.id, name="nginx-configured")
+run_agent("Install nginx and configure TLS, create an Ansible playbook to recreate the task.")
 
 # NOW the human reviews:
 # - Diff between snapshots shows exactly what changed
@@ -101,12 +89,13 @@ client.sandbox.create_snapshot(sandbox.id, name="nginx-configured")
 client.sandbox.destroy_sandbox(sandbox.id)
 ```
 
-## 🚀 Quick Start
+## 🏄 Quick Start
 
 ### Prerequisites
 
-- **Docker & Docker Compose** - For containerized deployment
-- **libvirt/KVM** - For virtual machine management (or Lima on macOS)
+- **mprocs** - For local dev
+- **Docker & Docker Compose** - For containerized deployment in production
+- **libvirt/KVM** - For virtual machine management
 - **macOS**:
   - **libvirt** - `brew install libvirt`
   - **socket_vmnet** - `brew install socket_vmnet`
@@ -115,73 +104,68 @@ client.sandbox.destroy_sandbox(sandbox.id)
 
 ```bash
 # Clone and start
-git clone https://github.com/your-org/virsh-sandbox.git
-cd virsh-sandbox
-docker-compose up --build
+git clone https://github.com/aspectrr/fluid.sh.git
+cd fluid.sh
+mprocs
 
 # Services available at:
 # API:      http://localhost:8080
 # Web UI:   http://localhost:5173
-# Terminal: http://localhost:8081
 ```
 
 ---
 
-## 🖥️ Platform Setup
+## Platform Setup
 
 <details>
-<summary><b>🍎 Apple Silicon Mac (M1/M2/M3/M4)</b></summary>
+<summary><b>Mac</b></summary>
 
-Lima provides a Linux VM with nested virtualization on Apple Silicon:
+You will need to install libvirt and socket_vmnet on Mac:
 
 ```bash
 # Install Lima and libvirt client
-brew install lima libvirt
+brew install libvirt socket_vmnet
 
-# Set up Lima VM with libvirt (ARM64 Ubuntu)
-cd virsh-sandbox
-./virsh-sandbox/scripts/setup-lima-libvirt.sh \
-    --cpus 4 \
-    --memory 8 \
-    --disk 50 \
-    --create-test-vm
+# Set up SSH CA (Needed for Sanbox VMs)
+cd fluid.sh
+./virsh-sandbox/scripts/setup-ssh-ca.sh --dir .ssh-ca
 
-# Source the generated environment
-source .env.lima
+# Set up libvirt VM (ARM64 Ubuntu)
+cd fluid.sh
+./virsh-sandbox/scripts/reset-libvirt-macos.sh
 
 # Verify connection
 virsh -c "$LIBVIRT_URI" list --all
 
 # Start services
-docker-compose up --build
+mprocs
 ```
 
 **What happens:**
-1. Lima creates an ARM64 Ubuntu VM with KVM support
-2. libvirt runs inside Lima, accessible via TCP (port 16509) or SSH
-3. The API connects to libvirt inside Lima
-4. Test VMs run nested inside the Lima VM
+1. A SSH CA is generated and then is used to build the golden VM
+2. libvirt runs on the machine and is queried by the virsh-sandbox API
+4. Test VMs run on your root machine
 
 **Architecture:**
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                     Apple Silicon Mac                               │
-│  ┌─────────────────┐     ┌────────────────────────────────────────┐ │
-│  │ virsh-sandbox   │     │           Lima VM (ARM64 Ubuntu)       │ │
-│  │ API + Web UI    │────►│  ┌──────────────────────────────────┐  │ │
-│  │                 │     │  │     libvirt/QEMU (ARM64)         │  │ │
-│  │ LIBVIRT_URI=    │     │  │  ┌──────────┐  ┌──────────┐      │  │ │
-│  │ qemu+tcp://     │     │  │  │ sandbox  │  │ sandbox  │ ...  │  │ │
-│  │ localhost:16509 │     │  │  │ VM (arm) │  │ VM (arm) │      │  │ │
-│  └─────────────────┘     │  │  └──────────┘  └──────────┘      │  │ │
-│                          │  └──────────────────────────────────┘  │ │
-│                          └────────────────────────────────────────┘ │
+│  ┌─────────────────┐                                                │
+│  │ virsh-sandbox   │                                                │
+│  │ API + Web UI    │────►  ┌──────────────────────────────────┐     │
+│  │                 │       │     libvirt/QEMU (ARM64)         │     │
+│  │ LIBVIRT_URI=    │       │  ┌──────────┐  ┌──────────┐      │     │
+│  │ qemu+tcp://     │       │  │ sandbox  │  │ sandbox  │ ...  │     │
+│  │ localhost:16509 │       │  │ VM (arm) │  │ VM (arm) │      │     │
+│  └─────────────────┘       │  └──────────┘  └──────────┘      │     │
+│                            └──────────────────────────────────┘     │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 **Create ARM64 test VMs:**
 ```bash
-limactl shell virsh-sandbox-dev -- bash /tmp/create-test-vm.sh test-vm-arm64
+./virsh-sandbox/scripts/reset-libvirt-macos.sh
 ```
 
 **Default test VM credentials:**
@@ -191,59 +175,7 @@ limactl shell virsh-sandbox-dev -- bash /tmp/create-test-vm.sh test-vm-arm64
 </details>
 
 <details>
-<summary><b>🍎 Intel Mac</b></summary>
-
-Lima provides a Linux VM with nested virtualization on Intel Macs:
-
-```bash
-# Install Lima and libvirt client
-brew install lima libvirt
-
-# Set up Lima VM with libvirt (x86_64 Ubuntu)
-cd virsh-sandbox
-./virsh-sandbox/scripts/setup-lima-libvirt.sh \
-    --cpus 4 \
-    --memory 8 \
-    --disk 50 \
-    --create-test-vm
-
-# Source the generated environment
-source .env.lima
-
-# Verify connection
-virsh -c "$LIBVIRT_URI" list --all
-
-# Start services
-docker-compose up --build
-```
-
-**Architecture:**
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        Intel Mac                                    │
-│  ┌─────────────────┐     ┌────────────────────────────────────────┐ │
-│  │ virsh-sandbox   │     │          Lima VM (x86_64 Ubuntu)       │ │
-│  │ API + Web UI    │────►│  ┌──────────────────────────────────┐  │ │
-│  │                 │     │  │     libvirt/KVM (x86_64)         │  │ │
-│  │ LIBVIRT_URI=    │     │  │  ┌──────────┐  ┌──────────┐      │  │ │
-│  │ qemu+tcp://     │     │  │  │ sandbox  │  │ sandbox  │ ...  │  │ │
-│  │ localhost:16509 │     │  │  │VM (amd64)│  │VM (amd64)│      │  │ │
-│  └─────────────────┘     │  │  └──────────┘  └──────────┘      │  │ │
-│                          │  └──────────────────────────────────┘  │ │
-│                          └────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
-**Note:** Intel Macs support proper nested KVM, so performance is better than ARM64 emulation.
-
-**Default test VM credentials:**
-- Username: `testuser` / Password: `testpassword`
-- Username: `root` / Password: `rootpassword`
-
-</details>
-
-<details>
-<summary><b>🐧 Linux x86_64 (On-Prem / Bare Metal)</b></summary>
+<summary><b>Linux x86_64 (On-Prem / Bare Metal)</b></summary>
 
 Direct libvirt access for best performance:
 
@@ -325,7 +257,8 @@ cd /var/lib/libvirt/images/base
 sudo wget https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
 
 # Create test VM using the provided script
-./virsh-sandbox/scripts/create-test-vm.sh --name ubuntu-base --start
+./virsh-sandbox/scripts/setup-ssh-ca.sh --dir [ssh-ca-dir]
+./virsh-sandbox/scripts/reset-libvirt-macos.sh [vm-name] [ca-pub-path] [ca-key-path]
 ```
 
 **Default test VM credentials:**
@@ -335,7 +268,7 @@ sudo wget https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-am
 </details>
 
 <details>
-<summary><b>🐧 Linux ARM64 (Ampere, Graviton, Raspberry Pi)</b></summary>
+<summary><b>Linux ARM64 (Ampere, Graviton, Raspberry Pi)</b></summary>
 
 Native ARM64 Linux with libvirt:
 
@@ -386,7 +319,7 @@ sudo wget https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-ar
 </details>
 
 <details>
-<summary><b>☁️ Remote libvirt Server</b></summary>
+<summary><b>Remote libvirt Server</b></summary>
 
 Connect to a remote libvirt host over SSH or TCP:
 
@@ -430,7 +363,7 @@ sudo usermod -aG libvirt remote-user
 
 ---
 
-## 📦 Project Structure
+## Project Structure
 
 ```
 virsh-sandbox/
@@ -438,8 +371,6 @@ virsh-sandbox/
 │   ├── cmd/api/            #    Entry point
 │   ├── internal/           #    Business logic
 │   └── scripts/            #    Setup scripts
-├── tmux-client/            # 🖥️ Terminal API (Go)
-│   └── internal/           #    Tmux/file/command handlers
 ├── web/                    # 🌐 React frontend
 │   └── src/                #    Components, hooks, routes
 ├── sdk/                    # 🐍 Python SDK
@@ -449,7 +380,8 @@ virsh-sandbox/
 └── docker-compose.yml      # 🐳 Container orchestration
 ```
 
-## 🔌 API Reference
+## API Reference
+
 
 ### Sandbox Lifecycle
 
