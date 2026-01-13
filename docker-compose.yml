@@ -63,7 +63,7 @@ services:
       - ${JOBS_DIR:-/var/lib/libvirt/images/jobs}:/var/lib/libvirt/images/jobs:rw
 
       # SSH CA for managed credentials (run setup-ssh-ca.sh first)
-      - ./.ssh-ca:/etc/virsh-sandbox:ro
+      - ./virsh-sandbox/.ssh-ca:/etc/virsh-sandbox:ro
 
       # Optionally mount SSH deploy key for GitOps (uncomment and set env GITOPS_SSH_KEY_PATH accordingly)
       # - ./secrets/gitops_key:/run/secrets/gitops_key:ro

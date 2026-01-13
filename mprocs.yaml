@@ -23,4 +23,4 @@ procs:
   cleanup-sandboxes:
     cwd: "."
     autostart: false
-    shell: "./scripts/cleanup-vms.sh"
+    shell: "./virsh-sandbox/scripts/cleanup-vms.sh"

@@ -5,10 +5,13 @@
 # Deletes all domains in the local macOS libvirt and recreates the test-vm.
 # Designed for macOS with native libvirt (homebrew).
 #
-# Usage: ./reset-libvirt-macos.sh [vm-name]
+# Usage: ./reset-libvirt-macos.sh [vm-name] [ca-pub-path] [ca-key-path]
 #
 # For SSH-based connection (Docker compatible):
 #   LIBVIRT_URI=qemu+ssh://username@localhost/session ./reset-libvirt-macos.sh
+#
+# For CA-based authentication:
+#   SSH_CA_PUB_PATH=/path/to/ssh_ca.pub SSH_CA_KEY_PATH=/path/to/ssh_ca ./reset-libvirt-macos.sh
 #
 
 set -euo pipefail
@@ -24,6 +27,8 @@ NC='\033[0m'
 # Default to local session; set LIBVIRT_URI for SSH-based connection
 LIBVIRT_URI="${LIBVIRT_URI:-qemu:///session}"
 VM_NAME="${1:-test-vm}"
+SSH_CA_PUB_PATH="${2:-${SSH_CA_PUB_PATH:-/etc/virsh-sandbox/ssh_ca.pub}}"
+SSH_CA_KEY_PATH="${3:-${SSH_CA_KEY_PATH:-/etc/virsh-sandbox/ssh_ca}}"
 VM_MEMORY_KB=2097152  # 2GB
 VM_VCPUS=2
 VM_DISK_SIZE="10G"
@@ -160,10 +165,20 @@ create_cloud_init_iso() {
     log_info "Creating cloud-init configuration..."
     mkdir -p "$cloud_init_dir"
 
+    # Get CA public key
+    local ca_pub_key
+    if [[ -f "$SSH_CA_PUB_PATH" ]]; then
+        ca_pub_key=$(cat "$SSH_CA_PUB_PATH")
+        log_info "Using CA public key from: $SSH_CA_PUB_PATH"
+    else
+        ca_pub_key="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO0e/MeLFYx1jCQv0qFJvSBEco+2z9TYrwN6wQAlR31E virsh-sandbox-ssh-ca"
+        log_warn "CA public key file not found at $SSH_CA_PUB_PATH, using default fallback"
+    fi
+
     # User data
     cat > "${cloud_init_dir}/user-data" << 'USERDATA'
 #cloud-config
-hostname: test-vm
+hostname: VM_NAME_PLACEHOLDER
 manage_etc_hosts: true
 
 # Configure networking to use DHCP without a MAC address match
@@ -199,7 +214,7 @@ write_files:
   - path: /etc/ssh/trusted_ca.pub
     permissions: '0644'
     content: |
-      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO0e/MeLFYx1jCQv0qFJvSBEco+2z9TYrwN6wQAlR31E virsh-sandbox-ssh-ca
+      CA_PUB_KEY_PLACEHOLDER
   - path: /etc/ssh/sshd_config.d/60-trusted-ca.conf
     permissions: '0644'
     content: |
@@ -225,6 +240,11 @@ runcmd:
 
 final_message: "Test VM boot completed in $UPTIME seconds"
 USERDATA
+
+    # Replace placeholder with actual CA public key
+    # Use | as delimiter to avoid issues with / in the key
+    sed -i '' "s|CA_PUB_KEY_PLACEHOLDER|${ca_pub_key}|" "${cloud_init_dir}/user-data"
+    sed -i '' "s|VM_NAME_PLACEHOLDER|${VM_NAME}|" "${cloud_init_dir}/user-data"
 
     # Meta data
     cat > "${cloud_init_dir}/meta-data" << METADATA
@@ -388,6 +408,8 @@ main() {
     echo ""
     echo "LIBVIRT_URI: ${LIBVIRT_URI}"
     echo "VM Name:     ${VM_NAME}"
+    echo "CA Pub Path: ${SSH_CA_PUB_PATH}"
+    echo "CA Key Path: ${SSH_CA_KEY_PATH}"
     echo ""
 
     # Verify libvirt connection
