@@ -496,8 +496,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-**[⬆ Back to top](#-virsh-sandbox)**
-
 Made with ❤️
 
 </div>
