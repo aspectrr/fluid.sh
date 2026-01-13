@@ -7,5 +7,5 @@
  */
 
 export interface VirshSandboxInternalRestHealthResponse {
-  status?: string;
+  status?: string
 }

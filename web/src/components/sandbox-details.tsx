@@ -1,71 +1,56 @@
-import * as React from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Play, Terminal, FileText, Clock } from "lucide-react";
-import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
-import { useGetSandbox } from "~/virsh-sandbox/sandbox/sandbox";
-import { useCreateAnsibleJob } from "~/virsh-sandbox/ansible/ansible";
-import { useSandboxStream } from "~/hooks/use-sandbox-stream";
+import * as React from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import { ArrowLeft, Play, Terminal, FileText, Clock } from 'lucide-react'
+import { Button } from '~/components/ui/button'
+import { Badge } from '~/components/ui/badge'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
+import { useGetSandbox } from '~/virsh-sandbox/sandbox/sandbox'
+import { useCreateAnsibleJob } from '~/virsh-sandbox/ansible/ansible'
+import { useSandboxStream } from '~/hooks/use-sandbox-stream'
 
 function getStateBadgeVariant(
-  state: string | undefined,
-): "default" | "secondary" | "destructive" | "outline" {
+  state: string | undefined
+): 'default' | 'secondary' | 'destructive' | 'outline' {
   switch (state) {
-    case "RUNNING":
-      return "default";
-    case "CREATED":
-    case "STARTING":
-      return "secondary";
-    case "ERROR":
-    case "DESTROYED":
-      return "destructive";
+    case 'RUNNING':
+      return 'default'
+    case 'CREATED':
+    case 'STARTING':
+      return 'secondary'
+    case 'ERROR':
+    case 'DESTROYED':
+      return 'destructive'
     default:
-      return "outline";
+      return 'outline'
   }
 }
 
 interface SandboxDetailsProps {
-  sandboxId: string;
+  sandboxId: string
 }
 
 export function SandboxDetails({ sandboxId }: SandboxDetailsProps) {
-  const navigate = useNavigate();
-  const [showAnsibleDialog, setShowAnsibleDialog] = React.useState(false);
-  const [playbookPath, setPlaybookPath] = React.useState("");
+  const navigate = useNavigate()
+  const [showAnsibleDialog, setShowAnsibleDialog] = React.useState(false)
+  const [playbookPath, setPlaybookPath] = React.useState('')
 
-  const {
-    data: response,
-    isLoading,
-    isError,
-    error,
-  } = useGetSandbox(sandboxId);
+  const { data: response, isLoading, isError, error } = useGetSandbox(sandboxId)
 
-  const sandboxData = response?.data;
+  const sandboxData = response?.data
 
-  const {
-    isConnected,
-    commands: streamCommands,
-    connectionData,
-  } = useSandboxStream(sandboxId);
+  const { isConnected, commands: streamCommands, connectionData } = useSandboxStream(sandboxId)
 
-  const createAnsibleJobMutation = useCreateAnsibleJob();
+  const createAnsibleJobMutation = useCreateAnsibleJob()
 
   // Combine commands from initial fetch and stream
   const allCommands = React.useMemo(() => {
-    const initialCommands = sandboxData?.commands || [];
-    const commandMap = new Map<string, (typeof initialCommands)[0]>();
+    const initialCommands = sandboxData?.commands || []
+    const commandMap = new Map<string, (typeof initialCommands)[0]>()
 
     // Add initial commands
     for (const cmd of initialCommands) {
       if (cmd.id) {
-        commandMap.set(cmd.id, cmd);
+        commandMap.set(cmd.id, cmd)
       }
     }
 
@@ -79,18 +64,18 @@ export function SandboxDetails({ sandboxId }: SandboxDetailsProps) {
         exit_code: cmd.exit_code,
         started_at: cmd.started_at,
         ended_at: cmd.ended_at,
-      });
+      })
     }
 
     return Array.from(commandMap.values()).sort((a, b) => {
-      const dateA = a.started_at ? new Date(a.started_at).getTime() : 0;
-      const dateB = b.started_at ? new Date(b.started_at).getTime() : 0;
-      return dateA - dateB;
-    });
-  }, [sandboxData?.commands, streamCommands]);
+      const dateA = a.started_at ? new Date(a.started_at).getTime() : 0
+      const dateB = b.started_at ? new Date(b.started_at).getTime() : 0
+      return dateA - dateB
+    })
+  }, [sandboxData?.commands, streamCommands])
 
   const handleRunAnsible = () => {
-    if (!sandboxData?.sandbox?.sandbox_name || !playbookPath) return;
+    if (!sandboxData?.sandbox?.sandbox_name || !playbookPath) return
 
     createAnsibleJobMutation.mutate(
       {
@@ -102,69 +87,54 @@ export function SandboxDetails({ sandboxId }: SandboxDetailsProps) {
       },
       {
         onSuccess: (data) => {
-          setShowAnsibleDialog(false);
-          console.log("Ansible job created:", data);
+          setShowAnsibleDialog(false)
+          console.log('Ansible job created:', data)
         },
-      },
-    );
-  };
+      }
+    )
+  }
 
   if (isLoading) {
     return (
-      <main className="container mx-auto py-8 px-4">
+      <main className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-center p-8">
           <p className="text-muted-foreground">Loading sandbox details...</p>
         </div>
       </main>
-    );
+    )
   }
 
   if (isError || !sandboxData) {
     return (
-      <main className="container mx-auto py-8 px-4">
-        <Button
-          variant="ghost"
-          className="mb-6"
-          onClick={() => navigate({ to: "/sandboxes" })}
-        >
+      <main className="container mx-auto px-4 py-8">
+        <Button variant="ghost" className="mb-6" onClick={() => navigate({ to: '/sandboxes' })}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Sandboxes
         </Button>
-        <div className="flex flex-col items-center justify-center p-8 gap-4">
+        <div className="flex flex-col items-center justify-center gap-4 p-8">
           <p className="text-destructive">Failed to load sandbox details</p>
-          {error && (
-            <p className="text-sm text-muted-foreground">{String(error)}</p>
-          )}
+          {error && <p className="text-muted-foreground text-sm">{String(error)}</p>}
         </div>
       </main>
-    );
+    )
   }
 
-  const sandbox = sandboxData.sandbox;
+  const sandbox = sandboxData.sandbox
 
   return (
-    <main className="container mx-auto py-8 px-4">
-      <Button
-        variant="ghost"
-        className="mb-6"
-        onClick={() => navigate({ to: "/sandboxes" })}
-      >
+    <main className="container mx-auto px-4 py-8">
+      <Button variant="ghost" className="mb-6" onClick={() => navigate({ to: '/sandboxes' })}>
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Sandboxes
       </Button>
 
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
+        <div className="mb-2 flex items-center gap-3">
           <h1 className="text-3xl font-bold">Sandbox Details</h1>
-          <Badge variant={getStateBadgeVariant(sandbox?.state)}>
-            {sandbox?.state}
-          </Badge>
+          <Badge variant={getStateBadgeVariant(sandbox?.state)}>{sandbox?.state}</Badge>
           {isConnected && (
-            <Badge
-              variant="outline"
-              className="text-green-600 border-green-600"
-            >
-              <span className="mr-1 h-2 w-2 rounded-full bg-green-600 inline-block animate-pulse" />
+            <Badge variant="outline" className="border-green-600 text-green-600">
+              <span className="mr-1 inline-block h-2 w-2 animate-pulse rounded-full bg-green-600" />
               Live
             </Badge>
           )}
@@ -184,51 +154,35 @@ export function SandboxDetails({ sandboxId }: SandboxDetailsProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">
-                Sandbox Name
-              </p>
+              <p className="text-muted-foreground text-sm font-medium">Sandbox Name</p>
               <p className="font-mono text-sm">{sandbox?.sandbox_name}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">
-                IP Address
-              </p>
+              <p className="text-muted-foreground text-sm font-medium">IP Address</p>
               <p className="font-mono text-sm">
-                {sandbox?.ip_address || connectionData?.ip_address || "-"}
+                {sandbox?.ip_address || connectionData?.ip_address || '-'}
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">
-                Base Image
-              </p>
+              <p className="text-muted-foreground text-sm font-medium">Base Image</p>
               <p className="text-sm">{sandbox?.base_image}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">
-                Network
-              </p>
+              <p className="text-muted-foreground text-sm font-medium">Network</p>
               <p className="text-sm">{sandbox?.network}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">
-                Agent ID
-              </p>
+              <p className="text-muted-foreground text-sm font-medium">Agent ID</p>
               <p className="font-mono text-sm">{sandbox?.agent_id}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">
-                Job ID
-              </p>
+              <p className="text-muted-foreground text-sm font-medium">Job ID</p>
               <p className="font-mono text-sm">{sandbox?.job_id}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">
-                Created
-              </p>
+              <p className="text-muted-foreground text-sm font-medium">Created</p>
               <p className="text-sm">
-                {sandbox?.created_at
-                  ? new Date(sandbox.created_at).toLocaleString()
-                  : "-"}
+                {sandbox?.created_at ? new Date(sandbox.created_at).toLocaleString() : '-'}
               </p>
             </div>
           </CardContent>
@@ -244,62 +198,48 @@ export function SandboxDetails({ sandboxId }: SandboxDetailsProps) {
                 <Badge variant="secondary">{allCommands.length} commands</Badge>
               )}
             </CardTitle>
-            <CardDescription>
-              Realtime view of commands executed in this sandbox
-            </CardDescription>
+            <CardDescription>Realtime view of commands executed in this sandbox</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4 max-h-[600px] overflow-y-auto">
+            <div className="max-h-[600px] space-y-4 overflow-y-auto">
               {allCommands.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
+                <div className="text-muted-foreground py-8 text-center">
                   No commands executed yet
                 </div>
               ) : (
                 allCommands.map((cmd, index) => (
                   <div
                     key={cmd.id || index}
-                    className="rounded-lg border bg-muted/50 p-4 space-y-2"
+                    className="bg-muted/50 space-y-2 rounded-lg border p-4"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">
-                          {cmd.started_at
-                            ? new Date(cmd.started_at).toLocaleTimeString()
-                            : ""}
+                        <Clock className="text-muted-foreground h-4 w-4" />
+                        <span className="text-muted-foreground text-xs">
+                          {cmd.started_at ? new Date(cmd.started_at).toLocaleTimeString() : ''}
                         </span>
                       </div>
                       {cmd.exit_code !== undefined && (
-                        <Badge
-                          variant={
-                            cmd.exit_code === 0 ? "default" : "destructive"
-                          }
-                        >
+                        <Badge variant={cmd.exit_code === 0 ? 'default' : 'destructive'}>
                           Exit: {cmd.exit_code}
                         </Badge>
                       )}
                     </div>
-                    <div className="rounded-md bg-background p-3">
-                      <code className="text-sm font-mono text-foreground">
-                        $ {cmd.command}
-                      </code>
+                    <div className="bg-background rounded-md p-3">
+                      <code className="text-foreground font-mono text-sm">$ {cmd.command}</code>
                     </div>
                     {cmd.stdout && (
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground mb-1">
-                          stdout
-                        </p>
-                        <pre className="rounded-md bg-background p-3 text-xs font-mono whitespace-pre-wrap text-muted-foreground overflow-x-auto">
+                        <p className="text-muted-foreground mb-1 text-xs font-medium">stdout</p>
+                        <pre className="bg-background text-muted-foreground overflow-x-auto rounded-md p-3 font-mono text-xs whitespace-pre-wrap">
                           {cmd.stdout}
                         </pre>
                       </div>
                     )}
                     {cmd.stderr && (
                       <div>
-                        <p className="text-xs font-medium text-destructive mb-1">
-                          stderr
-                        </p>
-                        <pre className="rounded-md bg-destructive/10 p-3 text-xs font-mono whitespace-pre-wrap text-destructive overflow-x-auto">
+                        <p className="text-destructive mb-1 text-xs font-medium">stderr</p>
+                        <pre className="bg-destructive/10 text-destructive overflow-x-auto rounded-md p-3 font-mono text-xs whitespace-pre-wrap">
                           {cmd.stderr}
                         </pre>
                       </div>
@@ -320,15 +260,14 @@ export function SandboxDetails({ sandboxId }: SandboxDetailsProps) {
             Deploy to Production
           </CardTitle>
           <CardDescription>
-            Run Ansible playbook on the production machine based on sandbox
-            changes
+            Run Ansible playbook on the production machine based on sandbox changes
           </CardDescription>
         </CardHeader>
         <CardContent>
           {!showAnsibleDialog ? (
             <Button
               onClick={() => setShowAnsibleDialog(true)}
-              disabled={sandbox?.state !== "RUNNING"}
+              disabled={sandbox?.state !== 'RUNNING'}
             >
               <Play className="mr-2 h-4 w-4" />
               Run Ansible Playbook
@@ -338,7 +277,7 @@ export function SandboxDetails({ sandboxId }: SandboxDetailsProps) {
               <div>
                 <label
                   htmlFor="playbook-path"
-                  className="text-sm font-medium text-muted-foreground"
+                  className="text-muted-foreground text-sm font-medium"
                 >
                   Playbook Path
                 </label>
@@ -348,7 +287,7 @@ export function SandboxDetails({ sandboxId }: SandboxDetailsProps) {
                   value={playbookPath}
                   onChange={(e) => setPlaybookPath(e.target.value)}
                   placeholder="/path/to/playbook.yml"
-                  className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring mt-1 block w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:outline-none"
                 />
               </div>
               <div className="flex gap-2">
@@ -356,26 +295,19 @@ export function SandboxDetails({ sandboxId }: SandboxDetailsProps) {
                   onClick={handleRunAnsible}
                   disabled={!playbookPath || createAnsibleJobMutation.isPending}
                 >
-                  {createAnsibleJobMutation.isPending
-                    ? "Creating Job..."
-                    : "Run Playbook"}
+                  {createAnsibleJobMutation.isPending ? 'Creating Job...' : 'Run Playbook'}
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setShowAnsibleDialog(false)}
-                >
+                <Button variant="outline" onClick={() => setShowAnsibleDialog(false)}>
                   Cancel
                 </Button>
               </div>
               {createAnsibleJobMutation.isError && (
-                <p className="text-sm text-destructive">
-                  Failed to create Ansible job
-                </p>
+                <p className="text-destructive text-sm">Failed to create Ansible job</p>
               )}
             </div>
           )}
         </CardContent>
       </Card>
     </main>
-  );
+  )
 }

@@ -7,7 +7,7 @@
  */
 
 export interface VirshSandboxInternalAnsibleJobRequest {
-  check?: boolean;
-  playbook?: string;
-  vm_name?: string;
+  check?: boolean
+  playbook?: string
+  vm_name?: string
 }

@@ -7,5 +7,5 @@
  */
 
 export interface InternalRestRevokeCertificateRequest {
-  reason?: string;
+  reason?: string
 }

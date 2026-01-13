@@ -5,9 +5,9 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { InternalRestSessionResponse } from "./internalRestSessionResponse";
+import type { InternalRestSessionResponse } from './internalRestSessionResponse'
 
 export interface InternalRestListSessionsResponse {
-  sessions?: InternalRestSessionResponse[];
-  total?: number;
+  sessions?: InternalRestSessionResponse[]
+  total?: number
 }

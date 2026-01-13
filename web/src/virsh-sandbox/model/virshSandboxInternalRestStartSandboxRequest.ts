@@ -8,5 +8,5 @@
 
 export interface VirshSandboxInternalRestStartSandboxRequest {
   /** optional; default false */
-  wait_for_ip?: boolean;
+  wait_for_ip?: boolean
 }

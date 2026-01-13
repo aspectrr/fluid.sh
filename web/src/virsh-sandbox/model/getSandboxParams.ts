@@ -10,5 +10,5 @@ export type GetSandboxParams = {
   /**
    * Include command history
    */
-  include_commands?: boolean;
-};
+  include_commands?: boolean
+}

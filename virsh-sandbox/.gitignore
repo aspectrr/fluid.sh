@@ -29,6 +29,7 @@ go.work.sum
 .env.lima
 .ssh-ca/
 bin/
+.ansible
 
 # Editor/IDE
 # .idea/

@@ -1,4 +1,5 @@
 .ruff_cache
 .env
 .ssh-ca
-.mprocs.log
+mprocs.log
+.ansible/

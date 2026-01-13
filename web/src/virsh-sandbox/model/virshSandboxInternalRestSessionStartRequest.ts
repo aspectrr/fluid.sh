@@ -7,6 +7,6 @@
  */
 
 export interface VirshSandboxInternalRestSessionStartRequest {
-  certificate_id?: string;
-  source_ip?: string;
+  certificate_id?: string
+  source_ip?: string
 }

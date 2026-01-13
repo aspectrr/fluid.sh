@@ -63,7 +63,7 @@ services:
       - ${JOBS_DIR:-/var/lib/libvirt/images/jobs}:/var/lib/libvirt/images/jobs:rw
 
       # SSH CA for managed credentials (run setup-ssh-ca.sh first)
-      - ./.ssh-ca:/etc/virsh-sandbox:ro
+      - ./virsh-sandbox/.ssh-ca:/etc/virsh-sandbox:ro
 
       # Optionally mount SSH deploy key for GitOps (uncomment and set env GITOPS_SSH_KEY_PATH accordingly)
       # - ./secrets/gitops_key:/run/secrets/gitops_key:ro
@@ -79,22 +79,6 @@ services:
 
     healthcheck:
       test: ["CMD", "curl", "-fsSL", "http://127.0.0.1:8080/v1/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-
-  tmux-client:
-    container_name: virsh-sandbox-tmux-client
-    build:
-      context: ./tmux-client
-      dockerfile: Dockerfile
-    depends_on:
-      - postgres
-    restart: unless-stopped
-    ports:
-      - "8081:8081"
-    healthcheck:
-      test: ["CMD", "curl", "-fsSL", "http://127.0.0.1:8081/v1/health"]
       interval: 30s
       timeout: 5s
       retries: 5
@@ -126,7 +110,6 @@ services:
     restart: unless-stopped
     depends_on:
       - virsh-sandbox
-      - tmux-client
     ports:
       - "5173:5173"
 

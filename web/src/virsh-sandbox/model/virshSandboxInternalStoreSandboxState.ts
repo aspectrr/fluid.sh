@@ -7,14 +7,14 @@
  */
 
 export type VirshSandboxInternalStoreSandboxState =
-  (typeof VirshSandboxInternalStoreSandboxState)[keyof typeof VirshSandboxInternalStoreSandboxState];
+  (typeof VirshSandboxInternalStoreSandboxState)[keyof typeof VirshSandboxInternalStoreSandboxState]
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const VirshSandboxInternalStoreSandboxState = {
-  SandboxStateCreated: "CREATED",
-  SandboxStateStarting: "STARTING",
-  SandboxStateRunning: "RUNNING",
-  SandboxStateStopped: "STOPPED",
-  SandboxStateDestroyed: "DESTROYED",
-  SandboxStateError: "ERROR",
-} as const;
+  SandboxStateCreated: 'CREATED',
+  SandboxStateStarting: 'STARTING',
+  SandboxStateRunning: 'RUNNING',
+  SandboxStateStopped: 'STOPPED',
+  SandboxStateDestroyed: 'DESTROYED',
+  SandboxStateError: 'ERROR',
+} as const

@@ -5,17 +5,17 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { InternalRestRunCommandRequestEnv } from "./internalRestRunCommandRequestEnv";
+import type { InternalRestRunCommandRequestEnv } from './internalRestRunCommandRequestEnv'
 
 export interface InternalRestRunCommandRequest {
   /** required */
-  command?: string;
+  command?: string
   /** optional */
-  env?: InternalRestRunCommandRequestEnv;
-  /** required; path on API host */
-  private_key_path?: string;
+  env?: InternalRestRunCommandRequestEnv
+  /** optional; if empty, uses managed credentials (requires SSH CA) */
+  private_key_path?: string
   /** optional; default from service config */
-  timeout_sec?: number;
-  /** required */
-  username?: string;
+  timeout_sec?: number
+  /** optional; defaults to "sandbox" when using managed credentials */
+  user?: string
 }

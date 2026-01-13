@@ -220,6 +220,7 @@ def run_agent(user_goal: str, sandbox_id: str | None | Any) -> None:
                 "- Your goal is to complete the user's task by generating an Ansible playbook that recreates the task on a production machine.\n"
                 "- Test your updates by running relevant commands on the sandbox and then building out the playbook. Do not make assumptions on outputs.\n"
                 "- You MUST use the Ansible tools to create and manage the playbook.\n"
+                "- Do not add an extension to the playbook name like .yml or .yaml\n"
                 "- Add any steps to the playbook that are necessary to fully recreate the outcome on the production machine.\n"
                 "- You can use other tools to explore the environment and test your changes.\n"
                 "- Do NOT assume command output.\n"

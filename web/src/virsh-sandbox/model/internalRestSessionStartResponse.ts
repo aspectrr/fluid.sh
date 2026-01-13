@@ -7,5 +7,5 @@
  */
 
 export interface InternalRestSessionStartResponse {
-  session_id?: string;
+  session_id?: string
 }

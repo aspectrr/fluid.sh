@@ -7,17 +7,17 @@
  */
 
 export interface InternalRestCertificateResponse {
-  id?: string;
-  identity?: string;
-  is_expired?: boolean;
-  issued_at?: string;
-  principals?: string[];
-  sandbox_id?: string;
-  serial_number?: number;
-  status?: string;
-  ttl_seconds?: number;
-  user_id?: string;
-  valid_after?: string;
-  valid_before?: string;
-  vm_id?: string;
+  id?: string
+  identity?: string
+  is_expired?: boolean
+  issued_at?: string
+  principals?: string[]
+  sandbox_id?: string
+  serial_number?: number
+  status?: string
+  ttl_seconds?: number
+  user_id?: string
+  valid_after?: string
+  valid_before?: string
+  vm_id?: string
 }

@@ -10,9 +10,9 @@ export type ListSandboxCommandsParams = {
   /**
    * Max results to return
    */
-  limit?: number;
+  limit?: number
   /**
    * Number of results to skip
    */
-  offset?: number;
-};
+  offset?: number
+}

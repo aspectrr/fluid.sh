@@ -7,12 +7,12 @@
  */
 
 export type VirshSandboxInternalAnsibleJobStatus =
-  (typeof VirshSandboxInternalAnsibleJobStatus)[keyof typeof VirshSandboxInternalAnsibleJobStatus];
+  (typeof VirshSandboxInternalAnsibleJobStatus)[keyof typeof VirshSandboxInternalAnsibleJobStatus]
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const VirshSandboxInternalAnsibleJobStatus = {
-  JobStatusPending: "pending",
-  JobStatusRunning: "running",
-  JobStatusFinished: "finished",
-  JobStatusFailed: "failed",
-} as const;
+  JobStatusPending: 'pending',
+  JobStatusRunning: 'running',
+  JobStatusFinished: 'finished',
+  JobStatusFailed: 'failed',
+} as const

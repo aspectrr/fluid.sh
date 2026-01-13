@@ -15,6 +15,10 @@ pre-commit:
       glob: "*.go"
       root: "virsh-sandbox"
       run: make test
+    lint-virsh-sandbox:
+      glob: "*.go"
+      root: "virsh-sandbox"
+      run: make lint
 
     # Python SDK
     fmt-sdk-black:
@@ -37,7 +41,13 @@ pre-commit:
       root: "sdk/virsh-sandbox-py"
       run: python3 -m pytest test/ -v --tb=short
 
-    lint-virsh-sandbox:
-      glob: "*.go"
-      root: "virsh-sandbox"
-      run: make lint
+    # Web
+    fmt-web:
+      glob: "*.{ts,tsx,js,jsx,json,css,md}"
+      root: "web"
+      run: bun format
+      stage_fixed: true
+    lint-web:
+      glob: "*.ts"
+      root: "web"
+      run: bun lint

@@ -74,21 +74,9 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/sandboxes/$id'
-    | '/tmux/page'
-    | '/ansible'
-    | '/sandboxes'
-    | '/tmux/id/page'
+  fullPaths: '/' | '/sandboxes/$id' | '/tmux/page' | '/ansible' | '/sandboxes' | '/tmux/id/page'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/sandboxes/$id'
-    | '/tmux/page'
-    | '/ansible'
-    | '/sandboxes'
-    | '/tmux/id/page'
+  to: '/' | '/sandboxes/$id' | '/tmux/page' | '/ansible' | '/sandboxes' | '/tmux/id/page'
   id:
     | '__root__'
     | '/'

@@ -7,15 +7,15 @@
  */
 
 export interface VirshSandboxInternalRestSandboxInfo {
-  agent_id?: string;
-  base_image?: string;
-  created_at?: string;
-  id?: string;
-  ip_address?: string;
-  job_id?: string;
-  network?: string;
-  sandbox_name?: string;
-  state?: string;
-  ttl_seconds?: number;
-  updated_at?: string;
+  agent_id?: string
+  base_image?: string
+  created_at?: string
+  id?: string
+  ip_address?: string
+  job_id?: string
+  network?: string
+  sandbox_name?: string
+  state?: string
+  ttl_seconds?: number
+  updated_at?: string
 }

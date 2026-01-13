@@ -10,29 +10,29 @@ export type ListSandboxesParams = {
   /**
    * Filter by agent ID
    */
-  agent_id?: string;
+  agent_id?: string
   /**
    * Filter by job ID
    */
-  job_id?: string;
+  job_id?: string
   /**
    * Filter by base image
    */
-  base_image?: string;
+  base_image?: string
   /**
    * Filter by state (CREATED, STARTING, RUNNING, STOPPED, DESTROYED, ERROR)
    */
-  state?: string;
+  state?: string
   /**
    * Filter by VM name
    */
-  vm_name?: string;
+  vm_name?: string
   /**
    * Max results to return
    */
-  limit?: number;
+  limit?: number
   /**
    * Number of results to skip
    */
-  offset?: number;
-};
+  offset?: number
+}

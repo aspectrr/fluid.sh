@@ -8,21 +8,21 @@
 
 export interface VirshSandboxInternalRestRequestAccessResponse {
   /** Certificate is the SSH certificate content (save as key-cert.pub). */
-  certificate?: string;
+  certificate?: string
   /** CertificateID is the ID of the issued certificate. */
-  certificate_id?: string;
+  certificate_id?: string
   /** ConnectCommand is an example SSH command for connecting. */
-  connect_command?: string;
+  connect_command?: string
   /** Instructions provides usage instructions. */
-  instructions?: string;
+  instructions?: string
   /** SSHPort is the SSH port (usually 22). */
-  ssh_port?: number;
+  ssh_port?: number
   /** TTLSeconds is the remaining validity in seconds. */
-  ttl_seconds?: number;
+  ttl_seconds?: number
   /** Username is the SSH username to use. */
-  username?: string;
+  username?: string
   /** ValidUntil is when the certificate expires (RFC3339). */
-  valid_until?: string;
+  valid_until?: string
   /** VMIPAddress is the IP address of the sandbox VM. */
-  vm_ip_address?: string;
+  vm_ip_address?: string
 }

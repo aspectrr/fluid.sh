@@ -20,6 +20,8 @@ import (
 	"virsh-sandbox/internal/store"
 	postgresStore "virsh-sandbox/internal/store/postgres"
 	"virsh-sandbox/internal/vm"
+
+	"github.com/joho/godotenv"
 )
 
 // @title virsh-sandbox API
@@ -42,6 +44,9 @@ func main() {
 	// Context with OS signal cancellation
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
+
+	// Load .env file if present
+	_ = godotenv.Load()
 
 	// Logging setup
 	logger := setupLogger()

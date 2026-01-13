@@ -5,18 +5,18 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { VirshSandboxInternalStoreCommandExecRecord } from "./virshSandboxInternalStoreCommandExecRecord";
+import type { VirshSandboxInternalStoreCommandExecRecord } from './virshSandboxInternalStoreCommandExecRecord'
 
 export interface VirshSandboxInternalStoreCommand {
-  command?: string;
-  ended_at?: string;
+  command?: string
+  ended_at?: string
   /** JSON-encoded env map */
-  env_json?: string;
-  exit_code?: number;
-  id?: string;
-  metadata?: VirshSandboxInternalStoreCommandExecRecord;
-  sandbox_id?: string;
-  started_at?: string;
-  stderr?: string;
-  stdout?: string;
+  env_json?: string
+  exit_code?: number
+  id?: string
+  metadata?: VirshSandboxInternalStoreCommandExecRecord
+  sandbox_id?: string
+  started_at?: string
+  stderr?: string
+  stdout?: string
 }

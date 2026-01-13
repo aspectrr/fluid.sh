@@ -5,18 +5,18 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { VirshSandboxInternalStoreSnapshotKind } from "./virshSandboxInternalStoreSnapshotKind";
+import type { VirshSandboxInternalStoreSnapshotKind } from './virshSandboxInternalStoreSnapshotKind'
 
 export interface VirshSandboxInternalStoreSnapshot {
-  created_at?: string;
-  id?: string;
-  kind?: VirshSandboxInternalStoreSnapshotKind;
+  created_at?: string
+  id?: string
+  kind?: VirshSandboxInternalStoreSnapshotKind
   /** optional JSON metadata */
-  meta_json?: string;
+  meta_json?: string
   /** logical name (unique per sandbox) */
-  name?: string;
+  name?: string
   /** Ref is a backend-specific reference: for internal snapshots this could be a UUID or name,
 for external snapshots it could be a file path to the overlay qcow2. */
-  ref?: string;
-  sandbox_id?: string;
+  ref?: string
+  sandbox_id?: string
 }

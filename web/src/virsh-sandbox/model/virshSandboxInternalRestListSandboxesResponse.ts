@@ -5,9 +5,9 @@
  * API for managing virtual machine sandboxes using libvirt
  * OpenAPI spec version: 0.0.1-beta
  */
-import type { VirshSandboxInternalRestSandboxInfo } from "./virshSandboxInternalRestSandboxInfo";
+import type { VirshSandboxInternalRestSandboxInfo } from './virshSandboxInternalRestSandboxInfo'
 
 export interface VirshSandboxInternalRestListSandboxesResponse {
-  sandboxes?: VirshSandboxInternalRestSandboxInfo[];
-  total?: number;
+  sandboxes?: VirshSandboxInternalRestSandboxInfo[]
+  total?: number
 }

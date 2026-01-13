@@ -424,7 +424,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_ansible.listPlaybooksResponse"
+                $ref: "#/components/schemas/internal_ansible.listPlaybooksResponse"
           description: OK
       summary: List playbooks
       tags:
@@ -436,7 +436,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/virsh-sandbox_internal_ansible.createPlaybookRequest"
+              $ref: "#/components/schemas/internal_ansible.createPlaybookRequest"
         description: Playbook creation parameters
         required: true
       responses:
@@ -444,7 +444,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_ansible.createPlaybookResponse"
+                $ref: "#/components/schemas/internal_ansible.createPlaybookResponse"
           description: Created
         "400":
           content:
@@ -501,7 +501,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_ansible.getPlaybookResponse"
+                $ref: "#/components/schemas/internal_ansible.getPlaybookResponse"
           description: OK
         "404":
           content:
@@ -528,7 +528,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_ansible.exportPlaybookResponse"
+                $ref: "#/components/schemas/internal_ansible.exportPlaybookResponse"
           description: OK
         "404":
           content:
@@ -554,7 +554,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/virsh-sandbox_internal_ansible.addTaskRequest"
+              $ref: "#/components/schemas/internal_ansible.addTaskRequest"
         description: Task parameters
         required: true
       responses:
@@ -562,7 +562,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_ansible.addTaskResponse"
+                $ref: "#/components/schemas/internal_ansible.addTaskResponse"
           description: Created
         "400":
           content:
@@ -630,7 +630,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/virsh-sandbox_internal_ansible.updateTaskRequest"
+              $ref: "#/components/schemas/internal_ansible.updateTaskRequest"
         description: Task update parameters
         required: true
       responses:
@@ -638,7 +638,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/virsh-sandbox_internal_ansible.updateTaskResponse"
+                $ref: "#/components/schemas/internal_ansible.updateTaskResponse"
           description: OK
         "400":
           content:
@@ -671,7 +671,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/virsh-sandbox_internal_ansible.reorderTasksRequest"
+              $ref: "#/components/schemas/internal_ansible.reorderTasksRequest"
         description: New task order
         required: true
       responses:
@@ -1351,6 +1351,15 @@ components:
           type: object
       type: object
     internal_ansible.addTaskResponse:
+      example:
+        task:
+          module: module
+          name: name
+          created_at: created_at
+          id: id
+          position: 0
+          params: "{}"
+          playbook_id: playbook_id
       properties:
         task:
           $ref: "#/components/schemas/virsh-sandbox_internal_store.PlaybookTask"
@@ -1365,16 +1374,51 @@ components:
           type: string
       type: object
     internal_ansible.createPlaybookResponse:
+      example:
+        playbook:
+          file_path: file_path
+          updated_at: updated_at
+          hosts: hosts
+          name: name
+          created_at: created_at
+          id: id
+          become: true
       properties:
         playbook:
           $ref: "#/components/schemas/virsh-sandbox_internal_store.Playbook"
       type: object
     internal_ansible.exportPlaybookResponse:
+      example:
+        yaml: yaml
       properties:
         yaml:
           type: string
       type: object
     internal_ansible.getPlaybookResponse:
+      example:
+        tasks:
+        - module: module
+          name: name
+          created_at: created_at
+          id: id
+          position: 0
+          params: "{}"
+          playbook_id: playbook_id
+        - module: module
+          name: name
+          created_at: created_at
+          id: id
+          position: 0
+          params: "{}"
+          playbook_id: playbook_id
+        playbook:
+          file_path: file_path
+          updated_at: updated_at
+          hosts: hosts
+          name: name
+          created_at: created_at
+          id: id
+          become: true
       properties:
         playbook:
           $ref: "#/components/schemas/virsh-sandbox_internal_store.Playbook"
@@ -1384,6 +1428,23 @@ components:
           type: array
       type: object
     internal_ansible.listPlaybooksResponse:
+      example:
+        total: 0
+        playbooks:
+        - file_path: file_path
+          updated_at: updated_at
+          hosts: hosts
+          name: name
+          created_at: created_at
+          id: id
+          become: true
+        - file_path: file_path
+          updated_at: updated_at
+          hosts: hosts
+          name: name
+          created_at: created_at
+          id: id
+          become: true
       properties:
         playbooks:
           items:
@@ -1410,6 +1471,15 @@ components:
           type: object
       type: object
     internal_ansible.updateTaskResponse:
+      example:
+        task:
+          module: module
+          name: name
+          created_at: created_at
+          id: id
+          position: 0
+          params: "{}"
+          playbook_id: playbook_id
       properties:
         task:
           $ref: "#/components/schemas/virsh-sandbox_internal_store.PlaybookTask"
@@ -2021,15 +2091,6 @@ components:
           type: object
       type: object
     virsh-sandbox_internal_ansible.addTaskResponse:
-      example:
-        task:
-          module: module
-          name: name
-          created_at: created_at
-          id: id
-          position: 0
-          params: "{}"
-          playbook_id: playbook_id
       properties:
         task:
           $ref: "#/components/schemas/virsh-sandbox_internal_store.PlaybookTask"
@@ -2044,51 +2105,16 @@ components:
           type: string
       type: object
     virsh-sandbox_internal_ansible.createPlaybookResponse:
-      example:
-        playbook:
-          file_path: file_path
-          updated_at: updated_at
-          hosts: hosts
-          name: name
-          created_at: created_at
-          id: id
-          become: true
       properties:
         playbook:
           $ref: "#/components/schemas/virsh-sandbox_internal_store.Playbook"
       type: object
     virsh-sandbox_internal_ansible.exportPlaybookResponse:
-      example:
-        yaml: yaml
       properties:
         yaml:
           type: string
       type: object
     virsh-sandbox_internal_ansible.getPlaybookResponse:
-      example:
-        tasks:
-        - module: module
-          name: name
-          created_at: created_at
-          id: id
-          position: 0
-          params: "{}"
-          playbook_id: playbook_id
-        - module: module
-          name: name
-          created_at: created_at
-          id: id
-          position: 0
-          params: "{}"
-          playbook_id: playbook_id
-        playbook:
-          file_path: file_path
-          updated_at: updated_at
-          hosts: hosts
-          name: name
-          created_at: created_at
-          id: id
-          become: true
       properties:
         playbook:
           $ref: "#/components/schemas/virsh-sandbox_internal_store.Playbook"
@@ -2098,23 +2124,6 @@ components:
           type: array
       type: object
     virsh-sandbox_internal_ansible.listPlaybooksResponse:
-      example:
-        total: 0
-        playbooks:
-        - file_path: file_path
-          updated_at: updated_at
-          hosts: hosts
-          name: name
-          created_at: created_at
-          id: id
-          become: true
-        - file_path: file_path
-          updated_at: updated_at
-          hosts: hosts
-          name: name
-          created_at: created_at
-          id: id
-          become: true
       properties:
         playbooks:
           items:
@@ -2141,15 +2150,6 @@ components:
           type: object
       type: object
     virsh-sandbox_internal_ansible.updateTaskResponse:
-      example:
-        task:
-          module: module
-          name: name
-          created_at: created_at
-          id: id
-          position: 0
-          params: "{}"
-          playbook_id: playbook_id
       properties:
         task:
           $ref: "#/components/schemas/virsh-sandbox_internal_store.PlaybookTask"

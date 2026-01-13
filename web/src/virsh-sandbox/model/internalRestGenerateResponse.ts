@@ -7,6 +7,6 @@
  */
 
 export interface InternalRestGenerateResponse {
-  message?: string;
-  note?: string;
+  message?: string
+  note?: string
 }
