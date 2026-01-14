@@ -1,0 +1,455 @@
+import subprocess
+import tempfile
+import os
+from dataclasses import dataclass, field
+from typing import Any, Optional
+import yaml
+
+from tools import Tool, ToolExecutionResult
+
+
+class AnsibleDumper(yaml.SafeDumper):
+    def increase_indent(self, flow=False, indentless=False):
+        return super(AnsibleDumper, self).increase_indent(flow, False)
+
+@dataclass
+class PlaybookManager:
+    """Manages the state of the Ansible playbook."""
+    
+    playbook: list[dict[str, Any]] = field(default_factory=list)
+    
+    def init_playbook(self, name: str, hosts: str = "all") -> None:
+        """Initialize a new playbook."""
+        self.playbook = [{
+            "name": name,
+            "hosts": hosts,
+            "tasks": []
+        }]
+    
+    def get_playbook(self) -> list[dict[str, Any]]:
+        """Get the current playbook."""
+        return self.playbook
+
+    def to_yaml(self) -> str:
+        """Convert playbook to YAML string."""
+        return yaml.dump(self.playbook, Dumper=AnsibleDumper, sort_keys=False, indent=2)
+        
+    def add_task(self, name: str, module: str, args: dict[str, Any]) -> None:
+        """Add a task to the current playbook."""
+        if not self.playbook:
+            raise ValueError("No playbook initialized. Call init_playbook first.")
+            
+        task = {
+            "name": name,
+            module: args
+        }
+        self.playbook[0]["tasks"].append(task)
+
+    def validate_playbook(self) -> tuple[bool, list[str]]:
+        """
+        Perform validation of the playbook using structural checks,
+        ansible-lint, and ansible-playbook --syntax-check.
+        
+        Returns:
+            Tuple of (is_valid, list of error messages)
+        """
+        errors = []
+        if not self.playbook:
+            errors.append("Playbook is empty or not initialized.")
+            return False, errors
+
+        # 1. Basic structural validation
+        for i, play in enumerate(self.playbook):
+            if not isinstance(play, dict):
+                errors.append(f"Play at index {i} is not a dictionary.")
+                continue
+            if "name" not in play:
+                errors.append(f"Play at index {i} is missing 'name'.")
+            if "hosts" not in play:
+                errors.append(f"Play at index {i} is missing 'hosts'.")
+            if "tasks" not in play:
+                errors.append(f"Play at index {i} is missing 'tasks'.")
+
+        if errors:
+            return False, errors
+
+        # 2. External command validation (ansible-lint and syntax-check)
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.yml', delete=False) as tmp:
+            tmp.write(self.to_yaml())
+            tmp_path = tmp.name
+
+        try:
+            # Run ansible-playbook --syntax-check
+            syntax_check = subprocess.run(
+                ["ansible-playbook", "--syntax-check", tmp_path],
+                capture_output=True,
+                text=True
+            )
+            if syntax_check.returncode != 0:
+                errors.append("Ansible syntax check failed:")
+                errors.append(syntax_check.stderr or syntax_check.stdout)
+
+            # Run ansible-lint
+            # We use --offline to avoid network calls and --nocolor for cleaner output
+            lint_check = subprocess.run(
+                ["ansible-lint", "--offline", "--nocolor", tmp_path],
+                capture_output=True,
+                text=True
+            )
+            if lint_check.returncode != 0:
+                # ansible-lint often has many "warnings" that might be too strict
+                # but we'll report them if the return code is non-zero
+                errors.append("Ansible-lint found issues:")
+                errors.append(lint_check.stdout or lint_check.stderr)
+
+        except FileNotFoundError as e:
+            errors.append(f"Required tool not found: {str(e)}")
+        except Exception as e:
+            errors.append(f"Validation error: {str(e)}")
+        finally:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+
+        return len(errors) == 0, errors
+
+    def run_playbook(self, check_mode: bool = False, target_host: Optional[str] = None) -> tuple[bool, str, str]:
+        """
+        Run the playbook using ansible-playbook.
+        
+        Args:
+            check_mode: If True, run with --check (dry run).
+            target_host: Optional host to target. If provided, uses -i host,
+            
+        Returns:
+            Tuple of (success, stdout, stderr)
+        """
+        if not self.playbook:
+            return False, "", "Playbook is empty or not initialized."
+
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.yml', delete=False) as tmp:
+            tmp.write(self.to_yaml())
+            tmp_path = tmp.name
+
+        try:
+            cmd = ["ansible-playbook", tmp_path]
+            if check_mode:
+                cmd.append("--check")
+            
+            if target_host:
+                # Use -i host, format for single host targeting
+                cmd.extend(["-i", f"{target_host},"])
+            
+            # Set ANSIBLE_HOST_KEY_CHECKING=False to avoid interactive prompts
+            env = os.environ.copy()
+            env["ANSIBLE_HOST_KEY_CHECKING"] = "False"
+
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                env=env
+            )
+            
+            return result.returncode == 0, result.stdout, result.stderr
+
+        except Exception as e:
+            return False, "", str(e)
+        finally:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+
+
+class InitPlaybookTool(Tool):
+    """Tool to initialize a new Ansible playbook."""
+    
+    def __init__(self, manager: PlaybookManager) -> None:
+        self.manager = manager
+
+    @property
+    def name(self) -> str:
+        return "init_playbook"
+
+    @property
+    def description(self) -> str:
+        return "Initialize a new Ansible playbook for the current session."
+
+    @property
+    def parameters(self) -> dict[str, Any]:
+        return {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the playbook/play",
+                },
+                "hosts": {
+                    "type": "string",
+                    "description": "Hosts to target (default: all)",
+                    "default": "all"
+                },
+            },
+            "required": ["name"],
+        }
+
+    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+        try:
+            name = kwargs["name"]
+            hosts = kwargs.get("hosts", "all")
+            
+            self.manager.init_playbook(name, hosts)
+            
+            return ToolExecutionResult(
+                success=True,
+                data={"playbook": self.manager.get_playbook()},
+            )
+        except Exception as e:
+            return ToolExecutionResult(
+                success=False,
+                data={},
+                error_message=str(e),
+            )
+
+
+class AddTaskTool(Tool):
+    """Tool to add a task to the Ansible playbook."""
+
+    def __init__(self, manager: PlaybookManager) -> None:
+        self.manager = manager
+
+    @property
+    def name(self) -> str:
+        return "add_task"
+
+    @property
+    def description(self) -> str:
+        return "Add a task to the current Ansible playbook."
+
+    @property
+    def parameters(self) -> dict[str, Any]:
+        return {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Description of the task",
+                },
+                "module": {
+                    "type": "string",
+                    "description": "Ansible module to use (e.g., shell, apt, copy)",
+                },
+                "args": {
+                    "type": "object",
+                    "description": "Arguments for the module",
+                },
+            },
+            "required": ["name", "module", "args"],
+        }
+
+    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+        try:
+            name = kwargs["name"]
+            module = kwargs["module"]
+            args = kwargs["args"]
+
+            self.manager.add_task(name, module, args)
+
+            return ToolExecutionResult(
+                success=True,
+                data={"playbook": self.manager.get_playbook()},
+            )
+        except Exception as e:
+            return ToolExecutionResult(
+                success=False,
+                data={},
+                error_message=str(e),
+            )
+
+
+class DryRunPlaybookTool(Tool):
+    """Tool to perform a dry-run of the Ansible playbook."""
+
+    def __init__(self, manager: PlaybookManager) -> None:
+        self.manager = manager
+
+    @property
+    def name(self) -> str:
+        return "dry_run_playbook"
+
+    @property
+    def description(self) -> str:
+        return "Perform a dry-run of the current Ansible playbook on a target host (ansible-playbook --check)."
+
+    @property
+    def parameters(self) -> dict[str, Any]:
+        return {
+            "type": "object",
+            "properties": {
+                "target_host": {
+                    "type": "string",
+                    "description": "Host to target for the dry-run (e.g., IP address or hostname).",
+                },
+            },
+            "required": ["target_host"],
+        }
+
+    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+        try:
+            target_host = kwargs["target_host"]
+            success, stdout, stderr = self.manager.run_playbook(check_mode=True, target_host=target_host)
+            
+            return ToolExecutionResult(
+                success=success,
+                data={
+                    "stdout": stdout,
+                    "stderr": stderr,
+                    "check_mode": True
+                },
+                error_message=stderr if not success else None
+            )
+        except Exception as e:
+            return ToolExecutionResult(
+                success=False,
+                data={},
+                error_message=str(e),
+            )
+
+
+class RunPlaybookTool(Tool):
+    """Tool to execute the Ansible playbook."""
+
+    def __init__(self, manager: PlaybookManager) -> None:
+        self.manager = manager
+
+    @property
+    def name(self) -> str:
+        return "run_playbook"
+
+    @property
+    def description(self) -> str:
+        return "Execute the current Ansible playbook on a target host. This is a critical action that modifies the target system."
+
+    @property
+    def parameters(self) -> dict[str, Any]:
+        return {
+            "type": "object",
+            "properties": {
+                "target_host": {
+                    "type": "string",
+                    "description": "Host to target for the execution (e.g., IP address or hostname).",
+                },
+                "confirm": {
+                    "type": "boolean",
+                    "description": "Must be set to true to confirm execution of this critical action.",
+                },
+            },
+            "required": ["target_host", "confirm"],
+        }
+
+    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+        try:
+            target_host = kwargs["target_host"]
+            confirm = kwargs.get("confirm", False)
+            
+            if not confirm:
+                return ToolExecutionResult(
+                    success=False,
+                    data={},
+                    error_message="Execution not confirmed. Set 'confirm' to true to run the playbook.",
+                )
+
+            success, stdout, stderr = self.manager.run_playbook(check_mode=False, target_host=target_host)
+            
+            return ToolExecutionResult(
+                success=success,
+                data={
+                    "stdout": stdout,
+                    "stderr": stderr,
+                    "check_mode": False
+                },
+                error_message=stderr if not success else None
+            )
+        except Exception as e:
+            return ToolExecutionResult(
+                success=False,
+                data={},
+                error_message=str(e),
+            )
+
+
+class ViewPlaybookTool(Tool):
+    """Tool to view the current Ansible playbook."""
+
+    def __init__(self, manager: PlaybookManager) -> None:
+        self.manager = manager
+
+    @property
+    def name(self) -> str:
+        return "view_playbook"
+
+    @property
+    def description(self) -> str:
+        return "View the current Ansible playbook in YAML format."
+
+    @property
+    def parameters(self) -> dict[str, Any]:
+        return {
+            "type": "object",
+            "properties": {},
+            "required": [],
+        }
+
+    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+        try:
+            return ToolExecutionResult(
+                success=True,
+                data={"playbook_yaml": self.manager.to_yaml()},
+            )
+        except Exception as e:
+            return ToolExecutionResult(
+                success=False,
+                data={},
+                error_message=str(e),
+            )
+
+
+class ValidatePlaybookTool(Tool):
+    """Tool to validate the current Ansible playbook."""
+
+    def __init__(self, manager: PlaybookManager) -> None:
+        self.manager = manager
+
+    @property
+    def name(self) -> str:
+        return "validate_playbook"
+
+    @property
+    def description(self) -> str:
+        return "Validate the current Ansible playbook for structural correctness."
+
+    @property
+    def parameters(self) -> dict[str, Any]:
+        return {
+            "type": "object",
+            "properties": {},
+            "required": [],
+        }
+
+    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+        try:
+            is_valid, errors = self.manager.validate_playbook()
+            
+            return ToolExecutionResult(
+                success=is_valid,
+                data={
+                    "is_valid": is_valid,
+                    "errors": errors,
+                    "playbook_yaml": self.manager.to_yaml() if is_valid else None
+                },
+                error_message="\n".join(errors) if not is_valid else None
+            )
+        except Exception as e:
+            return ToolExecutionResult(
+                success=False,
+                data={},
+                error_message=str(e),
+            )
