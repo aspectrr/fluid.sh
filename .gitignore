@@ -4,3 +4,4 @@
 mprocs.log
 .ansible/
 dist/
+.venv
