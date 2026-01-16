@@ -39,17 +39,17 @@ archives:
 checksum:
   name_template: checksums.txt
 
-# signs:
-#   - id: checksums-gpg
-#     artifacts: checksum
-#     cmd: gpg
-#     args:
-#       - "--batch"
-#       - "--yes"
-#       - "--armor"
-#       - "--detach-sign"
-#       - "--local-user={{ .Env.GPG_FINGERPRINT }}"
-#       - "{{ .ArtifactPath }}"
+signs:
+  - id: checksums-gpg
+    artifacts: checksum
+    cmd: gpg
+    args:
+      - "--batch"
+      - "--yes"
+      - "--armor"
+      - "--detach-sign"
+      - "--local-user={{ .Env.GPG_FINGERPRINT }}"
+      - "{{ .ArtifactPath }}"
 
 # snapshot:
 #   name_template: "{{ .Tag }}-next"
