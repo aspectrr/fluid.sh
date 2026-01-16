@@ -103,7 +103,7 @@ class ViewSessionTool(Tool):
             "required": [],
         }
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         try:
             summary = self.session_state.get_summary()
             return ToolExecutionResult(
@@ -145,7 +145,7 @@ class RequestReviewTool(Tool):
             "required": ["reason"],
         }
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         try:
             reason = kwargs.get("reason", "No reason provided")
             summary = self.session_state.get_summary()
@@ -192,7 +192,7 @@ class TaskCompletionTool(Tool):
             "required": ["summary"],
         }
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         try:
             summary = kwargs["summary"]
             session_summary = self.session_state.get_summary()

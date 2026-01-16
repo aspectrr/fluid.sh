@@ -90,7 +90,7 @@ class AgentLoop:
         self.messages.append({"role": "user", "content": content})
         self._prune_history()
 
-    def _execute_tool(self, tool_call: ChatCompletionMessageToolCall) -> ToolResult:
+    async def _execute_tool(self, tool_call: ChatCompletionMessageToolCall) -> ToolResult:
         """Execute a single tool call."""
         name = tool_call.function.name
         try:
@@ -104,7 +104,7 @@ class AgentLoop:
             )
 
         try:
-            result = self.tool_handler(name, args)
+            result = await self.tool_handler(name, args)
             is_error = isinstance(result, dict) and result.get("error", False)
             return ToolResult(
                 tool_call_id=tool_call.id,
@@ -120,7 +120,7 @@ class AgentLoop:
                 error=True,
             )
 
-    def step(self) -> AgentResponse:
+    async def step(self) -> AgentResponse:
         """
         Execute a single step of the agent loop.
 
@@ -144,7 +144,7 @@ class AgentLoop:
 
             # Execute each tool
             for tool_call in msg.tool_calls:
-                tool_result = self._execute_tool(tool_call)
+                tool_result = await self._execute_tool(tool_call)
                 agent_response.tool_results.append(tool_result)
 
                 # Add tool result to messages
@@ -195,7 +195,7 @@ class AgentLoop:
         ]
         return any(phrase in lower for phrase in done_phrases)
 
-    def run(self, user_input: str, max_turns: int = 50) -> list[AgentResponse]:
+    async def run(self, user_input: str, max_turns: int = 50) -> list[AgentResponse]:
         """
         Run the agent loop until completion or max turns.
 
@@ -210,7 +210,7 @@ class AgentLoop:
         responses: list[AgentResponse] = []
 
         for _ in range(max_turns):
-            response = self.step()
+            response = await self.step()
             responses.append(response)
 
             if response.done or response.awaiting_input:

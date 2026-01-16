@@ -50,7 +50,7 @@ class CreateSandboxTool(Tool):
             "required": ["source_vm_name"],
         }
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         try:
             source_vm_name = kwargs["source_vm_name"]
             agent_id = kwargs.get("agent_id", str(uuid4()))
@@ -122,7 +122,7 @@ class RunCommandTool(Tool):
             "required": ["sandbox_id", "command"],
         }
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         # Disallow chained commands
         command = kwargs.get("command", "")
         if any(op in command for op in ["&&", "||", ";", "|", "`"]):

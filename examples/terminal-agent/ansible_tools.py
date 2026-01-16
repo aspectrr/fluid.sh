@@ -191,7 +191,7 @@ class InitPlaybookTool(Tool):
             "required": ["name"],
         }
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         try:
             name = kwargs["name"]
             hosts = kwargs.get("hosts", "all")
@@ -245,7 +245,7 @@ class AddTaskTool(Tool):
             "required": ["name", "module", "args"],
         }
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         try:
             name = kwargs["name"]
             module = kwargs["module"]
@@ -292,7 +292,7 @@ class DryRunPlaybookTool(Tool):
             "required": ["target_host"],
         }
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         try:
             target_host = kwargs["target_host"]
             success, stdout, stderr = self.manager.run_playbook(check_mode=True, target_host=target_host)
@@ -345,7 +345,7 @@ class RunPlaybookTool(Tool):
             "required": ["target_host", "confirm"],
         }
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         try:
             target_host = kwargs["target_host"]
             confirm = kwargs.get("confirm", False)
@@ -398,7 +398,7 @@ class ViewPlaybookTool(Tool):
             "required": [],
         }
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         try:
             return ToolExecutionResult(
                 success=True,
@@ -434,7 +434,7 @@ class ValidatePlaybookTool(Tool):
             "required": [],
         }
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         try:
             is_valid, errors = self.manager.validate_playbook()
             

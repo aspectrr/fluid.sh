@@ -27,17 +27,10 @@ class MCPTool(Tool):
     def parameters(self) -> Dict[str, Any]:
         return self._parameters
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
-        """Execute the tool on the MCP server synchronously."""
-        # Since our Tool.execute is synchronous, we run the async mcp call in a loop
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
+        """Execute the tool on the MCP server."""
         try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            
-        try:
-            result = loop.run_until_complete(self.session.call_tool(self._name, kwargs))
+            result = await self.session.call_tool(self._name, kwargs)
             return ToolExecutionResult(
                 success=not result.is_error,
                 data={"content": [c.model_dump() for c in result.content]},

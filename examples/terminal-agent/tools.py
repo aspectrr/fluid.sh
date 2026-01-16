@@ -71,7 +71,7 @@ class Tool(ABC):
         ...
 
     @abstractmethod
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         """
         Execute the tool with given parameters.
 
@@ -142,7 +142,7 @@ class ToolRegistry:
         """
         return self._tools.get(name)
 
-    def execute(self, name: str, args: dict[str, Any]) -> dict[str, Any]:
+    async def execute(self, name: str, args: dict[str, Any]) -> dict[str, Any]:
         """
         Execute a tool by name.
 
@@ -158,7 +158,7 @@ class ToolRegistry:
             return {"error": f"Tool '{name}' not found"}
 
         try:
-            result = tool.execute(**args)
+            result = await tool.execute(**args)
             return result.to_dict()
         except TypeError as e:
             return {"error": f"Invalid arguments for '{name}': {e}"}

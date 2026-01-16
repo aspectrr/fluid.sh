@@ -6,8 +6,10 @@ Entry point for the terminal agent application.
 
 import argparse
 import asyncio
+import json
 import os
 import sys
+from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
@@ -47,13 +49,13 @@ Guidelines:
 def create_tool_registry(session_state: SessionState, sandbox_client: Any = None) -> ToolRegistry:
     """
     Create and configure the tool registry with available tools.
-    
+
     Args:
         session_state: SessionState instance
         sandbox_client: VirshSandbox client instance (optional)
     """
     registry = ToolRegistry()
-    
+
     # Phase 4 tools
     try:
         from session_manager import ViewSessionTool, RequestReviewTool, TaskCompletionTool
@@ -116,7 +118,7 @@ async def discover_mcp_servers(mcp_manager: MCPManager) -> None:
                 "PATH": os.getenv("PATH", "")
             }
         )
-    
+
     # GitHub MCP Integration (Task 3.4)
     if os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN"):
         await mcp_manager.add_server(
@@ -179,7 +181,6 @@ def get_provider_config() -> tuple[str, str, str, str | None, str | None]:
 
     return provider_type, api_key or "", model, base_url, site_url
 
-
 async def create_agent() -> tuple[AgentLoop, str, str, MCPManager]:
     """
     Create and configure the agent with provider and MCP servers.
@@ -211,7 +212,7 @@ async def create_agent() -> tuple[AgentLoop, str, str, MCPManager]:
     sandbox_client = None
     try:
         from virsh_sandbox import VirshSandbox
-        api_base = os.getenv("VIRSH_SANDBOX_API_BASE", "http://localhost:8080")
+        api_base = get_sandbox_api_base()
         sandbox_client = VirshSandbox(api_base)
     except ImportError:
         # If virsh-sandbox is not installed, tools won't be available
@@ -219,12 +220,12 @@ async def create_agent() -> tuple[AgentLoop, str, str, MCPManager]:
 
     session_state = SessionState()
     registry = create_tool_registry(session_state, sandbox_client)
-    
+
     # Initialize and discover MCP servers
     mcp_manager = MCPManager()
     await discover_mcp_servers(mcp_manager)
     mcp_manager.register_tools(registry)
-    
+
     agent = AgentLoop.from_registry(
         provider=provider,
         system_prompt=DEFAULT_SYSTEM_PROMPT,
@@ -234,7 +235,7 @@ async def create_agent() -> tuple[AgentLoop, str, str, MCPManager]:
     return agent, provider_type, model, mcp_manager
 
 
-def run_basic_repl(agent: AgentLoop, provider_type: str, model: str) -> None:
+async def run_basic_repl(agent: AgentLoop, provider_type: str, model: str) -> None:
     """Run the agent in basic REPL mode without TUI."""
     print(f"Terminal Agent ({provider_type}: {model})")
     print("Type 'exit' or 'quit' to exit, 'reset' to clear history")
@@ -242,6 +243,8 @@ def run_basic_repl(agent: AgentLoop, provider_type: str, model: str) -> None:
 
     while True:
         try:
+            # Note: input() is blocking, but in this basic mode it's acceptable
+            # or we could use aioconsole.ainput if we wanted true async input
             user_input = input("\n> ").strip()
         except (KeyboardInterrupt, EOFError):
             print("\nExiting...")
@@ -259,7 +262,7 @@ def run_basic_repl(agent: AgentLoop, provider_type: str, model: str) -> None:
             print("Conversation reset.")
             continue
 
-        responses = agent.run(user_input)
+        responses = await agent.run(user_input)
         for response in responses:
             print_response(response)
 
@@ -275,9 +278,9 @@ async def run_interactive(use_tui: bool = True) -> None:
 
     try:
         if use_tui:
-            run_tui(agent, provider_type, model)
+            await run_tui(agent, provider_type, model)
         else:
-            run_basic_repl(agent, provider_type, model)
+            await run_basic_repl(agent, provider_type, model)
     finally:
         await mcp_manager.disconnect_all()
 

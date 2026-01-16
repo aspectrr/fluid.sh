@@ -46,9 +46,9 @@ class ToolCallDisplay(Static):
     def compose(self) -> ComposeResult:
         icon = "✓" if not self.result.error else "✗"
         status_class = "ok" if not self.result.error else "err"
-        
+
         yield Label(f"  {icon} {self.result.name}", classes=f"tool-{status_class}")
-        
+
         # Display result details differently based on error status
         if self.result.error:
              yield Label(f"    Error: {self.result.result.get('error', 'Unknown error')}", classes="tool-details-err")
@@ -113,7 +113,7 @@ class ConversationView(VerticalScroll):
     .tool-err {
         color: $error;
     }
-    
+
     .tool-details {
         color: $text-muted;
         padding-left: 2;
@@ -225,7 +225,7 @@ class ReviewScreen(ModalScreen[bool]):
         with VerticalScroll(id="review-container"):
             yield Label("HUMAN REVIEW REQUESTED", id="review-title")
             yield Label(f"Reason: {self.reason}", classes="review-section-title")
-            
+
             yield Label("Session Summary:", classes="review-section-title")
             yield Markdown(self._format_summary())
 
@@ -302,7 +302,7 @@ class CompletionScreen(ModalScreen[None]):
     def compose(self) -> ComposeResult:
         with VerticalScroll(id="completion-container"):
             yield Label("TASK COMPLETE", id="completion-title")
-            
+
             yield Label("Summary:", classes="completion-section-title")
             yield Markdown(self.summary)
 
@@ -396,10 +396,10 @@ class TerminalAgentApp(App):
         # Run agent in background worker
         self.run_agent(user_input)
 
-    @work(exclusive=True, thread=True)
-    def run_agent(self, user_input: str) -> list[AgentResponse]:
-        """Run the agent in a background thread."""
-        return self.agent.run(user_input)
+    @work(exclusive=True)
+    async def run_agent(self, user_input: str) -> list[AgentResponse]:
+        """Run the agent as an async worker."""
+        return await self.agent.run(user_input)
 
     def on_worker_state_changed(self, event: Worker.StateChanged) -> None:
         """Handle worker state changes."""
@@ -416,7 +416,7 @@ class TerminalAgentApp(App):
 
             last_response = None
             task_complete_result = None
-            
+
             for response in responses:
                 last_response = response
                 # Show tool results
@@ -443,7 +443,7 @@ class TerminalAgentApp(App):
         """Handle task completion."""
         summary = result.result.get("summary", "No summary provided")
         stats = result.result.get("session_stats", {})
-        
+
         self.push_screen(CompletionScreen(summary, stats), lambda _: self.query_one("#user-input", Input).focus())
 
     def handle_review_request(self, response: AgentResponse) -> None:
@@ -454,14 +454,14 @@ class TerminalAgentApp(App):
             if tr.name == "request_review":
                 review_result = tr
                 break
-        
+
         if not review_result:
             self.query_one("#user-input", Input).focus()
             return
 
         reason = review_result.result.get("reason", "No reason provided")
         summary = review_result.result.get("summary", {})
-        
+
         # Try to get playbook from agent's tool handler (PlaybookManager)
         playbook_yaml = None
         if hasattr(self.agent, "tool_handler") and hasattr(self.agent.tool_handler, "__self__"):
@@ -488,10 +488,10 @@ class TerminalAgentApp(App):
 
         self.push_screen(ReviewScreen(reason, summary, playbook_yaml), check_review_result)
 
-    @work(exclusive=True, thread=True)
-    def run_agent_continuation(self, user_input: str) -> list[AgentResponse]:
+    @work(exclusive=True)
+    async def run_agent_continuation(self, user_input: str) -> list[AgentResponse]:
         """Continue the agent loop after review."""
-        return self.agent.run(user_input)
+        return await self.agent.run(user_input)
 
     def action_reset(self) -> None:
         """Reset the conversation."""
@@ -506,7 +506,7 @@ class TerminalAgentApp(App):
         self.query_one("#user-input", Input).blur()
 
 
-def run_tui(
+async def run_tui(
     agent: AgentLoop,
     provider_type: str = "unknown",
     model: str = "unknown",
@@ -520,4 +520,4 @@ def run_tui(
         model: Model name for display
     """
     app = TerminalAgentApp(agent, provider_type, model)
-    app.run()
+    await app.run_async()

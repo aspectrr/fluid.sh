@@ -30,7 +30,7 @@ class PlanModeTool(Tool):
             "required": ["steps"],
         }
 
-    def execute(self, **kwargs: Any) -> ToolExecutionResult:
+    async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         steps = kwargs.get("steps", [])
         if not isinstance(steps, list) or not all(isinstance(s, str) for s in steps):
             return ToolExecutionResult(
