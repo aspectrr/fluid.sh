@@ -5,7 +5,7 @@ project_name: virsh-sandbox
 
 before:
   hooks:
-    - cd virsh-sandbox && go mod tidy
+    - sh -c "cd virsh-sandbox && go mod tidy"
 
 builds:
   - id: virsh-sandbox
