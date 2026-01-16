@@ -5,11 +5,11 @@ project_name: virsh-sandbox
 
 before:
   hooks:
-    - go mod tidy
+    - cd virsh-sandbox && go mod tidy
 
 builds:
   - id: virsh-sandbox
-    dir: .
+    dir: virsh-sandbox
     main: ./cmd/api/main.go
     binary: virsh-sandbox
     env:
@@ -34,22 +34,22 @@ archives:
     files:
       - README.md
       - LICENSE
-      - systemd/virsh-sandbox.service
+      # - systemd/virsh-sandbox.service
 
 checksum:
   name_template: checksums.txt
 
-signs:
-  - id: checksums-gpg
-    artifacts: checksum
-    cmd: gpg
-    args:
-      - "--batch"
-      - "--yes"
-      - "--armor"
-      - "--detach-sign"
-      - "--local-user={{ .Env.GPG_FINGERPRINT }}"
-      - "{{ .ArtifactPath }}"
+# signs:
+#   - id: checksums-gpg
+#     artifacts: checksum
+#     cmd: gpg
+#     args:
+#       - "--batch"
+#       - "--yes"
+#       - "--armor"
+#       - "--detach-sign"
+#       - "--local-user={{ .Env.GPG_FINGERPRINT }}"
+#       - "{{ .ArtifactPath }}"
 
 # snapshot:
 #   name_template: "{{ .Tag }}-next"
@@ -82,12 +82,12 @@ nfpms:
       - src: virsh-sandbox
         dst: /usr/local/bin/virsh-sandbox
 
-      - src: systemd/virsh-sandbox.service
-        dst: /lib/systemd/system/virsh-sandbox.service
+      # - src: systemd/virsh-sandbox.service
+      #   dst: /lib/systemd/system/virsh-sandbox.service
 
-    scripts:
-      postinstall: scripts/postinstall.sh
-      preremove: scripts/preremove.sh
+    # scripts:
+    #   postinstall: scripts/postinstall.sh
+    #   preremove: scripts/preremove.sh
 
 release:
   github:
