@@ -6,10 +6,9 @@ Entry point for the terminal agent application.
 
 import argparse
 import asyncio
-import json
 import os
 import sys
-from pathlib import Path
+import time
 from typing import Any
 
 from dotenv import load_dotenv
@@ -20,6 +19,7 @@ from tools import ToolRegistry
 from tui import run_tui
 from session_manager import SessionState
 from mcp_manager import MCPManager
+from telemetry import get_telemetry
 
 load_dotenv()
 
@@ -140,6 +140,11 @@ def print_response(response: Any) -> None:
     for tool_result in response.tool_results:
         status = "error" if tool_result.error else "ok"
         print(f"[{tool_result.name}] ({status})")
+
+
+def get_sandbox_api_base() -> str:
+    """Get the sandbox API base URL from environment."""
+    return os.getenv("SANDBOX_API_BASE", "http://localhost:8080")
 
 
 def get_provider_config() -> tuple[str, str, str, str | None, str | None]:
@@ -274,7 +279,12 @@ async def run_interactive(use_tui: bool = True) -> None:
     Args:
         use_tui: Use the textual TUI interface. If False, uses basic REPL.
     """
+    start_time = time.time()
     agent, provider_type, model, mcp_manager = await create_agent()
+
+    # Track session start
+    telemetry = get_telemetry()
+    telemetry.track_session_start(provider_type=provider_type, model=model)
 
     try:
         if use_tui:
@@ -282,6 +292,18 @@ async def run_interactive(use_tui: bool = True) -> None:
         else:
             await run_basic_repl(agent, provider_type, model)
     finally:
+        # Track session end
+        duration = time.time() - start_time
+        # Get session stats if we can access them
+        commands_executed = 0
+        sandboxes_created = 0
+        telemetry.track_session_end(
+            duration_seconds=duration,
+            commands_executed=commands_executed,
+            sandboxes_created=sandboxes_created,
+        )
+        telemetry.shutdown()
+
         await mcp_manager.disconnect_all()
 
 

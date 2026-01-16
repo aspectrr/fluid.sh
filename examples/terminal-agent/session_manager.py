@@ -9,6 +9,7 @@ from typing import Any, Optional
 from datetime import datetime
 
 from ansible_tools import PlaybookManager
+from telemetry import get_telemetry
 
 
 @dataclass
@@ -149,6 +150,10 @@ class RequestReviewTool(Tool):
         try:
             reason = kwargs.get("reason", "No reason provided")
             summary = self.session_state.get_summary()
+
+            # Track review request
+            get_telemetry().track_review_requested(reason_length=len(reason))
+
             return ToolExecutionResult(
                 success=True,
                 data={
@@ -196,7 +201,10 @@ class TaskCompletionTool(Tool):
         try:
             summary = kwargs["summary"]
             session_summary = self.session_state.get_summary()
-            
+
+            # Track task completion
+            get_telemetry().track_task_completed()
+
             return ToolExecutionResult(
                 success=True,
                 data={

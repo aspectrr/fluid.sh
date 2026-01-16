@@ -6,6 +6,7 @@ from typing import Any, Optional
 import yaml
 
 from tools import Tool, ToolExecutionResult
+from telemetry import get_telemetry
 
 
 class AnsibleDumper(yaml.SafeDumper):
@@ -195,9 +196,12 @@ class InitPlaybookTool(Tool):
         try:
             name = kwargs["name"]
             hosts = kwargs.get("hosts", "all")
-            
+
             self.manager.init_playbook(name, hosts)
-            
+
+            # Track playbook init
+            get_telemetry().track_playbook_init(playbook_name=name, hosts=hosts)
+
             return ToolExecutionResult(
                 success=True,
                 data={"playbook": self.manager.get_playbook()},
@@ -253,6 +257,14 @@ class AddTaskTool(Tool):
 
             self.manager.add_task(name, module, args)
 
+            # Track task added
+            task_count = len(self.manager.playbook[0]["tasks"]) if self.manager.playbook else 0
+            get_telemetry().track_playbook_task_added(
+                task_name=name,
+                module=module,
+                task_count=task_count,
+            )
+
             return ToolExecutionResult(
                 success=True,
                 data={"playbook": self.manager.get_playbook()},
@@ -296,7 +308,10 @@ class DryRunPlaybookTool(Tool):
         try:
             target_host = kwargs["target_host"]
             success, stdout, stderr = self.manager.run_playbook(check_mode=True, target_host=target_host)
-            
+
+            # Track dry run
+            get_telemetry().track_playbook_run(check_mode=True, success=success)
+
             return ToolExecutionResult(
                 success=success,
                 data={
@@ -349,7 +364,7 @@ class RunPlaybookTool(Tool):
         try:
             target_host = kwargs["target_host"]
             confirm = kwargs.get("confirm", False)
-            
+
             if not confirm:
                 return ToolExecutionResult(
                     success=False,
@@ -358,7 +373,10 @@ class RunPlaybookTool(Tool):
                 )
 
             success, stdout, stderr = self.manager.run_playbook(check_mode=False, target_host=target_host)
-            
+
+            # Track playbook run
+            get_telemetry().track_playbook_run(check_mode=False, success=success)
+
             return ToolExecutionResult(
                 success=success,
                 data={
@@ -437,7 +455,13 @@ class ValidatePlaybookTool(Tool):
     async def execute(self, **kwargs: Any) -> ToolExecutionResult:
         try:
             is_valid, errors = self.manager.validate_playbook()
-            
+
+            # Track validation
+            get_telemetry().track_playbook_validated(
+                is_valid=is_valid,
+                error_count=len(errors),
+            )
+
             return ToolExecutionResult(
                 success=is_valid,
                 data={

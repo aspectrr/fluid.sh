@@ -17,6 +17,7 @@ import (
 	"virsh-sandbox/internal/libvirt"
 	"virsh-sandbox/internal/sshkeys"
 	"virsh-sandbox/internal/store"
+	"virsh-sandbox/internal/telemetry"
 )
 
 // Service orchestrates libvirt operations and data persistence.
@@ -27,6 +28,7 @@ type Service struct {
 	store     store.Store
 	ssh       SSHRunner
 	keyMgr    sshkeys.KeyProvider // Optional: manages SSH keys for RunCommand
+	telemetry telemetry.Service
 	cfg       Config
 	timeNowFn func() time.Time
 	logger    *slog.Logger
@@ -59,6 +61,11 @@ type Option func(*Service)
 // WithSSHRunner overrides the default SSH runner implementation.
 func WithSSHRunner(r SSHRunner) Option {
 	return func(s *Service) { s.ssh = r }
+}
+
+// WithTelemetry sets the telemetry service.
+func WithTelemetry(t telemetry.Service) Option {
+	return func(s *Service) { s.telemetry = t }
 }
 
 // WithTimeNow overrides the clock (useful for tests).
@@ -102,8 +109,27 @@ func NewService(mgr libvirt.Manager, st store.Store, cfg Config, opts ...Option)
 	for _, o := range opts {
 		o(s)
 	}
+	// Default to noop telemetry if not provided
+	if s.telemetry == nil {
+		// Use a temporary struct that implements the interface locally if possible,
+		// or rely on the fact that telemetry package provides a public interface
+		// but the noop implementation is private.
+		// Actually, I can just create a noop implementation here or expose NewNoopService in telemetry package.
+		// Since noopService is private in telemetry package, I can't instantiate it directly.
+		// I should expose a NewNoopService or similar, OR just handle nil in calls (risky),
+		// OR just let the caller be responsible (bad).
+		// Best is to add NewNoopService to telemetry package.
+		// But I can't edit that file again right now easily without another call.
+		// Wait, I can implement a local noop.
+		s.telemetry = &noopTelemetry{}
+	}
 	return s
 }
+
+type noopTelemetry struct{}
+
+func (n *noopTelemetry) Track(event string, properties map[string]interface{}) {}
+func (n *noopTelemetry) Close()                                                {}
 
 // CreateSandbox clones a VM from an existing VM and persists a Sandbox record.
 //
@@ -290,6 +316,17 @@ func (s *Service) CreateSandbox(ctx context.Context, sourceSandboxName, agentID,
 		"ip_address", ip,
 	)
 
+	s.telemetry.Track("sandbox_create", map[string]interface{}{
+		"sandbox_id":  sb.ID,
+		"base_image":  sb.BaseImage,
+		"cpu":         cpu,
+		"memory_mb":   memoryMB,
+		"auto_start":  autoStart,
+		"wait_for_ip": waitForIP,
+		"agent_id":    agentID,
+		"success":     true,
+	})
+
 	return sb, ip, nil
 }
 
@@ -423,6 +460,12 @@ func (s *Service) StartSandbox(ctx context.Context, sandboxID string, waitForIP 
 		"ip_address", ip,
 	)
 
+	s.telemetry.Track("sandbox_start", map[string]interface{}{
+		"sandbox_id":  sb.ID,
+		"wait_for_ip": waitForIP,
+		"success":     true,
+	})
+
 	return ip, nil
 }
 
@@ -491,7 +534,15 @@ func (s *Service) StopSandbox(ctx context.Context, sandboxID string, force bool)
 	if err := s.mgr.StopVM(ctx, sb.SandboxName, force); err != nil {
 		return fmt.Errorf("stop vm: %w", err)
 	}
-	return s.store.UpdateSandboxState(ctx, sb.ID, store.SandboxStateStopped, sb.IPAddress)
+	err = s.store.UpdateSandboxState(ctx, sb.ID, store.SandboxStateStopped, sb.IPAddress)
+	if err == nil {
+		s.telemetry.Track("sandbox_stop", map[string]interface{}{
+			"sandbox_id": sb.ID,
+			"force":      force,
+			"success":    true,
+		})
+	}
+	return err
 }
 
 // DestroySandbox forcibly destroys and undefines the VM and removes its workspace.
@@ -523,6 +574,12 @@ func (s *Service) DestroySandbox(ctx context.Context, sandboxID string) (*store.
 	}
 	// Update state to reflect destruction
 	sb.State = store.SandboxStateDestroyed
+
+	s.telemetry.Track("sandbox_destroy", map[string]interface{}{
+		"sandbox_id": sandboxID,
+		"success":    true,
+	})
+
 	return sb, nil
 }
 
@@ -550,6 +607,15 @@ func (s *Service) CreateSnapshot(ctx context.Context, sandboxID, name string, ex
 	if err := s.store.CreateSnapshot(ctx, sn); err != nil {
 		return nil, err
 	}
+
+	s.telemetry.Track("snapshot_create", map[string]interface{}{
+		"sandbox_id":    sandboxID,
+		"snapshot_name": name,
+		"snapshot_kind": ref.Kind,
+		"external":      external,
+		"success":       true,
+	})
+
 	return sn, nil
 }
 
@@ -602,6 +668,14 @@ func (s *Service) DiffSnapshots(ctx context.Context, sandboxID, from, to string)
 	if err := s.store.SaveDiff(ctx, diff); err != nil {
 		return nil, err
 	}
+
+	s.telemetry.Track("snapshot_diff", map[string]interface{}{
+		"sandbox_id":    sandboxID,
+		"from_snapshot": from,
+		"to_snapshot":   to,
+		"success":       true,
+	})
+
 	return diff, nil
 }
 
@@ -718,6 +792,14 @@ func (s *Service) RunCommand(ctx context.Context, sandboxID, username, privateKe
 	if err := s.store.SaveCommand(ctx, cmd); err != nil {
 		return nil, fmt.Errorf("save command: %w", err)
 	}
+
+	s.telemetry.Track("sandbox_command", map[string]interface{}{
+		"sandbox_id":  sandboxID,
+		"command_id":  cmdID,
+		"exit_code":   code,
+		"duration_ms": cmd.EndedAt.Sub(cmd.StartedAt).Milliseconds(),
+		"success":     true,
+	})
 
 	if runErr != nil {
 		return cmd, fmt.Errorf("ssh run: %w", runErr)

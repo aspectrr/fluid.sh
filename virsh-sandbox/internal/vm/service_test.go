@@ -198,6 +198,7 @@ func TestGetSandbox_Success(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		timeNowFn: time.Now,
 	}
@@ -226,6 +227,7 @@ func TestGetSandbox_NotFound(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		timeNowFn: time.Now,
 	}
@@ -241,6 +243,7 @@ func TestGetSandbox_NotFound(t *testing.T) {
 
 func TestGetSandbox_EmptyID(t *testing.T) {
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     &mockStore{},
 		timeNowFn: time.Now,
 	}
@@ -253,6 +256,7 @@ func TestGetSandbox_EmptyID(t *testing.T) {
 
 func TestGetSandbox_WhitespaceID(t *testing.T) {
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     &mockStore{},
 		timeNowFn: time.Now,
 	}
@@ -289,6 +293,7 @@ func TestGetSandboxCommands_Success(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		timeNowFn: time.Now,
 	}
@@ -314,6 +319,7 @@ func TestGetSandboxCommands_SandboxNotFound(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		timeNowFn: time.Now,
 	}
@@ -329,6 +335,7 @@ func TestGetSandboxCommands_SandboxNotFound(t *testing.T) {
 
 func TestGetSandboxCommands_EmptyID(t *testing.T) {
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     &mockStore{},
 		timeNowFn: time.Now,
 	}
@@ -352,6 +359,7 @@ func TestGetSandboxCommands_WithListOptions(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		timeNowFn: time.Now,
 	}
@@ -475,6 +483,7 @@ func TestRunCommand_Success(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		ssh:       mockSSH,
 		mgr:       mockMgr,
@@ -527,6 +536,7 @@ func TestRunCommand_SSHConnectionFailed(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		ssh:       mockSSH,
 		mgr:       mockMgr,
@@ -581,6 +591,7 @@ func TestRunCommand_CommandFailed(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		ssh:       mockSSH,
 		mgr:       mockMgr,
@@ -606,6 +617,7 @@ func TestRunCommand_CommandFailed(t *testing.T) {
 
 func TestRunCommand_EmptySandboxID(t *testing.T) {
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     &mockStore{},
 		timeNowFn: time.Now,
 	}
@@ -618,6 +630,7 @@ func TestRunCommand_EmptySandboxID(t *testing.T) {
 
 func TestRunCommand_EmptyUsername(t *testing.T) {
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     &mockStore{},
 		timeNowFn: time.Now,
 	}
@@ -630,6 +643,7 @@ func TestRunCommand_EmptyUsername(t *testing.T) {
 
 func TestRunCommand_EmptyPrivateKeyPath(t *testing.T) {
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     &mockStore{},
 		timeNowFn: time.Now,
 	}
@@ -642,6 +656,7 @@ func TestRunCommand_EmptyPrivateKeyPath(t *testing.T) {
 
 func TestRunCommand_EmptyCommand(t *testing.T) {
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     &mockStore{},
 		timeNowFn: time.Now,
 	}
@@ -660,6 +675,7 @@ func TestRunCommand_SandboxNotFound(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		timeNowFn: time.Now,
 	}
@@ -704,6 +720,7 @@ func TestRunCommand_WithEnvironmentVariables(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		ssh:       mockSSH,
 		mgr:       mockMgr,
@@ -757,6 +774,7 @@ func TestRunCommand_IPConflictDetected(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		mgr:       mockMgr,
 		timeNowFn: time.Now,
@@ -791,6 +809,7 @@ func TestValidateIPUniqueness_NoConflict(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		timeNowFn: time.Now,
 		logger:    slog.Default(),
@@ -819,6 +838,7 @@ func TestValidateIPUniqueness_Conflict(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		timeNowFn: time.Now,
 		logger:    slog.Default(),
@@ -850,6 +870,7 @@ func TestValidateIPUniqueness_SameSandboxIgnored(t *testing.T) {
 	}
 
 	svc := &Service{
+		telemetry: &noopTelemetry{},
 		store:     mockSt,
 		timeNowFn: time.Now,
 		logger:    slog.Default(),

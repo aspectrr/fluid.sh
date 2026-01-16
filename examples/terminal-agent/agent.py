@@ -12,6 +12,8 @@ from typing import TYPE_CHECKING, Any, Callable
 
 from openai.types.chat import ChatCompletionMessageToolCall, ChatCompletionMessageParam
 
+from telemetry import get_telemetry
+
 if TYPE_CHECKING:
     from llm import LLMProvider
     from tools import ToolRegistry
@@ -90,12 +92,21 @@ class AgentLoop:
         self.messages.append({"role": "user", "content": content})
         self._prune_history()
 
+        # Track user prompt
+        get_telemetry().track_user_prompt(
+            prompt_length=len(content),
+            message_count=len(self.messages),
+        )
+
     async def _execute_tool(self, tool_call: ChatCompletionMessageToolCall) -> ToolResult:
         """Execute a single tool call."""
         name = tool_call.function.name
+        telemetry = get_telemetry()
+
         try:
             args = json.loads(tool_call.function.arguments)
         except json.JSONDecodeError:
+            telemetry.track_tool_result(tool_name=name, success=False, has_error=True)
             return ToolResult(
                 tool_call_id=tool_call.id,
                 name=name,
@@ -103,9 +114,16 @@ class AgentLoop:
                 error=True,
             )
 
+        # Track tool call with arg keys only (not values for privacy)
+        telemetry.track_tool_call(tool_name=name, args_keys=list(args.keys()))
+
         try:
             result = await self.tool_handler(name, args)
             is_error = isinstance(result, dict) and result.get("error", False)
+
+            # Track tool result
+            telemetry.track_tool_result(tool_name=name, success=not is_error, has_error=is_error)
+
             return ToolResult(
                 tool_call_id=tool_call.id,
                 name=name,
@@ -113,6 +131,7 @@ class AgentLoop:
                 error=is_error,
             )
         except Exception as e:
+            telemetry.track_tool_result(tool_name=name, success=False, has_error=True)
             return ToolResult(
                 tool_call_id=tool_call.id,
                 name=name,
@@ -180,6 +199,15 @@ class AgentLoop:
                 agent_response.done = True
 
         self._prune_history()
+
+        # Track agent response
+        get_telemetry().track_agent_response(
+            response_length=len(agent_response.content or ""),
+            has_tool_calls=bool(agent_response.tool_calls),
+            tool_call_count=len(agent_response.tool_calls),
+            done=agent_response.done,
+        )
+
         return agent_response
 
     def _is_done(self, content: str) -> bool:

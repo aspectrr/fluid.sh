@@ -19,6 +19,7 @@ import (
 	"virsh-sandbox/internal/sshkeys"
 	"virsh-sandbox/internal/store"
 	postgresStore "virsh-sandbox/internal/store/postgres"
+	"virsh-sandbox/internal/telemetry"
 	"virsh-sandbox/internal/vm"
 )
 
@@ -109,6 +110,24 @@ func main() {
 	// Initialize domain manager for direct libvirt queries
 	domainMgr := libvirt.NewDomainManager(cfg.Libvirt.URI)
 
+	// Initialize telemetry service
+	telemetrySvc, err := telemetry.NewService(cfg.Telemetry)
+	if err != nil {
+		// Don't fail startup if telemetry fails, just log it and continue with noop?
+		// Or fail? Telemetry failure shouldn't crash the app usually.
+		// Since NewService returns noop on error? No, it returns error on NewWithConfig failure.
+		// But I'll log and ignore or maybe continue.
+		// Let's log error and continue with nil (vm service handles nil/noop check? No, I added a check in NewService).
+		// Wait, vm.NewService checks if telemetry is nil and uses noop.
+		// So if NewService fails, I can just log error.
+		logger.Error("failed to initialize telemetry", "error", err)
+		// We can't use the nil interface if we returned error.
+		// But we can create a noop one if we had access to it, or just pass nil.
+		// vm.NewService handles nil.
+	} else {
+		defer telemetrySvc.Close()
+	}
+
 	// Initialize SSH CA and key manager (optional - for managed credentials)
 	var keyMgr sshkeys.KeyProvider
 	if _, err := os.Stat(cfg.SSH.CAKeyPath); err == nil {
@@ -159,7 +178,12 @@ func main() {
 	}
 
 	// Initialize VM service with logger and optional key manager
-	vmOpts := []vm.Option{vm.WithLogger(logger)}
+	vmOpts := []vm.Option{
+		vm.WithLogger(logger),
+	}
+	if telemetrySvc != nil {
+		vmOpts = append(vmOpts, vm.WithTelemetry(telemetrySvc))
+	}
 	if keyMgr != nil {
 		vmOpts = append(vmOpts, vm.WithKeyManager(keyMgr))
 	}

@@ -15,6 +15,11 @@ database:
   conn_max_lifetime: 1h
   auto_migrate: true
 
+telemetry:
+  enable_anonymous_usage: true
+  api_key: ""
+  endpoint: "https://app.posthog.com"
+
 libvirt:
   uri: "qemu:///system"
   network: "default"

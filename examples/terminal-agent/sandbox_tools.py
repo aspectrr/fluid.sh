@@ -12,6 +12,7 @@ except ImportError:
 
 from tools import Tool, ToolExecutionResult
 from session_manager import SessionState
+from telemetry import get_telemetry
 
 
 class CreateSandboxTool(Tool):
@@ -68,7 +69,7 @@ class CreateSandboxTool(Tool):
 
             # Extract sandbox data
             sandbox = response.sandbox
-            
+
             # Convert to dict
             if hasattr(sandbox, "to_dict"):
                 data = sandbox.to_dict()
@@ -83,6 +84,9 @@ class CreateSandboxTool(Tool):
 
             # Track in session state
             self.session_state.add_sandbox(data)
+
+            # Track sandbox creation
+            get_telemetry().track_sandbox_created(source_vm_name=source_vm_name)
 
             return ToolExecutionResult(success=True, data=data)
 
@@ -126,6 +130,7 @@ class RunCommandTool(Tool):
         # Disallow chained commands
         command = kwargs.get("command", "")
         if any(op in command for op in ["&&", "||", ";", "|", "`"]):
+            get_telemetry().track_command_executed(success=False)
             return ToolExecutionResult(
                 success=False,
                 data={},
@@ -143,7 +148,7 @@ class RunCommandTool(Tool):
             )
 
             result = response.result
-            
+
             if hasattr(result, "to_dict"):
                 data = result.to_dict()
             else:
@@ -155,7 +160,11 @@ class RunCommandTool(Tool):
             # Track in session state if successful
             self.session_state.add_command(sandbox_id, command, data)
 
+            # Track command execution
+            get_telemetry().track_command_executed(success=True)
+
             return ToolExecutionResult(success=True, data=data)
 
         except Exception as e:
+            get_telemetry().track_command_executed(success=False)
             return ToolExecutionResult(success=False, data={}, error_message=str(e))

@@ -10,13 +10,14 @@ import (
 
 // Config is the root configuration for virsh-sandbox API.
 type Config struct {
-	API      APIConfig      `yaml:"api"`
-	Database DatabaseConfig `yaml:"database"`
-	Libvirt  LibvirtConfig  `yaml:"libvirt"`
-	VM       VMConfig       `yaml:"vm"`
-	SSH      SSHConfig      `yaml:"ssh"`
-	Ansible  AnsibleConfig  `yaml:"ansible"`
-	Logging  LoggingConfig  `yaml:"logging"`
+	API       APIConfig       `yaml:"api"`
+	Database  DatabaseConfig  `yaml:"database"`
+	Libvirt   LibvirtConfig   `yaml:"libvirt"`
+	VM        VMConfig        `yaml:"vm"`
+	SSH       SSHConfig       `yaml:"ssh"`
+	Ansible   AnsibleConfig   `yaml:"ansible"`
+	Logging   LoggingConfig   `yaml:"logging"`
+	Telemetry TelemetryConfig `yaml:"telemetry"`
 }
 
 // APIConfig holds HTTP server settings.
@@ -34,6 +35,13 @@ type DatabaseConfig struct {
 	MaxIdleConns    int           `yaml:"max_idle_conns"`
 	ConnMaxLifetime time.Duration `yaml:"conn_max_lifetime"`
 	AutoMigrate     bool          `yaml:"auto_migrate"`
+}
+
+// TelemetryConfig holds telemetry settings.
+type TelemetryConfig struct {
+	EnableAnonymousUsage bool   `yaml:"enable_anonymous_usage"`
+	APIKey               string `yaml:"api_key"`
+	Endpoint             string `yaml:"endpoint"`
 }
 
 // LibvirtConfig holds libvirt/KVM settings.
@@ -95,6 +103,9 @@ func DefaultConfig() *Config {
 			MaxIdleConns:    8,
 			ConnMaxLifetime: time.Hour,
 			AutoMigrate:     true,
+		},
+		Telemetry: TelemetryConfig{
+			EnableAnonymousUsage: true,
 		},
 		Libvirt: LibvirtConfig{
 			URI:                "qemu:///system",
@@ -177,6 +188,17 @@ func applyEnvOverrides(cfg *Config) {
 	// Database
 	if v := os.Getenv("DATABASE_URL"); v != "" {
 		cfg.Database.URL = v
+	}
+
+	// Telemetry
+	if v := os.Getenv("ENABLE_ANONYMOUS_USAGE"); v != "" {
+		cfg.Telemetry.EnableAnonymousUsage = v == "true"
+	}
+	if v := os.Getenv("TELEMETRY_API_KEY"); v != "" {
+		cfg.Telemetry.APIKey = v
+	}
+	if v := os.Getenv("TELEMETRY_ENDPOINT"); v != "" {
+		cfg.Telemetry.Endpoint = v
 	}
 
 	// Libvirt

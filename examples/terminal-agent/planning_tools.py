@@ -4,6 +4,7 @@ Planning tools for the terminal agent.
 
 from typing import Any
 from tools import Tool, ToolExecutionResult
+from telemetry import get_telemetry
 
 class PlanModeTool(Tool):
     """Tool to create and display execution plans."""
@@ -38,7 +39,10 @@ class PlanModeTool(Tool):
                 data={},
                 error_message="Steps must be a list of strings",
             )
-        
+
+        # Track plan creation
+        get_telemetry().track_plan_created(step_count=len(steps))
+
         return ToolExecutionResult(
             success=True,
             data={"plan": steps},
