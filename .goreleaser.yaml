@@ -92,4 +92,4 @@ nfpms:
 release:
   github:
     owner: aspectrr
-    name: fluid.s
+    name: fluid.sh
