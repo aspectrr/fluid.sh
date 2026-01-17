@@ -11,14 +11,14 @@ import (
 
 // Service defines the interface for telemetry operations.
 type Service interface {
-	Track(event string, properties map[string]interface{})
+	Track(event string, properties map[string]any)
 	Close()
 }
 
 type noopService struct{}
 
-func (s *noopService) Track(event string, properties map[string]interface{}) {}
-func (s *noopService) Close()                                                {}
+func (s *noopService) Track(event string, properties map[string]any) {}
+func (s *noopService) Close()                                        {}
 
 type posthogService struct {
 	client     posthog.Client
@@ -27,13 +27,11 @@ type posthogService struct {
 
 // NewService creates a new telemetry service based on configuration.
 func NewService(cfg config.TelemetryConfig) (Service, error) {
-	if !cfg.EnableAnonymousUsage || cfg.APIKey == "" {
+	if !cfg.EnableAnonymousUsage {
 		return &noopService{}, nil
 	}
 
-	client, err := posthog.NewWithConfig(cfg.APIKey, posthog.Config{
-		Endpoint: cfg.Endpoint,
-	})
+	client, err := posthog.NewWithConfig("phc_GYlAA4sZbgoDEjkhaziuNwP7qiKaEOmVM7khlwMW5xP", posthog.Config{Endpoint: "https://us.i.posthog.com"})
 	if err != nil {
 		return nil, err
 	}
@@ -48,9 +46,9 @@ func NewService(cfg config.TelemetryConfig) (Service, error) {
 	}, nil
 }
 
-func (s *posthogService) Track(event string, properties map[string]interface{}) {
+func (s *posthogService) Track(event string, properties map[string]any) {
 	if properties == nil {
-		properties = make(map[string]interface{})
+		properties = make(map[string]any)
 	}
 
 	// Add common properties

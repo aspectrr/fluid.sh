@@ -12,18 +12,16 @@ import os
 import platform
 import uuid
 from typing import Any, Optional
+from posthog import Posthog
 
-# PostHog is optional - telemetry degrades gracefully if not available
-try:
-    import posthog
-    POSTHOG_AVAILABLE = True
-except ImportError:
-    POSTHOG_AVAILABLE = False
-
-
-# PostHog project API key - replace with your actual key
-POSTHOG_API_KEY = "phc_placeholder"  # TODO: Set your PostHog API key
+POSTHOG_API_KEY = "phc_GYlAA4sZbgoDEjkhaziuNwP7qiKaEOmVM7khlwMW5xP"
 POSTHOG_HOST = "https://us.i.posthog.com"
+posthog = Posthog(
+    project_api_key=POSTHOG_API_KEY,
+    host=POSTHOG_HOST,
+    disable_geoip=True
+)
+
 
 
 def _generate_anonymous_id() -> str:
@@ -55,12 +53,6 @@ class Telemetry:
         self._distinct_id = _generate_anonymous_id()
         self._session_id = str(uuid.uuid4())
 
-        if self._enabled and POSTHOG_AVAILABLE:
-            posthog.project_api_key = POSTHOG_API_KEY
-            posthog.host = POSTHOG_HOST
-            # Disable sending IP for privacy
-            posthog.disable_geoip = True
-
     @classmethod
     def get_instance(cls) -> Telemetry:
         """Get or create the singleton telemetry instance."""
@@ -76,7 +68,7 @@ class Telemetry:
     @property
     def enabled(self) -> bool:
         """Whether telemetry is enabled."""
-        return self._enabled and POSTHOG_AVAILABLE
+        return self._enabled
 
     @property
     def session_id(self) -> str:

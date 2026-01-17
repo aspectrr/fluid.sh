@@ -3,6 +3,7 @@ package libvirt
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"fmt"
 	"log/slog"
 	"os/exec"
@@ -110,10 +111,10 @@ func (m *RemoteVirshManager) CloneFromVM(ctx context.Context, sourceVMName, newV
 		return DomainRef{}, fmt.Errorf("modify cloned xml: %w", err)
 	}
 
-	// Write domain XML to remote host
+	// Write domain XML to remote host using base64 to avoid shell escaping issues
 	xmlPath := fmt.Sprintf("%s/domain.xml", jobDir)
-	escapedXML := strings.ReplaceAll(newXML, "'", "'\\''")
-	if _, err := m.runSSH(ctx, fmt.Sprintf("echo '%s' > %s", escapedXML, shellEscape(xmlPath))); err != nil {
+	encodedXML := base64.StdEncoding.EncodeToString([]byte(newXML))
+	if _, err := m.runSSH(ctx, fmt.Sprintf("echo %s | base64 -d > %s", encodedXML, shellEscape(xmlPath))); err != nil {
 		return DomainRef{}, fmt.Errorf("write domain xml: %w", err)
 	}
 

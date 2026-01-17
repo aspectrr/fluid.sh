@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "start": "vite --host 0.0.0.0",
+    "typecheck": "tsc",
     "preview": "vite preview",
     "generate-api": "orval --config ./orval.config.ts"
   },
