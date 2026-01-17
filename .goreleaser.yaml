@@ -47,6 +47,7 @@ signs:
   - id: binary
     cmd: gpg
     artifacts: binary
+    signature: "${artifact}.sig"
     args:
       - "--batch"
       - "--yes"
@@ -54,13 +55,16 @@ signs:
       - "--pinentry-mode=loopback"
       - "--passphrase={{ .Env.GPG_PASSPHRASE }}"
       - "--local-user={{ .Env.GPG_FINGERPRINT }}"
+      - "--output"
+      - "${signature}"
       - "--detach-sign"
-      - "{{ .ArtifactPath }}"
+      - "${artifact}"
 
   # Sign checksums
   - id: checksum
     cmd: gpg
     artifacts: checksum
+    signature: "${artifact}.sig"
     args:
       - "--batch"
       - "--yes"
@@ -68,8 +72,10 @@ signs:
       - "--pinentry-mode=loopback"
       - "--passphrase={{ .Env.GPG_PASSPHRASE }}"
       - "--local-user={{ .Env.GPG_FINGERPRINT }}"
+      - "--output"
+      - "${signature}"
       - "--detach-sign"
-
+      - "${artifact}"
 # snapshot:
 #   name_template: "{{ .Tag }}-next"
 
