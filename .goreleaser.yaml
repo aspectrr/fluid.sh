@@ -24,7 +24,6 @@ builds:
       - libvirt
     ldflags:
       - -s -w
-      - -libvirt
       - -X main.version={{ .Version }}
       - -X main.commit={{ .Commit }}
       - -X main.date={{ .Date }}
