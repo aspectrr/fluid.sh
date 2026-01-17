@@ -6,3 +6,4 @@ mprocs.log
 dist/
 .venv
 act.env
+.claude
