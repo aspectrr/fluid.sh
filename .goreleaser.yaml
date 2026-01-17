@@ -65,9 +65,9 @@ signs:
       - "--yes"
       - "--armor"
       - "--local-user={{ .Env.GPG_FINGERPRINT }}"
-      - "--output={{ .ChecksumPath }}.asc"
+      - "--output={{ .Path }}.asc"
       - "--detach-sign"
-      - "{{ .ChecksumPath }}"
+      - "{{ .Path }}"
 
 # snapshot:
 #   name_template: "{{ .Tag }}-next"
