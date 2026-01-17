@@ -18,7 +18,10 @@
 ---
 
 ## Demo
-![Fluid.sh Demo](https://youtu.be/nAlqRMhZxP0)
+
+<a href="https://www.youtube.com/watch?v=nAlqRMhZxP0">
+  <img src="https://img.youtube.com/vi/nAlqRMhZxP0/maxresdefault.jpg" alt="Fluid.sh Demo" width="600">
+</a>
 
 ## Problem
 
@@ -158,26 +161,36 @@ The hypervisor hosts:
 
 This method installs a **static binary** and runs it as a systemd service. No container runtime is required.
 
-### 1. Download the Release Artifact
-
-Download the appropriate binary and checksum from the release page:
-
+### 1. Import the GPG public key
 ```bash
-curl -LO https://github.com/aspectrr/fluid.sh/releases/download/v0.0.1-beta/virsh-sandbox_0.0.1-beta_linux_amd64.tar.gz
-curl -LO https://releases.example.com/virsh-sandbox/v0.0.1-beta/checksums.txt
+# Import from keyserver
+gpg --keyserver keys.openpgp.org --recv-keys B27DED65CFB30427EE85F8209DD0911D6CB0B643
+
+# OR import from file
+curl https://raw.githubusercontent.com/aspectrr/fluid.sh/main/public-key.asc | gpg --import
 ```
 
-### 2. Verify the Checksum
-
+### 2. Download release assets
 ```bash
-sha256sum -c virsh-sandbox-linux-amd64.sha256
+VERSION=0.0.4-beta
+wget https://github.com/aspectrr/fluid.sh/releases/download/v${VERSION}/virsh-sandbox_${VERSION}_linux_amd64.tar.gz
+wget https://github.com/aspectrr/fluid.sh/releases/download/v${VERSION}/checksums.txt
+wget https://github.com/aspectrr/fluid.sh/releases/download/v${VERSION}/checksums.txt.sig
 ```
 
-### 3. Install the Binary
-
+### 3. Verify signature and checksum
 ```bash
-install -m 0755 virsh-sandbox-linux-amd64 /usr/local/bin/virsh-sandbox
+# Verify GPG signature
+gpg --verify checksums.txt.sig checksums.txt
+
+# Verify file checksum
+sha256sum -c checksums.txt --ignore-missing
 ```
+
+### 4. Extract and install
+```bash
+tar -xzf virsh-sandbox_${VERSION}_linux_amd64.tar.gz
+sudo install -m 755 virsh-sandbox /usr/local/bin/
 
 ---
 
