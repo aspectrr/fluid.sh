@@ -19,7 +19,7 @@ echo "Running polish script..."
 python3 scripts/polish_sdk.py
 
 echo "Formatting code..."
-cd virsh-sandbox-py
+cd fluid-sdk-py
 pip install -r requirements.txt
 black .
 isort .
