@@ -49,7 +49,7 @@ jobs:
 
   # Go services - fluid-remote API
   fluid-remote:
-    name: fluid-remote API
+    name: Fluid Remote API
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -208,3 +208,7 @@ jobs:
 
       - name: Build
         run: bun run build
+        env:
+          PUBLIC_POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          PUBLIC_POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
+          PUBLIC_POSTHOG_DEFAULTS: ${{ secrets.POSTHOG_DEFAULTS }}

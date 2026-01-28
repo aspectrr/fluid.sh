@@ -32,7 +32,6 @@ bin/
 .ansible/
 config.yaml
 config.yml
-api
 hosts.txt
 
 # Editor/IDE

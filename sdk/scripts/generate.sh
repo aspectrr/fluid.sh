@@ -9,9 +9,9 @@ echo "Generating SDK..."
 docker run --rm \
   -v ${PWD}/..:/local \
   openapitools/openapi-generator-cli generate --skip-validate-spec \
-  -i /local/virsh-sandbox/docs/openapi.yaml \
+  -i /local/fluid-remote/docs/openapi.yaml \
   -g python \
-  -o /local/sdk/virsh-sandbox-py/ \
+  -o /local/sdk/fluid-sdk-py/ \
   -c /local/sdk/.openapi-generator/config.yaml \
   -t /local/sdk/.openapi-generator/templates/python/
 
