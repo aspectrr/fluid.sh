@@ -1181,7 +1181,7 @@ def patch_api_client(sdk_dir: Path):
 
 
 def main():
-    sdk_dir = Path("virsh-sandbox-py/virsh_sandbox")
+    sdk_dir = Path("fluid-sdk-py/virsh_sandbox")
     package_name = "virsh_sandbox"
 
     if not sdk_dir.exists():
